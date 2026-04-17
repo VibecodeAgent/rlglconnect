@@ -1,0 +1,817 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no">
+    <title>Red Light Green Light</title>
+    <script src="https://cdn.jsdelivr.net/npm/buttplug@3.2.4/dist/web/buttplug.min.js"></script>
+    <style>
+        :root { --bg: #0b0f19; --card: #161e2d; --accent: #38bdf8; --green: #10b981; --red: #ef4444; --white: #f8fafc; --input-bg: rgba(11, 15, 25, 0.9); }
+        
+        html, body { margin: 0; padding: 0; width: 100vw; height: 100dvh; font-family: 'Inter', system-ui, sans-serif; background-color: var(--bg); color: var(--white); display: flex; justify-content: center; align-items: center; transition: background-color 0.4s cubic-bezier(0.4, 0, 0.2, 1); overflow: hidden; -webkit-tap-highlight-color: transparent; }
+        
+        .setup-container { padding: 2.5rem; border-radius: 2.5rem; width: 95%; max-width: 550px; background: var(--card); box-shadow: 0 30px 60px rgba(0,0,0,0.9); z-index: 100; text-align: center; max-height: 92dvh; overflow-y: auto; backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.05); scrollbar-width: none; box-sizing: border-box; }
+        .setup-container::-webkit-scrollbar { display: none; }
+        h2 { margin: 0 0 1.5rem 0; color: var(--accent); font-size: 2rem; font-weight: 800; }
+        .section-title { font-size: 0.7rem; text-transform: uppercase; color: var(--accent); letter-spacing: 2px; margin: 1.5rem 0 0.8rem 0; text-align: left; border-bottom: 1px solid rgba(56, 189, 248, 0.2); padding-bottom: 0.4rem; font-weight: 900; }
+        .settings-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.2rem; text-align: left; }
+        .full-width { grid-column: 1 / -1; }
+        .input-group { display: flex; flex-direction: column; gap: 0.4rem; transition: opacity 0.3s ease; }
+        label { font-size: 0.65rem; color: #94a3b8; font-weight: 800; text-transform: uppercase; }
+        input, select { background: var(--input-bg); border: 2px solid #334155; padding: 0.9rem; border-radius: 1rem; color: white; font-size: 1rem; outline: none; transition: all 0.2s; width: 100%; box-sizing: border-box; }
+        input:focus { border-color: var(--accent); box-shadow: 0 0 15px rgba(56, 189, 248, 0.2); }
+        .checkbox-group { display: flex; flex-wrap: wrap; justify-content: space-around; background: var(--input-bg); padding: 0.9rem; border-radius: 1rem; border: 2px solid #334155; gap: 10px; }
+        .checkbox-item { display: flex; align-items: center; gap: 0.6rem; font-size: 0.85rem; font-weight: 700; cursor: pointer; }
+        .checkbox-item input { width: 1.2rem; height: 1.2rem; cursor: pointer; appearance: checkbox; -webkit-appearance: checkbox; }
+        .start-btn { width: 100%; background: var(--accent); color: var(--bg); border: none; padding: 1.4rem; border-radius: 1.5rem; font-weight: 900; font-size: 1.3rem; cursor: pointer; margin-top: 2rem; transition: all 0.3s; text-transform: uppercase; }
+
+        .toy-panel { background: var(--input-bg); border: 2px solid #334155; border-radius: 1rem; padding: 1rem 1.2rem; display: flex; flex-direction: column; gap: 0.8rem; }
+        .toy-row { display: flex; align-items: center; gap: 0.8rem; }
+        .toy-status-dot { width: 10px; height: 10px; border-radius: 50%; background: #475569; flex-shrink: 0; transition: background 0.3s, box-shadow 0.3s; }
+        .toy-status-dot.scanning { background: #f59e0b; box-shadow: 0 0 8px #f59e0b; animation: pulse-dot 1s infinite; }
+        .toy-status-dot.connected { background: var(--green); box-shadow: 0 0 8px var(--green); animation: none; }
+        .toy-status-dot.error { background: var(--red); animation: none; }
+        @keyframes pulse-dot { 0%,100% { opacity:1 } 50% { opacity:0.3 } }
+        .toy-status-label { font-size: 0.8rem; font-weight: 700; color: #94a3b8; flex: 1; }
+        .toy-connect-btn { background: #1e293b; border: 1px solid #475569; color: #cbd5e1; padding: 0.5rem 1rem; border-radius: 0.7rem; font-size: 0.75rem; font-weight: 800; cursor: pointer; white-space: nowrap; transition: all 0.2s; text-transform: uppercase; letter-spacing: 1px; }
+        .toy-connect-btn:hover { border-color: var(--accent); color: var(--accent); }
+        .toy-connect-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+        .toy-device-name { font-size: 0.75rem; color: var(--green); font-weight: 700; }
+        .intensity-row { display: flex; flex-direction: column; gap: 0.4rem; }
+        .intensity-row label { font-size: 0.6rem; text-transform: uppercase; letter-spacing: 2px; color: #94a3b8; font-weight: 900; }
+        .intensity-slider-wrap { display: flex; align-items: center; gap: 0.8rem; }
+        input[type=range] { -webkit-appearance: none; appearance: none; width: 100%; height: 6px; border-radius: 3px; background: #334155; border: none; padding: 0; cursor: pointer; }
+        input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 20px; height: 20px; border-radius: 50%; background: var(--accent); cursor: pointer; }
+        .intensity-val { font-size: 0.85rem; font-weight: 900; color: var(--white); min-width: 2.5rem; text-align: right; }
+        .toy-hint { font-size: 0.65rem; color: #64748b; line-height: 1.5; }
+        .toy-hint a { color: #38bdf8; text-decoration: none; }
+        
+        #game-ui { display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100dvh; z-index: 10; box-sizing: border-box; }
+        
+        .btn-close { position: absolute; top: calc(env(safe-area-inset-top, 25px) + 15px); left: max(env(safe-area-inset-left, 0px), 8px); background: rgba(0,0,0,0.15); border: none; color: rgba(255,255,255,0.7); width: 3.2rem; height: 3.2rem; border-radius: 50%; display: flex; justify-content: center; align-items: center; cursor: pointer; z-index: 200; backdrop-filter: blur(5px); transition: background-color 0.2s; }
+        .btn-close:active { background: rgba(0,0,0,0.4); color: #fff; }
+
+        .btn-edge { position: absolute; top: calc(50% - 2.2rem); left: max(env(safe-area-inset-left, 0px), 8px); transform: translateY(-50%); background: rgba(239, 68, 68, 0.05); border: 1px solid rgba(239, 68, 68, 0.1); color: rgba(239, 68, 68, 0.4); width: 3.5rem; height: 3.5rem; border-radius: 50%; display: flex; justify-content: center; align-items: center; cursor: pointer; z-index: 200; backdrop-filter: blur(5px); transition: all 0.2s; -webkit-tap-highlight-color: transparent; }
+        .btn-edge:active { transform: translateY(-50%) scale(0.85); background: rgba(239, 68, 68, 0.3); color: #ffffff; border-color: rgba(239, 68, 68, 0.5); }
+
+        .btn-skip { position: absolute; top: calc(50% + 2.2rem); left: max(env(safe-area-inset-left, 0px), 8px); transform: translateY(-50%); background: rgba(0, 0, 0, 0.08); border: 1px solid rgba(255, 255, 255, 0.03); color: rgba(255, 255, 255, 0.3); width: 3.5rem; height: 3.5rem; border-radius: 50%; display: flex; justify-content: center; align-items: center; cursor: pointer; z-index: 200; backdrop-filter: blur(5px); transition: all 0.2s; -webkit-tap-highlight-color: transparent; }
+        .btn-skip:active { transform: translateY(-50%) scale(0.85); background: rgba(0, 0, 0, 0.3); color: rgba(255, 255, 255, 0.9); border-color: rgba(255, 255, 255, 0.1); }
+
+        .toy-ingame-dot { position: absolute; top: calc(env(safe-area-inset-top, 25px) + 18px); right: max(env(safe-area-inset-right, 0px), 16px); width: 10px; height: 10px; border-radius: 50%; background: #475569; z-index: 200; transition: background 0.2s, box-shadow 0.2s; }
+        .toy-ingame-dot.vib-on { background: var(--green); box-shadow: 0 0 10px var(--green); }
+        .toy-ingame-dot.vib-off { background: #ef4444; box-shadow: none; }
+
+        .media-background { position: absolute; top: 0; left: 0; width: 100vw; height: 100dvh; display: flex; justify-content: center; align-items: center; z-index: 1; background: transparent; overflow: hidden; }
+        .media-buffer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; transition: opacity 0.4s ease; z-index: 1; }
+        .media-buffer.active { opacity: 1; z-index: 2; }
+        .media-layer { width: 100%; height: 100%; object-fit: contain; object-position: center; border: none; outline: none; background: transparent; position: absolute; top: 0; left: 0; display: none; transform: scale(1.01); }
+        
+        .top-display { position: absolute; top: env(safe-area-inset-top, 25px); left: 0; width: 100%; z-index: 50; text-align: center; text-shadow: 0 4px 20px rgba(0,0,0,0.9); pointer-events: none; }
+        
+        .status-text { font-size: clamp(3rem, 12vw, 5.5rem); font-weight: 900; text-transform: uppercase; letter-spacing: -2px; margin: 0; line-height: 1.1; transition: font-size 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        .status-text.countdown { font-size: clamp(4.5rem, 18vw, 8.25rem); }
+        .status-text.adaptive { font-size: clamp(2.5rem, 9vw, 4rem); letter-spacing: -1px; line-height: 1.1; }
+
+        .bottom-bar { position: absolute; bottom: calc(env(safe-area-inset-bottom, 15px) + 20px); left: 50%; transform: translateX(-50%); width: 90%; max-width: 650px; z-index: 50; display: flex; flex-direction: column; align-items: center; }
+        .progress-container { width: 100%; height: 12px; background: rgba(255,255,255,0.3); border-radius: 20px; position: relative; overflow: visible; box-shadow: 0 2px 10px rgba(0,0,0,0.3); margin-bottom: 8px; }
+        #progress-bar { width: 0%; height: 100%; background: var(--white); border-radius: 20px; transition: width 0.1s linear; }
+        .edge-counter-text { font-size: 0.55rem; font-weight: 300; color: rgba(255,255,255,0.4); letter-spacing: 2px; text-transform: uppercase; margin: 0; line-height: 1; text-shadow: 0 2px 4px rgba(0,0,0,0.5); }
+        
+        /* Die neue elegante und kleine Taste */
+        .post-win-btn {
+            display: none;
+            position: absolute;
+            bottom: calc(env(safe-area-inset-bottom, 15px) + 75px);
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            color: rgba(255, 255, 255, 0.7);
+            padding: 0.5rem 1.4rem;
+            border-radius: 1.5rem;
+            font-size: 0.7rem;
+            font-weight: 800;
+            letter-spacing: 1px;
+            cursor: pointer;
+            z-index: 200;
+            backdrop-filter: blur(8px);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            text-transform: uppercase;
+        }
+        .post-win-btn:active { transform: translateX(-50%) scale(0.95); }
+        .post-win-btn.is-active {
+            background: rgba(16, 185, 129, 0.15);
+            border-color: rgba(16, 185, 129, 0.5);
+            color: #10b981;
+            box-shadow: 0 0 20px rgba(16, 185, 129, 0.2);
+        }
+
+        body.green-active { background-color: var(--green); }
+        body.red-active { background-color: var(--red); }
+        .pulse { animation: pulse-anim 0.4s infinite alternate; }
+        @keyframes pulse-anim { from { transform: scale(1); } to { transform: scale(1.08); } }
+    </style>
+</head>
+<body class="setup-mode">
+
+    <audio id="sfx-green" src="gruen.mp3" preload="auto"></audio>
+    <audio id="sfx-red" src="rot.mp3" preload="auto"></audio>
+    <audio id="sfx-space" src="space.mp3" loop preload="auto"></audio>
+
+    <div class="setup-container" id="setup-ui">
+        <h2>Einstellungen</h2>
+        
+        <div class="section-title">Inhalte Filter</div>
+        <div class="settings-grid">
+            <div class="input-group full-width">
+                <label>Quellen</label>
+                <input type="text" id="t-sources" value="" placeholder="z.B. memes, pics">
+            </div>
+            <div class="input-group full-width">
+                <label>Medientypen</label>
+                <div class="checkbox-group">
+                    <label class="checkbox-item"><input type="checkbox" id="f-img" checked> Bilder</label>
+                    <label class="checkbox-item"><input type="checkbox" id="f-vid" checked> Videos</label>
+                    <label class="checkbox-item"><input type="checkbox" id="f-gif" checked> GIFs</label>
+                </div>
+            </div>
+            <div class="input-group">
+                <label>Sortierung</label>
+                <select id="t-sort">
+                    <option value="hot" selected>Beliebt</option>
+                    <option value="random">Zufall</option>
+                    <option value="new">Neu</option>
+                    <option value="top">Top</option>
+                </select>
+            </div>
+            <div class="input-group">
+                <label>Wechsel</label>
+                <input type="number" id="t-img-dur" value="40" min="1">
+            </div>
+        </div>
+
+        <div class="section-title">Gerät (Satisfyer)</div>
+        <div class="settings-grid">
+            <div class="input-group full-width">
+                <div class="toy-panel">
+                    <div class="toy-row">
+                        <div class="toy-status-dot" id="toy-dot"></div>
+                        <span class="toy-status-label" id="toy-status-label">Nicht verbunden</span>
+                        <button class="toy-connect-btn" id="toy-connect-btn" onclick="connectToy()">Verbinden</button>
+                    </div>
+                    <div id="toy-device-name-row" style="display:none">
+                        <span class="toy-device-name" id="toy-device-name">—</span>
+                    </div>
+                    <div class="intensity-row">
+                        <label>Vibrations Intensität</label>
+                        <div class="intensity-slider-wrap">
+                            <input type="range" id="toy-intensity" min="0" max="100" value="80" oninput="document.getElementById('toy-intensity-val').innerText = this.value + '%'">
+                            <span class="intensity-val" id="toy-intensity-val">80%</span>
+                        </div>
+                    </div>
+                    <div class="toy-hint">
+                        Benötigt <a href="https://intiface.com/central/" target="_blank">Intiface Central</a> (kostenlos Desktop).<br>
+                        1. Intiface starten → Server starten → Gerät koppeln<br>
+                        2. Dann hier auf <strong>Verbinden</strong> klicken
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section-title">Spielregeln</div>
+        <div class="settings-grid">
+            <div class="input-group full-width">
+                <label>Gesamtzeit</label>
+                <input type="number" id="t-total-min" value="12" step="0.5" min="0.1">
+            </div>
+            
+            <div class="input-group full-width">
+                <label>Audio Soundeffekte</label>
+                <div class="checkbox-group" style="padding: 0.8rem;">
+                    <label class="checkbox-item"><input type="checkbox" id="f-audio"> Sounds aktivieren</label>
+                </div>
+            </div>
+
+            <div class="input-group"><label>Grün Min</label><input type="number" id="t-gmin" value="4"></div>
+            <div class="input-group"><label>Grün Max</label><input type="number" id="t-gmax" value="25"></div>
+            <div class="input-group"><label>Rot Min</label><input type="number" id="t-rmin" value="4"></div>
+            <div class="input-group"><label>Rot Max</label><input type="number" id="t-rmax" value="15"></div>
+            
+            <div class="input-group full-width">
+                <label>Lange Pause</label>
+                <div class="checkbox-group" style="padding: 0.8rem;">
+                    <label class="checkbox-item"><input type="checkbox" id="f-long-break" checked> Aktiviert</label>
+                </div>
+            </div>
+            <div class="input-group full-width">
+                <label>Pausen Dauer</label>
+                <input type="number" id="t-long-break-dur" value="25" min="5">
+            </div>
+            
+            <div class="input-group full-width">
+                <label>Dynamic Intervals</label>
+                <div class="checkbox-group" style="padding: 0.8rem;">
+                    <label class="checkbox-item"><input type="checkbox" id="f-tension-mode" checked> Aktiviert</label>
+                </div>
+            </div>
+            
+            <div class="input-group full-width">
+                <label>Hard Mode</label>
+                <div class="checkbox-group" style="padding: 0.8rem;">
+                    <label class="checkbox-item"><input type="checkbox" id="f-hard-mode"> Hard Mode</label>
+                </div>
+            </div>
+        </div>
+
+        <button class="start-btn" onclick="bootGame()">SPIEL STARTEN</button>
+    </div>
+
+    <div id="game-ui">
+        <button class="btn-close" onclick="endGame()" aria-label="Beenden">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
+        
+        <button class="btn-edge" onclick="triggerEdge(event)" aria-label="Notbremse">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+        </button>
+
+        <button class="btn-skip" onclick="skipMedia(event)" aria-label="Naechstes Medium">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+        </button>
+
+        <div class="toy-ingame-dot" id="toy-ingame-dot" title="Toy Status"></div>
+
+        <div class="media-background">
+            <div id="buffer-1" class="media-buffer">
+                <img id="img-1" class="media-layer" src="" alt="">
+                <video id="vid-1" class="media-layer" autoplay muted loop playsinline></video>
+            </div>
+            <div id="buffer-2" class="media-buffer">
+                <img id="img-2" class="media-layer" src="" alt="">
+                <video id="vid-2" class="media-layer" autoplay muted loop playsinline></video>
+            </div>
+            <div id="buffer-3" class="media-buffer">
+                <img id="img-3" class="media-layer" src="" alt="">
+                <video id="vid-3" class="media-layer" autoplay muted loop playsinline></video>
+            </div>
+        </div>
+        
+        <div class="top-display"><h1 id="status-label" class="status-text"></h1></div>
+        
+        <button id="post-win-vibe" class="post-win-btn" onclick="toggleManualVibe(event)">VIBE AN</button>
+
+        <div class="bottom-bar">
+            <div class="progress-container"><div id="progress-bar"></div></div>
+            <div id="edge-display" class="edge-counter-text">EDGES: 0</div>
+        </div>
+    </div>
+
+    <script>
+        let bpClient = null;
+        let toyDevice = null;
+        let toyConnected = false;
+        let isManualVibeOn = false;
+
+        function setToyDotState(state) {
+            const dot = document.getElementById('toy-dot');
+            const lbl = document.getElementById('toy-status-label');
+            dot.className = 'toy-status-dot';
+            if (state === 'scanning') { dot.classList.add('scanning'); lbl.innerText = 'Suche Gerät…'; }
+            else if (state === 'connected') { dot.classList.add('connected'); lbl.innerText = 'Verbunden'; }
+            else if (state === 'error') { dot.classList.add('error'); lbl.innerText = 'Verbindungsfehler'; }
+            else { lbl.innerText = 'Nicht verbunden'; }
+        }
+
+        function updateIngameDot(on) {
+            const dot = document.getElementById('toy-ingame-dot');
+            if (!toyDevice) { dot.className = 'toy-ingame-dot'; return; }
+            dot.className = 'toy-ingame-dot ' + (on ? 'vib-on' : 'vib-off');
+        }
+
+        async function connectToy() {
+            const btn = document.getElementById('toy-connect-btn');
+            btn.disabled = true;
+
+            if (bpClient && bpClient.connected) {
+                try { await toyStop(); await bpClient.disconnect(); } catch(e) {}
+                bpClient = null; toyDevice = null; toyConnected = false;
+                setToyDotState('idle');
+                document.getElementById('toy-device-name-row').style.display = 'none';
+                btn.innerText = 'Verbinden';
+                btn.disabled = false;
+                return;
+            }
+
+            if (typeof Buttplug === 'undefined') {
+                alert('Bibliothek konnte nicht geladen werden.');
+                btn.disabled = false;
+                return;
+            }
+
+            setToyDotState('scanning');
+            btn.innerText = 'Verbinde…';
+
+            try {
+                bpClient = new Buttplug.ButtplugClient("RLGL");
+
+                bpClient.addListener("deviceadded", (device) => {
+                    toyDevice = device;
+                    toyConnected = true;
+                    setToyDotState('connected');
+                    document.getElementById('toy-device-name').innerText = device.name;
+                    document.getElementById('toy-device-name-row').style.display = 'block';
+                    btn.innerText = 'Trennen';
+                    btn.disabled = false;
+                });
+
+                bpClient.addListener("deviceremoved", () => {
+                    toyDevice = null;
+                    toyConnected = false;
+                    setToyDotState('idle');
+                    document.getElementById('toy-device-name-row').style.display = 'none';
+                    btn.innerText = 'Verbinden';
+                });
+
+                bpClient.addListener("disconnect", () => {
+                    toyDevice = null;
+                    toyConnected = false;
+                    setToyDotState('idle');
+                    btn.innerText = 'Verbinden';
+                    btn.disabled = false;
+                });
+
+                const connector = new Buttplug.ButtplugWebsocketClientConnector("ws://127.0.0.1:12345");
+                await bpClient.connect(connector);
+                await bpClient.startScanning();
+
+                setTimeout(() => {
+                    if (!toyDevice) {
+                        setToyDotState('scanning');
+                        document.getElementById('toy-status-label').innerText = 'Warte auf Gerät… (Taste 4s drücken)';
+                        btn.innerText = 'Abbrechen';
+                        btn.disabled = false;
+                    }
+                }, 3000);
+
+            } catch(e) {
+                setToyDotState('error');
+                document.getElementById('toy-status-label').innerText = 'Intiface Central läuft nicht';
+                btn.innerText = 'Erneut versuchen';
+                btn.disabled = false;
+            }
+        }
+
+        async function toyVibrate(intensity) {
+            if (!toyDevice) return;
+            try {
+                await toyDevice.vibrate(intensity);
+                updateIngameDot(intensity > 0);
+            } catch(e) {}
+        }
+
+        async function toyStop() {
+            if (!toyDevice) return;
+            try {
+                await toyDevice.stop();
+                updateIngameDot(false);
+            } catch(e) {}
+        }
+
+        function toggleManualVibe(event) {
+            if (event) event.stopPropagation();
+            const btn = document.getElementById('post-win-vibe');
+            
+            if (isManualVibeOn) {
+                toyStop();
+                isManualVibeOn = false;
+                btn.innerText = "VIBE AN";
+                btn.classList.remove('is-active');
+            } else {
+                toyVibrate(cfg.toyIntensity); 
+                isManualVibeOn = true;
+                btn.innerText = "VIBE AUS";
+                btn.classList.add('is-active');
+            }
+        }
+
+        let cfg = {}; let isLive = false; let startT; let clock; let countdownInt; let mediaInt; let animFrame;
+        let redditPosts = []; 
+        let edgeCount = 0; 
+        let isPostGame = false; 
+        let currentTension = 0; 
+        let tensionDecayTimer;
+        let currentIndex = 0;
+        let bufferState = [
+            { id: 1, reqIdx: -1, isReady: false },
+            { id: 2, reqIdx: -1, isReady: false },
+            { id: 3, reqIdx: -1, isReady: false }
+        ];
+
+        const aGreen = document.getElementById('sfx-green');
+        const aRed = document.getElementById('sfx-red');
+        const aSpace = document.getElementById('sfx-space');
+
+        aGreen.onended = () => { if (isLive && cfg.audioActive) aSpace.play().catch(()=>{}); };
+        aRed.onended = () => { if (isLive && cfg.audioActive) aSpace.play().catch(()=>{}); };
+
+        window.addEventListener('pagehide', () => {
+            toyStop();
+            if (aGreen) aGreen.pause();
+            if (aRed) aRed.pause();
+            if (aSpace) aSpace.pause();
+            for (let i = 1; i <= 3; i++) {
+                let v = document.getElementById('vid-' + i);
+                if (v) v.pause();
+            }
+        });
+
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden && isLive) toyStop();
+        });
+
+        function endGame() {
+            toyStop();
+            location.reload();
+        }
+
+        function startTensionDecay() {
+            clearInterval(tensionDecayTimer);
+            tensionDecayTimer = setInterval(() => {
+                if (isLive && currentTension > 0) {
+                    currentTension = Math.max(0, currentTension - 1);
+                }
+            }, 4000); 
+        }
+
+        function getHDUrl(post) {
+            if (post.preview?.images?.[0]?.source?.url) {
+                return post.preview.images[0].source.url.replace(/&amp;/g, '&');
+            }
+            return post.url;
+        }
+
+        async function fetchRedditData(url) {
+            try { const r = await fetch(url); if (r.ok) return await r.json(); } catch (e) {}
+            try { const pr = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(url)}`); const res = await pr.json(); if (res.contents) return JSON.parse(res.contents); } catch (e) {}
+            try { const pr2 = await fetch(`https://corsproxy.io/?${encodeURIComponent(url)}`); if (pr2.ok) return await pr2.json(); } catch (e) {}
+            return null;
+        }
+
+        async function fetchSources() {
+            const sourceStr = document.getElementById('t-sources').value || "memes";
+            const sort = document.getElementById('t-sort').value;
+            const sourceList = sourceStr.split(',').map(s => s.trim()).filter(s => s !== "");
+            const fImg = document.getElementById('f-img').checked;
+            const fVid = document.getElementById('f-vid').checked;
+            const fGif = document.getElementById('f-gif').checked;
+            
+            const fetchSort = sort === 'random' ? 'hot' : sort;
+            const timeParam = sort === 'top' ? '&t=all' : '';
+            
+            const buckets = await Promise.all(sourceList.map(async (source) => {
+                let url = source.toLowerCase().startsWith('u/') 
+                    ? `https://www.reddit.com/user/${source.substring(2)}/submitted.json?sort=${fetchSort}&limit=50${timeParam}`
+                    : `https://www.reddit.com/r/${source}/${fetchSort}.json?limit=50${timeParam}`;
+                try { 
+                    const data = await fetchRedditData(url);
+                    if (!data || !data.data || !data.data.children) return [];
+                    return data.data.children.map(c => c.data).filter(p => {
+                        const isG = p.url.endsWith('.gif') || p.preview?.reddit_video_preview;
+                        const isV = p.is_video || p.post_hint === 'hosted:video';
+                        const isI = p.post_hint === 'image' || p.url.match(/\.(jpg|jpeg|png)$/i);
+                        if (fVid && isV) return true;
+                        if (fImg && isI && !isG) return true;
+                        if (fGif && isG) return true;
+                        return false;
+                    });
+                } catch(e) { return []; }
+            }));
+
+            let combined = [];
+            buckets.forEach(b => { combined = combined.concat(b); });
+            let unique = [...new Map(combined.map(item => [item.id, item])).values()];
+            for (let i = unique.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [unique[i], unique[j]] = [unique[j], unique[i]];
+            }
+            redditPosts = unique;
+        }
+
+        function skipMedia(event) {
+            if (event) event.stopPropagation(); 
+            if ((!isLive && !isPostGame) || redditPosts.length === 0) return;
+            clearTimeout(mediaInt);
+            currentIndex++;
+            manageBuffers();
+        }
+
+        function triggerEdge(event) {
+            if (event) event.stopPropagation(); 
+            if (!isLive) return;
+            if (document.body.classList.contains('red-active')) return;
+
+            edgeCount++;
+            document.getElementById('edge-display').innerText = "EDGES: " + edgeCount;
+            
+            if (cfg.tensionModeActive) {
+                currentTension = Math.min(100, currentTension + 25);
+            }
+
+            toyStop();
+            clearTimeout(clock);
+            clearInterval(countdownInt);
+            executeRedPhase(cfg.longBreakDur, true);
+        }
+
+        function loadPostIntoBuffer(idx) {
+            if (redditPosts.length === 0) return;
+            let safeIdx = idx % redditPosts.length;
+            let bId = (idx % 3) + 1;
+            let state = bufferState[bId - 1];
+            if (state.reqIdx === idx) return;
+            state.reqIdx = idx;
+            state.isReady = false;
+            const img = document.getElementById('img-' + bId);
+            const vid = document.getElementById('vid-' + bId);
+            const post = redditPosts[safeIdx];
+            img.style.display = 'none'; vid.style.display = 'none';
+            vid.pause(); vid.removeAttribute('src'); img.removeAttribute('src'); vid.load();
+            const handleReady = () => { if (state.reqIdx === idx) { state.isReady = true; checkDisplay(); } };
+            const handleErr = () => { if (state.reqIdx === idx) { state.isReady = true; if (currentIndex === idx) { currentIndex++; manageBuffers(); } } };
+            img.onload = handleReady; img.onerror = handleErr;
+            vid.onloadeddata = handleReady; vid.onerror = handleErr;
+            if (post.is_video && post.media?.reddit_video) {
+                vid.src = post.media.reddit_video.fallback_url; vid.style.display = 'block'; vid.load();
+            } else if (post.preview?.reddit_video_preview) {
+                vid.src = post.preview.reddit_video_preview.fallback_url; vid.style.display = 'block'; vid.load();
+            } else {
+                img.src = getHDUrl(post); img.style.display = 'block';
+            }
+        }
+
+        function checkDisplay() {
+            if (redditPosts.length === 0) return;
+            let bId = (currentIndex % 3) + 1;
+            let state = bufferState[bId - 1];
+            if (state.isReady && state.reqIdx === currentIndex) {
+                document.querySelectorAll('.media-buffer').forEach(b => b.classList.remove('active'));
+                document.getElementById('buffer-' + bId).classList.add('active');
+                let vid = document.getElementById('vid-' + bId);
+                if (vid.style.display === 'block') { let p = vid.play(); if(p !== undefined) p.catch(()=>{}); }
+                for (let i = 1; i <= 3; i++) { if (i !== bId) document.getElementById('vid-' + i).pause(); }
+                clearTimeout(mediaInt);
+                if (!isPostGame) {
+                    mediaInt = setTimeout(() => { currentIndex++; manageBuffers(); }, cfg.imgDur * 1000);
+                }
+            }
+        }
+
+        function manageBuffers() {
+            if (redditPosts.length === 0) return;
+            loadPostIntoBuffer(currentIndex);
+            loadPostIntoBuffer(currentIndex + 1);
+            loadPostIntoBuffer(currentIndex + 2);
+            checkDisplay();
+        }
+
+        async function bootGame() {
+            edgeCount = 0;
+            document.getElementById('edge-display').innerText = "EDGES: 0";
+            isPostGame = false; currentTension = 0; currentIndex = 0;
+            bufferState.forEach(b => { b.reqIdx = -1; b.isReady = false; });
+
+            const audioWantsActive = document.getElementById('f-audio').checked;
+            if (audioWantsActive) {
+                [aGreen, aRed, aSpace].forEach(a => { a.play().catch(()=>{}); a.pause(); a.currentTime = 0; });
+            }
+
+            const btn = document.querySelector('.start-btn'); 
+            const originalText = btn.innerText;
+            btn.innerText = "LADE STREAMS..."; btn.disabled = true;
+            
+            await fetchSources();
+            
+            if(redditPosts.length === 0) { 
+                alert("Keine Medien gefunden"); 
+                btn.innerText = originalText; btn.disabled = false; return; 
+            }
+            
+            const totalSec = parseFloat(document.getElementById('t-total-min').value) * 60;
+            
+            cfg = {
+                total: totalSec,
+                imgDur: parseFloat(document.getElementById('t-img-dur').value),
+                audioActive: audioWantsActive,
+                gMin: parseFloat(document.getElementById('t-gmin').value), gMax: parseFloat(document.getElementById('t-gmax').value),
+                rMin: parseFloat(document.getElementById('t-rmin').value), rMax: parseFloat(document.getElementById('t-rmax').value),
+                tensionModeActive: document.getElementById('f-tension-mode').checked,
+                longBreakActive: document.getElementById('f-long-break').checked,
+                longBreakDur: parseFloat(document.getElementById('t-long-break-dur').value),
+                hardModeActive: document.getElementById('f-hard-mode').checked,
+                toyIntensity: parseFloat(document.getElementById('toy-intensity').value) / 100
+            };
+            
+            document.getElementById('setup-ui').style.display = 'none';
+            document.getElementById('game-ui').style.display = 'block';
+            
+            isLive = true; startT = Date.now();
+            startTensionDecay();
+            engine(); 
+            cycle('green'); 
+            manageBuffers();
+        }
+
+        function engine() {
+            if (!isLive) return;
+            let elapsed = (Date.now() - startT) / 1000;
+            document.getElementById('progress-bar').style.width = Math.min((elapsed/cfg.total)*100, 100) + "%";
+            if (elapsed >= cfg.total) { finish(); } 
+            else { animFrame = requestAnimationFrame(engine); }
+        }
+
+        function runCountdown(duration) {
+            clearInterval(countdownInt); 
+            const endT = Date.now() + (duration * 1000); 
+            const label = document.getElementById('status-label');
+            const update = () => { 
+                let left = (endT - Date.now()) / 1000; 
+                if (left > 0) { label.innerHTML = Math.ceil(left); } 
+                else { label.innerHTML = ""; clearInterval(countdownInt); } 
+            };
+            update();
+            countdownInt = setInterval(update, 100);
+        }
+
+        function executeRedPhase(dur, isForcedEdge = false) {
+            clearInterval(countdownInt); 
+            document.body.className = 'red-active'; 
+            const label = document.getElementById('status-label');
+            label.classList.remove('countdown');
+
+            if (isForcedEdge) { label.innerHTML = "DONT YOU <br> DARE CUM"; label.classList.add('adaptive'); } 
+            else { label.innerHTML = "HANDS<br>OFF"; label.classList.remove('adaptive'); }
+            
+            if (isForcedEdge) label.classList.add('pulse'); 
+            
+            if (cfg.audioActive) {
+                aSpace.pause(); aSpace.currentTime = 0;
+                aGreen.pause(); aGreen.currentTime = 0; 
+                aRed.currentTime = 0; aRed.play().catch(()=>{});
+            }
+
+            toyStop();
+            clock = setTimeout(() => cycle('green'), dur * 1000);
+        }
+
+        function cycle(type) {
+            if (!isLive) return;
+            let dur;
+
+            if (type === 'red' && cfg.longBreakActive && Math.random() < 0.10) {
+                dur = cfg.longBreakDur; 
+            } else {
+                if (cfg.tensionModeActive) {
+                    let r = Math.random(); 
+                    if (currentTension <= 20) { 
+                        if (type === 'green') { dur = cfg.gMin + (1 - Math.pow(r, 5.0)) * (cfg.gMax - cfg.gMin); }
+                        else { dur = cfg.rMin + Math.pow(r, 5.0) * (cfg.rMax - cfg.rMin); }
+                    } else if (currentTension >= 75) { 
+                        if (type === 'green') { dur = cfg.gMin + Math.pow(r, 3.0) * (cfg.gMax - cfg.gMin); }
+                        else { dur = cfg.rMin + (1 - Math.pow(r, 3.0)) * (cfg.rMax - cfg.rMin); }
+                    } else { 
+                        if (type === 'green') { dur = cfg.gMin + r * (cfg.gMax - cfg.gMin); }
+                        else { dur = cfg.rMin + r * (cfg.rMax - cfg.rMin); }
+                    }
+                } else {
+                    if (type === 'green') { dur = cfg.gMin + Math.random() * (cfg.gMax - cfg.gMin); }
+                    else { dur = cfg.rMin + Math.random() * (cfg.rMax - cfg.rMin); }
+                }
+            }
+
+            dur = Math.max(dur, 0.4);
+            const label = document.getElementById('status-label');
+            
+            if (type === 'green') {
+                document.body.className = 'green-active'; 
+                label.classList.remove('pulse', 'adaptive');
+                label.classList.add('countdown');
+
+                if (cfg.audioActive) {
+                    aSpace.pause(); aSpace.currentTime = 0; 
+                    aRed.pause(); aRed.currentTime = 0;     
+                    aGreen.currentTime = 0; aGreen.play().catch(()=>{});
+                }
+
+                toyVibrate(cfg.toyIntensity);
+
+                runCountdown(dur);
+                clock = setTimeout(() => cycle('red'), dur * 1000);
+            } else {
+                executeRedPhase(dur);
+            }
+        }
+
+        function finish() {
+            isLive = false; 
+            cancelAnimationFrame(animFrame); 
+            clearTimeout(clock); clearTimeout(mediaInt); clearInterval(countdownInt); clearInterval(tensionDecayTimer);
+            
+            toyStop();
+            
+            if (cfg && cfg.audioActive) { aSpace.pause(); aGreen.pause(); aRed.pause(); }
+            
+            document.querySelector('.btn-edge').style.display = 'none';
+            document.querySelector('.btn-skip').style.display = 'none';
+            document.querySelector('.bottom-bar').style.display = 'none';
+            
+            for (let i = 1; i <= 3; i++) {
+                document.getElementById('buffer-' + i).classList.remove('active');
+                document.getElementById('vid-' + i).pause();
+            }
+
+            document.body.className = ''; 
+            document.body.style.backgroundColor = "#000000"; 
+            
+            const label = document.getElementById('status-label');
+            label.innerHTML = ""; label.classList.remove('pulse', 'countdown');
+
+            let currentWinChance = 0;
+            let minEdgesRequired = cfg.hardModeActive ? 5 : 3;
+            if (edgeCount >= minEdgesRequired) {
+                let bonus = cfg.hardModeActive ? 0.03 : 0.06;
+                let cap = cfg.hardModeActive ? 0.60 : 0.70;
+                currentWinChance = 0.10 + (edgeCount * bonus);
+                if (currentWinChance > cap) currentWinChance = cap;
+            }
+
+            setTimeout(() => {
+                let ticks = 0;
+                const maxTicks = 30; let currentSpeed = 35; const slowdownFactor = 1.16; 
+                const isWin = Math.random() < currentWinChance;
+                const isRuin = isWin && (Math.random() < 0.10); 
+                const spinWinText = "BE A GOOD BOY<br>AND CUM";
+                const spinLoseText = "AGAIN<br>LOSER";
+                const finalRuinText = "BE A GOOD BOY<br>AND RUIN IT<br>FOR ME";
+                const finalOutcome = isWin ? (isRuin ? finalRuinText : spinWinText) : spinLoseText; 
+                label.classList.add('adaptive');
+
+                function spinWheel() {
+                    label.innerHTML = (ticks % 2 === 0) ? spinWinText : spinLoseText;
+                    label.style.color = (ticks % 2 === 0) ? "var(--green)" : "var(--red)";
+                    ticks++;
+                    if (ticks < maxTicks) { currentSpeed *= slowdownFactor; setTimeout(spinWheel, currentSpeed); } 
+                    else {
+                        label.innerHTML = finalOutcome; label.style.color = "var(--white)"; 
+                        if (isWin) {
+                            document.body.style.backgroundColor = "var(--green)";
+                            
+                            toyVibrate(cfg.toyIntensity);
+                            setTimeout(() => toyStop(), 2500);
+
+                            isPostGame = true;
+                            label.classList.remove('adaptive');
+                            label.style.fontSize = "clamp(2.5rem, 9vw, 4rem)";
+                            label.style.letterSpacing = "1px"; label.style.opacity = "1"; 
+                            label.style.textShadow = "0px 4px 15px rgba(0,0,0,0.9), 0px 0px 8px rgba(0,0,0,0.9)"; 
+                            label.style.lineHeight = "1.2";
+                            label.innerHTML = finalOutcome.replace(/<br>/g, ' '); 
+                            
+                            document.querySelector('.btn-skip').style.display = 'flex';
+                            document.getElementById('post-win-vibe').style.display = 'block';
+                            
+                            checkDisplay();
+                        } else {
+                            document.body.style.backgroundColor = "var(--red)"; 
+                            setTimeout(() => { startSeamlessRestart(); }, 5000); 
+                        }
+                    }
+                }
+                spinWheel();
+            }, 1500); 
+        }
+
+        function startSeamlessRestart() {
+            isPostGame = false; currentTension = 0; 
+            
+            const vibeBtn = document.getElementById('post-win-vibe');
+            vibeBtn.style.display = 'none';
+            vibeBtn.classList.remove('is-active');
+            vibeBtn.innerText = "VIBE AN";
+            isManualVibeOn = false;
+
+            document.querySelector('.btn-edge').style.display = 'flex';
+            document.querySelector('.btn-skip').style.display = 'flex';
+            document.querySelector('.bottom-bar').style.display = 'flex';
+            document.body.style.backgroundColor = ""; 
+            const label = document.getElementById('status-label');
+            label.classList.remove('adaptive', 'countdown'); 
+            label.style.fontSize = ""; label.style.letterSpacing = ""; label.style.opacity = "";
+            label.style.textShadow = ""; label.style.lineHeight = ""; label.innerHTML = "";
+            startT = Date.now(); isLive = true;
+            document.getElementById('progress-bar').style.width = "0%";
+            startTensionDecay(); engine(); cycle('green');
+            currentIndex++; manageBuffers();
+        }
+    </script>
+</body>
+</html>
