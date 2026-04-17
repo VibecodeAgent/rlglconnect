@@ -4,7 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no">
     <title>Red Light Green Light</title>
-    <script src="https://cdn.jsdelivr.net/npm/buttplug@3/dist/web/buttplug.min.js"></script>
+    
+    <script src="https://unpkg.com/buttplug@3.0.0/dist/web/buttplug.min.js"></script>
+    
     <style>
         :root { --bg: #0b0f19; --card: #161e2d; --accent: #38bdf8; --green: #10b981; --red: #ef4444; --white: #f8fafc; --input-bg: rgba(11, 15, 25, 0.9); }
         
@@ -302,7 +304,7 @@
             }
 
             if (typeof Buttplug === 'undefined') {
-                alert('Bibliothek konnte nicht geladen werden. Prüfe deine Internetverbindung oder deaktiviere den Werbeblocker.');
+                alert('Bibliothek konnte nicht geladen werden. Bitte deaktiviere deinen Werbeblocker für diese Seite.');
                 btn.disabled = false;
                 return;
             }
