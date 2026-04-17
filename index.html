@@ -151,7 +151,7 @@
             </div>
         </div>
 
-        <div class="section-title">Gerät (Satisfyer)</div>
+        <div class="section-title">Geraet (Satisfyer)</div>
         <div class="settings-grid">
             <div class="input-group full-width">
                 <div class="toy-panel">
@@ -161,19 +161,19 @@
                         <button class="toy-connect-btn" id="toy-connect-btn" onclick="connectToy()">Verbinden</button>
                     </div>
                     <div id="toy-device-name-row" style="display:none">
-                        <span class="toy-device-name" id="toy-device-name">—</span>
+                        <span class="toy-device-name" id="toy-device-name"></span>
                     </div>
                     <div class="intensity-row">
-                        <label>Vibrations Intensität</label>
+                        <label>Vibrations Intensitaet</label>
                         <div class="intensity-slider-wrap">
                             <input type="range" id="toy-intensity" min="0" max="100" value="80" oninput="document.getElementById('toy-intensity-val').innerText = this.value + '%'">
                             <span class="intensity-val" id="toy-intensity-val">80%</span>
                         </div>
                     </div>
                     <div class="toy-hint">
-                        Benötigt <a href="https://intiface.com/central/" target="_blank">Intiface Central</a> (kostenlos Desktop).<br>
-                        1. Intiface starten → Server starten → Gerät koppeln<br>
-                        2. Dann hier auf <strong>Verbinden</strong> klicken
+                        Benoetigt Intiface Central.<br>
+                        1. Intiface starten und Server starten<br>
+                        2. Geraet dort koppeln und hier auf Verbinden klicken
                     </div>
                 </div>
             </div>
@@ -193,8 +193,8 @@
                 </div>
             </div>
 
-            <div class="input-group"><label>Grün Min</label><input type="number" id="t-gmin" value="4"></div>
-            <div class="input-group"><label>Grün Max</label><input type="number" id="t-gmax" value="25"></div>
+            <div class="input-group"><label>Gruen Min</label><input type="number" id="t-gmin" value="4"></div>
+            <div class="input-group"><label>Gruen Max</label><input type="number" id="t-gmax" value="25"></div>
             <div class="input-group"><label>Rot Min</label><input type="number" id="t-rmin" value="4"></div>
             <div class="input-group"><label>Rot Max</label><input type="number" id="t-rmax" value="15"></div>
             
@@ -277,7 +277,7 @@
             const dot = document.getElementById('toy-dot');
             const lbl = document.getElementById('toy-status-label');
             dot.className = 'toy-status-dot';
-            if (state === 'scanning') { dot.classList.add('scanning'); lbl.innerText = 'Suche Gerät…'; }
+            if (state === 'scanning') { dot.classList.add('scanning'); lbl.innerText = 'Suche Geraet…'; }
             else if (state === 'connected') { dot.classList.add('connected'); lbl.innerText = 'Verbunden'; }
             else if (state === 'error') { dot.classList.add('error'); lbl.innerText = 'Verbindungsfehler'; }
             else { lbl.innerText = 'Nicht verbunden'; }
@@ -293,6 +293,12 @@
             const btn = document.getElementById('toy-connect-btn');
             btn.disabled = true;
 
+            if (typeof Buttplug === 'undefined') {
+                alert('FEHLER: Die Steuerungs Bibliothek wurde blockiert. Bitte schalte Ad Blocker fuer diese Seite aus.');
+                btn.disabled = false;
+                return;
+            }
+
             if (bpClient && bpClient.connected) {
                 try { await toyStop(); await bpClient.disconnect(); } catch(e) {}
                 bpClient = null; toyDevice = null; toyConnected = false;
@@ -303,17 +309,25 @@
                 return;
             }
 
-            if (typeof Buttplug === 'undefined') {
-                alert('Bibliothek konnte nicht geladen werden. Bitte deaktiviere deinen Werbeblocker für diese Seite.');
-                btn.disabled = false;
-                return;
-            }
-
             setToyDotState('scanning');
             btn.innerText = 'Verbinde…';
 
             try {
                 bpClient = new Buttplug.ButtplugClient("RLGL");
+                
+                let connected = false;
+                const addresses = ["ws://localhost:12345", "ws://127.0.0.1:12345"];
+                
+                for (let addr of addresses) {
+                    try {
+                        const connector = new Buttplug.ButtplugWebsocketClientConnector(addr);
+                        await bpClient.connect(connector);
+                        connected = true;
+                        break; 
+                    } catch(e) { console.log("Fehlschlag bei", addr); }
+                }
+
+                if (!connected) throw new Error("Kein Server erreichbar");
 
                 bpClient.addListener("deviceadded", (device) => {
                     toyDevice = device;
@@ -341,22 +355,21 @@
                     btn.disabled = false;
                 });
 
-                const connector = new Buttplug.ButtplugWebsocketClientConnector("ws://127.0.0.1:12345");
-                await bpClient.connect(connector);
                 await bpClient.startScanning();
 
                 setTimeout(() => {
                     if (!toyDevice) {
                         setToyDotState('scanning');
-                        document.getElementById('toy-status-label').innerText = 'Warte auf Gerät… (Taste 4s drücken)';
+                        document.getElementById('toy-status-label').innerText = 'Warte auf Geraet…';
                         btn.innerText = 'Abbrechen';
                         btn.disabled = false;
                     }
                 }, 3000);
 
             } catch(e) {
+                console.error(e);
                 setToyDotState('error');
-                document.getElementById('toy-status-label').innerText = 'Intiface Central läuft nicht';
+                document.getElementById('toy-status-label').innerText = 'Verbindung blockiert';
                 btn.innerText = 'Erneut versuchen';
                 btn.disabled = false;
             }
