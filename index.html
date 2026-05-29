@@ -16,6 +16,7 @@
             --accent: #0a84ff; 
             --green: #32d74b; 
             --red: #ff453a; 
+            --purple: #bf5af2;
             --white: #ffffff; 
             --text-sec: #86868b;
         }
@@ -138,6 +139,7 @@
         
         #post-win-vibe { bottom: 100px; }
         #post-action-btn { bottom: 35px; }
+        #ttc-btn { bottom: 50px; background: rgba(255, 255, 255, 0.15); border-color: var(--white); color: var(--white); }
 
         body.green-active { background-color: #0b3d16; }
         body.red-active { background-color: #4a0d0d; }
@@ -217,8 +219,8 @@
                     <div class="input-group" style="margin-top: 0.5rem;">
                         <label>Vibrations Intensität</label>
                         <div class="slider-wrap" style="padding: 0.5rem 0;">
-                            <input type="range" id="toy-intensity" min="0" max="100" value="80" oninput="if(document.getElementById('toy-intensity-val')) document.getElementById('toy-intensity-val').innerText = this.value + '%'">
-                            <span class="slider-val" id="toy-intensity-val">80%</span>
+                            <input type="range" id="toy-intensity" min="0" max="100" value="30" oninput="if(document.getElementById('toy-intensity-val')) document.getElementById('toy-intensity-val').innerText = this.value + '%'">
+                            <span class="slider-val" id="toy-intensity-val">30%</span>
                         </div>
                     </div>
                 </div>
@@ -264,7 +266,20 @@
                 </div>
             </div>
             
+            <div class="input-group full-width" style="margin-top: 0.5rem; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 1rem;">
+                <div class="toggle-row">
+                    <label style="color: var(--accent);">Try to Cum Finale (10% Chance bei Win)</label>
+                    <input type="checkbox" class="ios-toggle" id="f-ttc-mode" checked>
+                </div>
+            </div>
             <div class="input-group full-width">
+                <div class="toggle-row">
+                    <label style="color: var(--accent);">Try to Cum: 100% erzwingen (Jeder Win)</label>
+                    <input type="checkbox" class="ios-toggle" id="f-ttc-always">
+                </div>
+            </div>
+
+            <div class="input-group full-width" style="margin-top: 0.5rem;">
                 <label>Schwierigkeitsgrad (1-5)</label>
                 <div class="slider-wrap">
                     <input type="range" id="t-difficulty" min="1" max="5" value="1" step="1" oninput="updateDiffUI(this.value)">
@@ -309,6 +324,7 @@
         
         <button id="post-win-vibe" class="post-win-btn" onclick="toggleManualVibe(event)">VIBE AN</button>
         <button id="post-action-btn" class="post-win-btn" onclick="executePostWinAction()">[SPACE]</button>
+        <button id="ttc-btn" class="post-win-btn" onclick="onTTCButtonPressed(event)">CUM NOW [SPACE]</button>
         
         <div class="bottom-bar">
             <div class="progress-container"><div id="progress-bar"></div></div>
@@ -327,7 +343,7 @@
             2: { title: "Hard", color: "#ffcc00", desc: "<b>Level 2:</b> Min. 8 Edges. Max. 60% Erfolgschance (+3% pro Edge).<br><span style='color:var(--white)'>Zielwert >50%: Erreicht nach 14 Edges.</span>" },
             3: { title: "Extreme", color: "#ff9500", desc: "<b>Level 3:</b> Min. 15 Edges. Max. 60% Erfolgschance (+2% pro Edge).<br><span style='color:var(--white)'>Zielwert >50%: Erreicht nach 20 Edges.</span>" },
             4: { title: "Nightmare", color: "var(--red)", desc: "<b>Level 4:</b> Min. 15 Edges. Harte Grenze bei exakt 50% (+2% pro Edge).<br><span style='color:var(--white)'>Maximalwert 50%: Erreicht nach 20 Edges.</span>" },
-            5: { title: "Impossible", color: "#bf5af2", desc: "<b>Level 5:</b> Min. 15 Edges. Harte Grenze bei exakt 50% (+1.5% pro Edge).<br><span style='color:var(--white)'>Maximalwert 50%: Erreicht nach 27 Edges.</span>" }
+            5: { title: "Impossible", color: "#bf5af2", desc: "<b>Level 5:</b> Min. 20 Edges. Harte Grenze bei exakt 50% (+1.5% pro Edge).<br><span style='color:var(--white)'>Maximalwert 50%: Erreicht nach 27 Edges.</span>" }
         };
 
         function updateDiffUI(val) {
@@ -345,6 +361,34 @@
         let localMediaFiles = [];
         let mediaCycleList = [];
         let mediaCycleIndex = 0;
+
+        // --- Game Engine Variables ---
+        let cfg = {}, isLive = false, startT = 0, globalStartT = 0, clock = null, countdownInt = null, mediaInt = null, animFrame = null;
+        let redditPosts = [], edgeCount = 0, isPostGame = false, currentTension = 0, tensionDecayTimer = null, currentIndex = 0;
+        let bufferState = [{ id: 1, reqIdx: -1, isReady: false, objUrl: null }, { id: 2, reqIdx: -1, isReady: false, objUrl: null }, { id: 3, reqIdx: -1, isReady: false, objUrl: null }];
+        let toastTimeout;
+        let speedModeEndTime = 0;
+        let currentFinalState = null; 
+        let postActionDone = false; 
+        let isForcedRedActive = false; 
+        
+        // --- TTC Variables (Asynchron) ---
+        let ttcActive = false;
+        let ttcTimeout = null;
+        let ttcResolve = null;
+
+        function sleepTTC(ms) {
+            return new Promise(resolve => {
+                ttcResolve = resolve;
+                ttcTimeout = setTimeout(resolve, ms);
+            });
+        }
+
+        function abortTTC() {
+            ttcActive = false;
+            clearTimeout(ttcTimeout);
+            if (ttcResolve) ttcResolve();
+        }
 
         function handleMediaToggle() {
             const isLocal = document.getElementById('f-local-media') && document.getElementById('f-local-media').checked;
@@ -493,30 +537,23 @@
                 isManualVibeOn = false; 
                 if (btn) { btn.innerText = "VIBE AN"; btn.classList.remove('is-active'); } 
             } else { 
-                // Nach dem Sieg nutzen wir immer sicher den Basiswert
                 toyVibrate(cfg.toyIntensity); 
                 isManualVibeOn = true; 
                 if (btn) { btn.innerText = "VIBE AUS"; btn.classList.add('is-active'); } 
             }
         }
 
-        // --- Game Engine ---
-        let cfg = {}, isLive = false, startT = 0, globalStartT = 0, clock = null, countdownInt = null, mediaInt = null, animFrame = null;
-        let redditPosts = [], edgeCount = 0, isPostGame = false, currentTension = 0, tensionDecayTimer = null, currentIndex = 0;
-        let bufferState = [{ id: 1, reqIdx: -1, isReady: false, objUrl: null }, { id: 2, reqIdx: -1, isReady: false, objUrl: null }, { id: 3, reqIdx: -1, isReady: false, objUrl: null }];
-        let toastTimeout;
-        let speedModeEndTime = 0;
-        let currentFinalState = null; 
-        let postActionDone = false; 
-
         window.addEventListener('pagehide', () => { toyStop(); for(let i=1;i<=3;i++) { let v=document.getElementById('vid-'+i); if(v)v.pause(); }});
         document.addEventListener('visibilitychange', () => { if (document.hidden && isLive) toyStop(); });
         
         document.addEventListener('keydown', (e) => {
-            if (!isLive && !isPostGame) return; 
+            if (e.repeat) return; // Blockiert Dauerfeuer
+            if (!isLive && !isPostGame && !ttcActive) return; 
+            
             if (e.code === 'Space') { 
                 e.preventDefault(); 
                 if (isLive) triggerEdge();
+                else if (ttcActive) onTTCButtonPressed();
                 else if (isPostGame && !postActionDone) executePostWinAction();
             }
             if (e.code === 'ArrowRight') { e.preventDefault(); skipMedia(); }
@@ -525,6 +562,29 @@
             if (e.key === '-' || e.code === 'NumpadSubtract') { e.preventDefault(); changeIntensity(-0.05); }
         });
 
+        // --- TTC (Try to Cum) Button Pressed ---
+        function onTTCButtonPressed(e) {
+            if (e) e.stopPropagation();
+            if (!ttcActive) return;
+            
+            abortTTC();
+            document.getElementById('ttc-btn').style.display = 'none';
+            
+            const label = document.getElementById('status-label');
+            if (label) safeSetHTML('status-label', "CUM!");
+            
+            toyVibrate(cfg.toyIntensity);
+            const skipBtn = document.querySelector('.btn-skip');
+            if (skipBtn) skipBtn.style.display = 'none';
+            clearTimeout(mediaInt);
+            
+            setTimeout(() => {
+                toyStop();
+                safeSetHTML('status-label', "GOOD BOY");
+            }, 2000); // Exakt 2 Sekunden
+        }
+
+        // --- Standard Post-Win Action ---
         function executePostWinAction() {
             if (!isPostGame || postActionDone || !currentFinalState) return;
             postActionDone = true;
@@ -542,23 +602,16 @@
             if (currentFinalState === 'cum') {
                 toyVibrate(cfg.toyIntensity);
                 setTimeout(() => { toyStop(); }, 5000);
-            } else if (currentFinalState === 'ruin') {
-                toyStop();
             }
         }
 
-        // --- NEU: Die Funktion für die zustandsbasierte effektive Stärke ---
         function getEffectiveIntensity() {
             let effectiveBase = cfg.toyIntensity;
             if (cfg.tensionModeActive) {
-                if (currentTension <= 20) {
-                    effectiveBase += 0.10; // Phase 1 Modifier
-                } else if (currentTension >= 75) {
-                    effectiveBase -= 0.05; // Phase 3 Modifier
+                if (currentTension >= 81) { 
+                    effectiveBase -= 0.05; 
                 }
-                // Phase 2: bleibt wie Basis
             }
-            // Immer sicherstellen, dass der Wert zwischen 0 und 1 bleibt
             return Math.max(0, Math.min(1, effectiveBase));
         }
 
@@ -566,7 +619,6 @@
             if (e) e.stopPropagation();
             if (typeof cfg.toyIntensity === 'undefined') return;
             
-            // Verändert und speichert NUR den Basiswert
             cfg.toyIntensity = Math.max(0, Math.min(1, cfg.toyIntensity + amount));
             const newInt = Math.round(cfg.toyIntensity * 100);
             
@@ -574,15 +626,14 @@
             if (toyIntensity) toyIntensity.value = newInt;
             safeSetText('toy-intensity-val', newInt + '%');
             
-            if (isManualVibeOn || (isLive && document.body.classList.contains('green-active'))) {
-                // Hier senden wir den dynamischen Wert an den Toy-Motor
+            // Verhindert das versehentliche Anschalten in einer Off-Phase
+            if (isManualVibeOn || (!ttcActive && isLive && document.body.classList.contains('green-active'))) {
                 toyVibrate(isLive ? getEffectiveIntensity() : cfg.toyIntensity);
             }
             
             if (!silent) {
                 const toast = document.getElementById('intensity-toast');
                 if (toast) {
-                    // Zeigt klar, dass der BASISWERT geändert wurde
                     toast.innerText = "Basis: " + newInt + "%";
                     toast.style.opacity = 1;
                     clearTimeout(toastTimeout);
@@ -596,10 +647,10 @@
         function startTensionDecay() { 
             clearInterval(tensionDecayTimer); 
             tensionDecayTimer = setInterval(() => { 
-                if (isLive && currentTension > 0) {
+                if (isLive && currentTension > 0 && !isForcedRedActive) {
                     currentTension = Math.max(0, currentTension - 1); 
                 } 
-            }, 4000); 
+            }, 2500); 
         }
 
         function getHDUrl(p) { return p.preview?.images?.[0]?.source?.url ? p.preview.images[0].source.url.replace(/&amp;/g, '&') : p.url; }
@@ -643,7 +694,7 @@
 
         function skipMedia(e) { 
             if (e) e.stopPropagation(); 
-            if ((!isLive && !isPostGame)) return; 
+            if (!isLive && !isPostGame && !ttcActive) return; 
             clearTimeout(mediaInt); 
             currentIndex++; 
             manageBuffers(); 
@@ -664,7 +715,7 @@
             executeRedPhase(cfg.longBreakDur, true); 
             
             if (cfg.tensionModeActive) {
-                currentTension = Math.min(100, currentTension + 25);
+                currentTension = Math.min(100, currentTension + 18);
             }
         }
 
@@ -739,10 +790,10 @@
         }
 
         function manageBuffers() { 
+            checkDisplay(); 
             loadPostIntoBuffer(currentIndex); 
             loadPostIntoBuffer(currentIndex + 1); 
             loadPostIntoBuffer(currentIndex + 2); 
-            checkDisplay(); 
         }
 
         async function bootGame() {
@@ -767,12 +818,16 @@
             edgeCount = 0; 
             safeSetText('edge-display', "EDGES: 0");
             
-            isPostGame = false; currentTension = 0; currentIndex = 0; speedModeEndTime = 0;
-            currentFinalState = null; postActionDone = false;
+            isPostGame = false; ttcActive = false; currentTension = 0; currentIndex = 0; speedModeEndTime = 0;
+            currentFinalState = null; postActionDone = false; isForcedRedActive = false;
+            abortTTC();
             bufferState.forEach(b => { b.reqIdx = -1; b.isReady = false; });
 
             const actionBtn = document.getElementById('post-action-btn');
+            const ttcBtn = document.getElementById('ttc-btn');
             if (actionBtn) actionBtn.style.display = 'none';
+            if (ttcBtn) ttcBtn.style.display = 'none';
+            
             const plusBtn = document.querySelector('.btn-plus');
             const minusBtn = document.querySelector('.btn-minus');
             if (plusBtn) plusBtn.style.display = 'flex';
@@ -791,6 +846,9 @@
             const elLongBreakDur = document.getElementById('t-long-break-dur');
             const elDiff = document.getElementById('t-difficulty');
             const elIntensity = document.getElementById('toy-intensity');
+            
+            const elTtcMode = document.getElementById('f-ttc-mode');
+            const elTtcAlways = document.getElementById('f-ttc-always');
 
             cfg = {
                 total: parseFloat(elTotalMin ? elTotalMin.value : 12) * 60,
@@ -805,7 +863,9 @@
                 longBreakActive: elLongBreak ? elLongBreak.checked : false,
                 longBreakDur: parseFloat(elLongBreakDur ? elLongBreakDur.value : 25),
                 difficulty: parseInt(elDiff ? elDiff.value : 1),
-                toyIntensity: parseFloat(elIntensity ? elIntensity.value : 80) / 100
+                toyIntensity: parseFloat(elIntensity ? elIntensity.value : 80) / 100,
+                ttcEnabled: elTtcMode ? elTtcMode.checked : true,
+                ttcAlways: elTtcAlways ? elTtcAlways.checked : false
             };
 
             const setupUi = document.getElementById('setup-ui');
@@ -853,6 +913,8 @@
             clearInterval(countdownInt); 
             document.body.className = 'red-active';
             
+            isForcedRedActive = isForcedEdge;
+            
             const label = document.getElementById('status-label'); 
             if (label) label.classList.remove('countdown');
             
@@ -871,7 +933,10 @@
                 if (label) { label.classList.remove('pulse'); label.classList.add('adaptive'); }
             }
             toyStop(); 
-            clock = setTimeout(() => cycle('green'), dur * 1000);
+            clock = setTimeout(() => {
+                isForcedRedActive = false; 
+                cycle('green');
+            }, dur * 1000);
         }
 
         function cycle(type) {
@@ -880,7 +945,7 @@
             let now = Date.now();
             
             if (type === 'green' && cfg.speedModeActive && now > speedModeEndTime && Math.random() < 0.10) {
-                speedModeEndTime = now + 45000;
+                speedModeEndTime = now + 60000;
             }
 
             let isCurrentlySpeedMode = now < speedModeEndTime;
@@ -893,10 +958,9 @@
                 if (type === 'red' && cfg.longBreakActive && Math.random() < 0.04) dur = cfg.longBreakDur;
                 else if (cfg.tensionModeActive) {
                     let r = Math.random();
-                    // Zeitliche Intervalle abhängig von Phase
-                    if (currentTension <= 20) {
+                    if (currentTension <= 15) {
                         dur = type === 'green' ? cfg.gMin + (1 - Math.pow(r, 3.0)) * (cfg.gMax - cfg.gMin) : cfg.rMin + Math.pow(r, 4.0) * (cfg.rMax - cfg.rMin);
-                    } else if (currentTension >= 75) {
+                    } else if (currentTension >= 81) {
                         dur = type === 'green' ? cfg.gMin + Math.pow(r, 3.0) * (cfg.gMax - cfg.gMin) : cfg.rMin + (1 - Math.pow(r, 1.5)) * (cfg.rMax - cfg.rMin);
                     } else {
                         dur = type === 'green' ? cfg.gMin + r * (cfg.gMax - cfg.gMin) : cfg.rMin + r * (cfg.rMax - cfg.rMin);
@@ -910,12 +974,122 @@
                 document.body.className = 'green-active';
                 if (label) { label.classList.remove('pulse', 'adaptive'); label.classList.add('countdown'); }
                 
-                // --- NEU: Aufruf mit dem dynamisch errechneten Modifier-Wert ---
                 toyVibrate(getEffectiveIntensity());
                 
                 runCountdown(dur);
                 clock = setTimeout(() => cycle('red'), dur * 1000);
             } else executeRedPhase(dur);
+        }
+
+        // --- TTC Asynchrone Sequenz mit Varianz ---
+        async function startTTCSequence() {
+            ttcActive = true;
+            let ttcStartT = Date.now();
+            
+            document.body.className = '';
+            document.body.style.backgroundColor = "var(--green)"; // UI sieht aus wie normaler Win
+            
+            const label = document.getElementById('status-label');
+            if (label) { 
+                label.classList.remove('adaptive'); 
+                label.style.fontSize = "clamp(2.5rem, 9vw, 4rem)"; 
+                label.style.letterSpacing = "1px"; 
+                label.style.color = "var(--white)";
+                safeSetHTML('status-label', "TRY TO CUM");
+            }
+
+            document.getElementById('ttc-btn').style.display = 'block';
+            
+            const skipBtn = document.querySelector('.btn-skip');
+            if (skipBtn) skipBtn.style.display = 'flex';
+            
+            mediaInt = setTimeout(() => { currentIndex++; manageBuffers(); }, cfg.imgDur * 1000);
+            
+            while (ttcActive) {
+                let elapsedSec = (Date.now() - ttcStartT) / 1000;
+                
+                if (elapsedSec >= 420) { // 7 Minuten überlebt
+                    abortTTC();
+                    document.getElementById('ttc-btn').style.display = 'none';
+                    triggerNormalWin();
+                    return;
+                }
+                
+                let baseOn = 0, baseOff = 0, isHeartbeat = false;
+                
+                if (elapsedSec < 30) {
+                    baseOn = 1; baseOff = 9;
+                } else if (elapsedSec < 60) {
+                    baseOn = 2; baseOff = 8;
+                } else if (elapsedSec < 240) { // + 180s (3 Min)
+                    baseOn = 3; baseOff = 8; isHeartbeat = true;
+                } else if (elapsedSec < 300) { // + 60s (1 Min)
+                    baseOn = 2; baseOff = 5; isHeartbeat = true;
+                } else { // + 120s (2 Min) -> 420s
+                    baseOn = 1; baseOff = 4;
+                }
+                
+                // Varianz: ON bis 30% kürzer | OFF bis 40% kürzer ODER 20% länger
+                let actualOn = baseOn * (1 - Math.random() * 0.3);
+                let actualOff = baseOff * (1 + (Math.random() * 0.6 - 0.4));
+                
+                // ON Phase
+                if (isHeartbeat) {
+                    let cycles = Math.ceil(actualOn);
+                    for(let i = 0; i < cycles; i++) {
+                        if(!ttcActive) break;
+                        toyVibrate(cfg.toyIntensity); await sleepTTC(250); if(!ttcActive) break;
+                        toyStop(); await sleepTTC(150); if(!ttcActive) break;
+                        toyVibrate(cfg.toyIntensity); await sleepTTC(250); if(!ttcActive) break;
+                        toyStop(); await sleepTTC(350); if(!ttcActive) break;
+                    }
+                } else {
+                    toyVibrate(cfg.toyIntensity);
+                    await sleepTTC(actualOn * 1000);
+                }
+                
+                if (!ttcActive) break;
+                
+                // OFF Phase
+                toyStop();
+                await sleepTTC(actualOff * 1000);
+            }
+        }
+
+        // --- Standard Win ---
+        function triggerNormalWin() {
+            document.body.className = '';
+            document.body.style.backgroundColor = "var(--green)";
+            toyVibrate(cfg.toyIntensity); 
+            setTimeout(() => toyStop(), 2500);
+            
+            isPostGame = true;
+            currentFinalState = 'cum';
+            postActionDone = false;
+            
+            const label = document.getElementById('status-label');
+            if (label) { 
+                safeSetHTML('status-label', "BE A GOOD BOY<br>AND CUM");
+                label.classList.remove('adaptive'); 
+                label.style.fontSize = "clamp(2.5rem, 9vw, 4rem)"; 
+                label.style.letterSpacing = "1px"; 
+                label.style.color = "var(--white)";
+            }
+            
+            const skipBtn = document.querySelector('.btn-skip');
+            const vibeBtn = document.getElementById('post-win-vibe');
+            const actionBtn = document.getElementById('post-action-btn');
+            
+            if (skipBtn) skipBtn.style.display = 'flex'; 
+            if (vibeBtn) vibeBtn.style.display = 'block'; 
+            
+            if (actionBtn) {
+                actionBtn.style.display = 'block';
+                actionBtn.innerText = "FINISH (5s) [SPACE]";
+                actionBtn.style.color = "var(--accent)";
+                actionBtn.style.borderColor = "var(--accent)";
+            }
+            checkDisplay();
         }
 
         function finish() {
@@ -926,6 +1100,7 @@
             clearInterval(countdownInt); 
             clearInterval(tensionDecayTimer);
             speedModeEndTime = 0;
+            isForcedRedActive = false;
             toyStop();
             
             const btnEdge = document.querySelector('.btn-edge');
@@ -953,23 +1128,30 @@
                 case 2: minEdgesRequired = 8; bonus = 0.03; cap = 0.60; break;
                 case 3: minEdgesRequired = 15; bonus = 0.02; cap = 0.60; break;
                 case 4: minEdgesRequired = 15; bonus = 0.02; cap = 0.50; break;
-                case 5: minEdgesRequired = 15; bonus = 0.015; cap = 0.50; break;
+                case 5: minEdgesRequired = 20; bonus = 0.015; cap = 0.50; break;
             }
 
             let currentWinChance = edgeCount >= minEdgesRequired ? Math.min(0.10 + edgeCount * bonus, cap) : 0;
             let isWin = Math.random() < currentWinChance;
-            let isRuin = isWin && Math.random() < 0.10;
 
             let globalElapsedMin = (Date.now() - globalStartT) / 1000 / 60;
             if (globalElapsedMin >= cfg.maxGlobalMin) {
                 isWin = true;
-                isRuin = false;
+            }
+
+            let isTTC = false;
+            if (isWin) {
+                if (cfg.ttcAlways) {
+                    isTTC = true;
+                } else if (cfg.ttcEnabled && Math.random() < 0.10) { // <-- Reduziert auf 10%
+                    isTTC = true;
+                }
             }
 
             setTimeout(() => {
                 let ticks = 0; const maxTicks = 30; let currentSpeed = 35; const slowdownFactor = 1.16;
-                const spinWinText = "BE A GOOD BOY<br>AND CUM", spinLoseText = "AGAIN<br>LOSER", finalRuinText = "BE A GOOD BOY<br>AND RUIN IT<br>FOR ME";
-                const finalOutcome = isWin ? (isRuin ? finalRuinText : spinWinText) : spinLoseText;
+                const spinWinText = "BE A GOOD BOY<br>AND CUM", spinLoseText = "AGAIN<br>LOSER", spinTTCText = "TRY<br>TO CUM";
+                const finalOutcome = isWin ? (isTTC ? spinTTCText : spinWinText) : spinLoseText;
                 if (label) label.classList.add('adaptive');
 
                 function spinWheel() {
@@ -984,40 +1166,11 @@
                         if (label) label.style.color = "var(--white)";
                         
                         if (isWin) {
-                            document.body.style.backgroundColor = "var(--green)";
-                            toyVibrate(cfg.toyIntensity); 
-                            setTimeout(() => toyStop(), 2500);
-                            
-                            isPostGame = true;
-                            currentFinalState = isRuin ? 'ruin' : 'cum';
-                            postActionDone = false;
-                            
-                            if (label) { 
-                                label.classList.remove('adaptive'); 
-                                label.style.fontSize = "clamp(2.5rem, 9vw, 4rem)"; 
-                                label.style.letterSpacing = "1px"; 
+                            if (isTTC) {
+                                startTTCSequence();
+                            } else {
+                                triggerNormalWin();
                             }
-                            const skipBtn = document.querySelector('.btn-skip');
-                            const vibeBtn = document.getElementById('post-win-vibe');
-                            const actionBtn = document.getElementById('post-action-btn');
-                            
-                            if (skipBtn) skipBtn.style.display = 'flex'; 
-                            if (vibeBtn) vibeBtn.style.display = 'block'; 
-                            
-                            if (actionBtn) {
-                                actionBtn.style.display = 'block';
-                                if (isRuin) {
-                                    actionBtn.innerText = "ABBRUCH [SPACE]";
-                                    actionBtn.style.color = "var(--red)";
-                                    actionBtn.style.borderColor = "var(--red)";
-                                } else {
-                                    actionBtn.innerText = "FINISH (5s) [SPACE]";
-                                    actionBtn.style.color = "var(--accent)";
-                                    actionBtn.style.borderColor = "var(--accent)";
-                                }
-                            }
-
-                            checkDisplay();
                         } else {
                             document.body.style.backgroundColor = "var(--red)";
                             setTimeout(() => startSeamlessRestart(), 5000);
@@ -1029,12 +1182,15 @@
         }
 
         function startSeamlessRestart() {
-            isPostGame = false; currentTension = 0; currentFinalState = null;
+            isPostGame = false; ttcActive = false; currentTension = 0; currentFinalState = null; isForcedRedActive = false;
+            abortTTC();
             const vibeBtn = document.getElementById('post-win-vibe'); 
             const actionBtn = document.getElementById('post-action-btn');
+            const ttcBtn = document.getElementById('ttc-btn');
             
             if (vibeBtn) { vibeBtn.style.display = 'none'; vibeBtn.classList.remove('is-active'); vibeBtn.innerText = "VIBE AN"; }
             if (actionBtn) actionBtn.style.display = 'none';
+            if (ttcBtn) ttcBtn.style.display = 'none';
             isManualVibeOn = false;
             
             const btnEdge = document.querySelector('.btn-edge');
@@ -1049,6 +1205,7 @@
             if (minusBtn) minusBtn.style.display = 'flex';
             if (bottomBar) bottomBar.style.display = 'flex';
             
+            document.body.className = '';
             document.body.style.backgroundColor = "";
             const label = document.getElementById('status-label'); 
             if (label) { label.classList.remove('adaptive', 'countdown'); label.style.cssText = ""; label.innerHTML = ""; }
