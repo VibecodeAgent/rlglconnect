@@ -14,21 +14,64 @@
             --card: #1c1c1e; 
             --input-bg: #2c2c2e;
             --accent: #0a84ff; 
-            --green: #32d74b; 
+            --green: #2da841; /* Entschärftes, weniger grelles Grün */
             --red: #ff453a; 
             --purple: #bf5af2;
             --white: #ffffff; 
             --text-sec: #86868b;
         }
         
-        html, body { margin: 0; padding: 0; width: 100vw; height: 100vh; font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, sans-serif; background-color: var(--bg); color: var(--white); display: flex; justify-content: center; align-items: center; transition: background-color 0.4s ease; overflow: hidden; -webkit-font-smoothing: antialiased; }
+        html, body { 
+            margin: 0; 
+            padding: 0; 
+            width: 100vw; 
+            height: 100vh; 
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, sans-serif; 
+            background-color: var(--bg); 
+            color: var(--white); 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            transition: background-color 0.4s ease; 
+            overflow: hidden; 
+            -webkit-font-smoothing: antialiased; 
+        }
         
-        .setup-container { padding: 2.5rem; border-radius: 20px; width: 95%; max-width: 650px; background: var(--card); box-shadow: 0 20px 50px rgba(0,0,0,0.8); z-index: 100; max-height: 90vh; overflow-y: auto; scrollbar-width: none; border: 1px solid rgba(255,255,255,0.05); }
+        .setup-container { 
+            padding: 2.5rem; 
+            border-radius: 20px; 
+            width: 95%; 
+            max-width: 650px; 
+            background: var(--card); 
+            box-shadow: 0 20px 50px rgba(0,0,0,0.8); 
+            z-index: 100; 
+            max-height: 90vh; 
+            overflow-y: auto; 
+            scrollbar-width: none; 
+            border: 1px solid rgba(255,255,255,0.05); 
+        }
+        
         .setup-container::-webkit-scrollbar { display: none; }
         
-        h2 { margin: 0 0 1.5rem 0; color: var(--white); font-size: 2rem; font-weight: 700; letter-spacing: -0.5px; text-align: center; }
+        h2 { 
+            margin: 0 0 1.5rem 0; 
+            color: var(--white); 
+            font-size: 2rem; 
+            font-weight: 700; 
+            letter-spacing: -0.5px; 
+            text-align: center; 
+        }
         
-        .section-title { font-size: 0.75rem; text-transform: uppercase; color: var(--text-sec); letter-spacing: 1px; margin: 1.5rem 0 0.8rem 0; font-weight: 600; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 0.4rem; }
+        .section-title { 
+            font-size: 0.75rem; 
+            text-transform: uppercase; 
+            color: var(--text-sec); 
+            letter-spacing: 1px; 
+            margin: 1.5rem 0 0.8rem 0; 
+            font-weight: 600; 
+            border-bottom: 1px solid rgba(255,255,255,0.1); 
+            padding-bottom: 0.4rem; 
+        }
         
         .settings-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; }
         .full-width { grid-column: 1 / -1; }
@@ -36,7 +79,18 @@
         .input-group { display: flex; flex-direction: column; gap: 0.4rem; transition: opacity 0.3s; }
         label { font-size: 0.8rem; color: var(--text-sec); font-weight: 600; }
         
-        input[type="text"], input[type="number"], select { background: var(--input-bg); border: none; padding: 0.8rem 1rem; border-radius: 10px; color: var(--white); font-size: 1rem; font-family: inherit; outline: none; transition: box-shadow 0.2s; }
+        input[type="text"], input[type="number"], select { 
+            background: var(--input-bg); 
+            border: none; 
+            padding: 0.8rem 1rem; 
+            border-radius: 10px; 
+            color: var(--white); 
+            font-size: 1rem; 
+            font-family: inherit; 
+            outline: none; 
+            transition: box-shadow 0.2s; 
+        }
+        
         input[type="text"]:focus, input[type="number"]:focus, select:focus { box-shadow: 0 0 0 2px var(--accent); }
         
         /* Native iOS-like Toggle */
@@ -77,6 +131,7 @@
         .toy-status-dot.connected { background: var(--green); box-shadow: 0 0 8px var(--green); }
         .toy-status-dot.error { background: var(--red); }
         @keyframes pulse-dot { 0%,100% { opacity:1 } 50% { opacity:0.4 } }
+        
         .toy-status-label { font-size: 0.85rem; font-weight: 500; color: var(--white); flex: 1; }
         .toy-connect-btn { background: #3a3a3c; border: none; color: var(--white); padding: 0.5rem 1rem; border-radius: 8px; font-size: 0.8rem; font-weight: 600; cursor: pointer; transition: background 0.2s; }
         .toy-connect-btn:hover:not(:disabled) { background: #48484a; }
@@ -99,7 +154,7 @@
         .btn-skip:hover { transform: translateY(-50%) scale(1.05); }
         .btn-skip:active { transform: translateY(-50%) scale(0.95); }
         
-        /* Right side buttons (Intensity) */
+        /* Right side buttons */
         .btn-plus { top: calc(50% - 3rem); right: 25px; transform: translateY(-50%); background: rgba(50, 215, 75, 0.15); border-color: rgba(50, 215, 75, 0.3); color: var(--green); }
         .btn-plus:hover { background: rgba(50, 215, 75, 0.3); color: var(--white); transform: translateY(-50%) scale(1.05); }
         .btn-plus:active { transform: translateY(-50%) scale(0.95); }
@@ -114,25 +169,45 @@
         .toy-ingame-dot.vib-on { background: var(--green); box-shadow: 0 0 12px var(--green); }
         .toy-ingame-dot.vib-off { background: var(--red); box-shadow: none; }
         
+        /* Roulette Tick Toggle Button */
+        .tick-vibe-btn { position: absolute; bottom: 85px; left: 50%; transform: translateX(-50%); background: rgba(28,28,30,0.5); border: 1px solid rgba(255,255,255,0.1); color: var(--text-sec); padding: 0.5rem 1.2rem; border-radius: 20px; font-size: 0.75rem; font-weight: 600; letter-spacing: 1px; backdrop-filter: blur(10px); z-index: 200; cursor: pointer; display: none; transition: all 0.2s; }
+        .tick-vibe-btn.is-on { color: var(--accent); border-color: rgba(10, 132, 255, 0.3); background: rgba(10, 132, 255, 0.1); }
+        .tick-vibe-btn:hover { transform: translateX(-50%) scale(1.05); }
+
         .media-background { position: absolute; top: 0; left: 0; width: 100vw; height: 100vh; display: flex; justify-content: center; align-items: center; z-index: 1; overflow: hidden; }
         .media-buffer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; transition: opacity 0.4s ease; z-index: 1; }
         .media-buffer.active { opacity: 1; z-index: 2; }
         .media-layer { width: 100%; height: 100%; object-fit: contain; position: absolute; top: 0; left: 0; display: none; }
         
-        /* Adjusted Top Display */
-        .top-display { position: absolute; top: 15px; left: 0; width: 100%; z-index: 50; text-align: center; text-shadow: 0 4px 20px rgba(0,0,0,0.8); pointer-events: none; }
-        .status-text { font-size: clamp(3rem, 8vw, 6rem); font-weight: 800; text-transform: uppercase; letter-spacing: -1.5px; margin: 0; line-height: 1.1; transition: font-size 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
-        .status-text.countdown { font-size: clamp(3rem, 8vw, 5.5rem); font-variant-numeric: tabular-nums; }
+        /* Accelerated Display & Roulette Phases */
+        .top-display { position: absolute; top: 15px; left: 0; width: 100%; z-index: 50; text-align: center; text-shadow: 0 4px 20px rgba(0,0,0,0.8); pointer-events: none; will-change: transform, opacity; }
         
-        /* Adjusted Adaptive Text Size */
-        .status-text.adaptive { font-size: clamp(1.8rem, 5vw, 3rem); letter-spacing: -1px; }
+        /* GPU Accelerated Status Text */
+        .status-text { 
+            font-size: clamp(2.5rem, 6vw, 4.5rem); 
+            font-weight: 800; 
+            text-transform: uppercase; 
+            letter-spacing: -1.5px; 
+            margin: 0; 
+            line-height: 1.1; 
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.2s; 
+            will-change: transform, filter; 
+        }
         
-        /* Adjusted Bottom Bar Position */
+        /* Roulette specific phases - Verkleinerte Fonts */
+        .binary-text { opacity: 1; transform: scale(1); transition: color 0.1s ease-out; font-size: clamp(1.5rem, 4vw, 2.5rem); }
+        .pop-text { opacity: 1; text-shadow: 0 0 30px rgba(255,255,255,0.2); transition: transform 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275); font-size: clamp(1.8rem, 4.5vw, 3.5rem); }
+
+        .status-text.countdown { font-variant-numeric: tabular-nums; transform: scale(0.9); }
+        .status-text.adaptive { transform: scale(0.65); letter-spacing: -1px; }
+        
         .bottom-bar { position: absolute; bottom: 15px; left: 50%; transform: translateX(-50%); width: 80%; max-width: 800px; z-index: 50; display: flex; flex-direction: column; align-items: center; }
         .progress-container { width: 100%; height: 8px; background: rgba(255,255,255,0.2); border-radius: 8px; position: relative; overflow: hidden; margin-bottom: 12px; backdrop-filter: blur(5px); }
         #progress-bar { width: 0%; height: 100%; background: var(--white); border-radius: 8px; transition: width 0.1s linear; }
         .edge-counter-text { font-size: 0.75rem; font-weight: 600; color: rgba(255,255,255,0.8); letter-spacing: 2px; text-transform: uppercase; margin: 0; }
         
+        .global-timer { position: absolute; bottom: 25px; left: 25px; font-size: 0.85rem; color: rgba(255,255,255,0.3); font-variant-numeric: tabular-nums; letter-spacing: 1px; font-weight: 600; z-index: 50; pointer-events: none; }
+
         .post-win-btn { display: none; position: absolute; left: 50%; transform: translateX(-50%); background: rgba(255, 255, 255, 0.15); border: 1px solid rgba(255, 255, 255, 0.2); color: var(--white); padding: 0.8rem 2.5rem; border-radius: 20px; font-size: 0.9rem; font-weight: 700; letter-spacing: 1px; cursor: pointer; z-index: 200; backdrop-filter: blur(10px); transition: all 0.3s; text-transform: uppercase; }
         .post-win-btn:hover { background: rgba(255, 255, 255, 0.25); transform: translateX(-50%) scale(1.05); }
         .post-win-btn.is-active { background: rgba(50, 215, 75, 0.2); border-color: var(--green); color: var(--green); box-shadow: 0 0 20px rgba(50, 215, 75, 0.2); }
@@ -143,8 +218,7 @@
 
         body.green-active { background-color: #0b3d16; }
         body.red-active { background-color: #4a0d0d; }
-        .pulse { animation: pulse-anim 0.5s infinite alternate ease-in-out; }
-        @keyframes pulse-anim { from { transform: scale(1); } to { transform: scale(1.05); } }
+        .pulse { animation: pulse-dot 0.6s infinite alternate ease-in-out; }
     </style>
 </head>
 <body class="setup-mode">
@@ -280,13 +354,12 @@
             </div>
 
             <div class="input-group full-width" style="margin-top: 0.5rem;">
-                <label>Schwierigkeitsgrad (1-5)</label>
+                <label>Schwierigkeitsgrad (1-7)</label>
                 <div class="slider-wrap">
-                    <input type="range" id="t-difficulty" min="1" max="5" value="1" step="1" oninput="updateDiffUI(this.value)">
-                    <span class="slider-val" id="difficulty-label" style="min-width: 4.5rem;">Normal</span>
+                    <input type="range" id="t-difficulty" min="1" max="7" value="2" step="1" oninput="updateDiffUI(this.value)">
+                    <span class="slider-val" id="difficulty-label" style="min-width: 4.5rem;">Advanced</span>
                 </div>
-                <div class="diff-info" id="diff-desc">
-                    </div>
+                <div class="diff-info" id="diff-desc"></div>
             </div>
         </div>
 
@@ -294,6 +367,8 @@
     </div>
 
     <div id="game-ui">
+        <button id="roulette-vibe-btn" class="tick-vibe-btn" onclick="toggleRouletteVibe(event)">TICK VIBE: ON [SPACE]</button>
+
         <button class="pc-btn btn-close" onclick="endGame()" aria-label="Beenden" data-key="[ESC]">
             <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
         </button>
@@ -318,6 +393,7 @@
             <div id="buffer-1" class="media-buffer"><img id="img-1" class="media-layer" src="" alt=""><video id="vid-1" class="media-layer" autoplay muted loop playsinline></video></div>
             <div id="buffer-2" class="media-buffer"><img id="img-2" class="media-layer" src="" alt=""><video id="vid-2" class="media-layer" autoplay muted loop playsinline></video></div>
             <div id="buffer-3" class="media-buffer"><img id="img-3" class="media-layer" src="" alt=""><video id="vid-3" class="media-layer" autoplay muted loop playsinline></video></div>
+            <div id="buffer-4" class="media-buffer"><img id="img-4" class="media-layer" src="" alt=""><video id="vid-4" class="media-layer" autoplay muted loop playsinline></video></div>
         </div>
         
         <div class="top-display"><h1 id="status-label" class="status-text"></h1></div>
@@ -330,82 +406,103 @@
             <div class="progress-container"><div id="progress-bar"></div></div>
             <div id="edge-display" class="edge-counter-text">EDGES: 0</div>
         </div>
+        
+        <div id="global-timer" class="global-timer">00:00</div>
     </div>
 
     <script>
         // --- Safe DOM Helpers ---
-        function safeSetText(id, text) { const el = document.getElementById(id); if (el) el.innerText = text; }
-        function safeSetHTML(id, html) { const el = document.getElementById(id); if (el) el.innerHTML = html; }
+        function safeSetText(id, text) { 
+            const el = document.getElementById(id); 
+            if (el) el.innerText = text; 
+        }
+        
+        function safeSetHTML(id, html) { 
+            const el = document.getElementById(id); 
+            if (el) el.innerHTML = html; 
+        }
 
         // --- UI Updates ---
         const diffData = {
-            1: { title: "Normal", color: "var(--accent)", desc: "<b>Level 1:</b> Min. 3 Edges. Max. 70% Erfolgschance (+6% pro Edge).<br><span style='color:var(--white)'>Zielwert >50%: Erreicht nach 7 Edges.</span>" },
-            2: { title: "Hard", color: "#ffcc00", desc: "<b>Level 2:</b> Min. 8 Edges. Max. 60% Erfolgschance (+3% pro Edge).<br><span style='color:var(--white)'>Zielwert >50%: Erreicht nach 14 Edges.</span>" },
-            3: { title: "Extreme", color: "#ff9500", desc: "<b>Level 3:</b> Min. 15 Edges. Max. 60% Erfolgschance (+2% pro Edge).<br><span style='color:var(--white)'>Zielwert >50%: Erreicht nach 20 Edges.</span>" },
-            4: { title: "Nightmare", color: "var(--red)", desc: "<b>Level 4:</b> Min. 15 Edges. Harte Grenze bei exakt 50% (+2% pro Edge).<br><span style='color:var(--white)'>Maximalwert 50%: Erreicht nach 20 Edges.</span>" },
-            5: { title: "Impossible", color: "#bf5af2", desc: "<b>Level 5:</b> Min. 20 Edges. Harte Grenze bei exakt 50% (+1.5% pro Edge).<br><span style='color:var(--white)'>Maximalwert 50%: Erreicht nach 27 Edges.</span>" }
+            1: { title: "Normal", color: "var(--accent)", desc: "<b>Level 1:</b> Min. 8 Edges. Harte Grenze bei exakt 60% (+4.0% pro Edge).<br><span style='color:var(--white)'>Limit (60%) erreicht nach exakt 13 Edges.</span>" },
+            2: { title: "Advanced", color: "#ffcc00", desc: "<b>Level 2:</b> Min. 11 Edges. Harte Grenze bei exakt 55% (+3.0% pro Edge).<br><span style='color:var(--white)'>Limit (55%) erreicht nach exakt 15 Edges.</span>" },
+            3: { title: "Hard", color: "#ff9500", desc: "<b>Level 3:</b> Min. 15 Edges. Harte Grenze bei exakt 50% (+2.0% pro Edge).<br><span style='color:var(--white)'>Limit (50%) erreicht nach exakt 20 Edges.</span>" },
+            4: { title: "Expert", color: "var(--red)", desc: "<b>Level 4:</b> Min. 18 Edges. Harte Grenze bei exakt 45% (+1.5% pro Edge).<br><span style='color:var(--white)'>Limit (45%) erreicht nach exakt 24 Edges.</span>" },
+            5: { title: "Extreme", color: "#bf5af2", desc: "<b>Level 5:</b> Min. 22 Edges. Harte Grenze bei exakt 40% (+1.0% pro Edge).<br><span style='color:var(--white)'>Limit (40%) erreicht nach exakt 30 Edges.</span>" },
+            6: { title: "Nightmare", color: "#5e5ce6", desc: "<b>Level 6:</b> Min. 26 Edges. Harte Grenze bei exakt 30% (+0.5% pro Edge).<br><span style='color:var(--white)'>Limit (30%) erreicht nach exakt 40 Edges.</span>" },
+            7: { title: "Impossible", color: "#ff3b30", desc: "<b>Level 7:</b> Min. 30 Edges. Harte Grenze bei exakt 25% (+0.5% pro Edge).<br><span style='color:var(--white)'>Limit (25%) erreicht nach exakt 30 Edges. Mehr Edges erhöhen die Chance nicht weiter.</span>" }
         };
 
         function updateDiffUI(val) {
             const data = diffData[val];
             const lbl = document.getElementById('difficulty-label');
-            if (lbl) {
-                lbl.innerText = data.title;
-                lbl.style.color = data.color;
+            if (lbl) { 
+                lbl.innerText = data.title; 
+                lbl.style.color = data.color; 
             }
             safeSetHTML('diff-desc', data.desc);
         }
-        updateDiffUI(1);
+        updateDiffUI(2);
 
-        // --- Dual-Source Toggle Logic ---
-        let localMediaFiles = [];
-        let mediaCycleList = [];
-        let mediaCycleIndex = 0;
-
-        // --- Game Engine Variables ---
+        // --- Variabeln ---
+        let localMediaFiles = [], mediaCycleList = [], mediaCycleIndex = 0;
         let cfg = {}, isLive = false, startT = 0, globalStartT = 0, clock = null, countdownInt = null, mediaInt = null, animFrame = null;
         let redditPosts = [], edgeCount = 0, isPostGame = false, currentTension = 0, tensionDecayTimer = null, currentIndex = 0;
-        let bufferState = [{ id: 1, reqIdx: -1, isReady: false, objUrl: null }, { id: 2, reqIdx: -1, isReady: false, objUrl: null }, { id: 3, reqIdx: -1, isReady: false, objUrl: null }];
-        let toastTimeout;
-        let speedModeEndTime = 0;
-        let currentFinalState = null; 
-        let postActionDone = false; 
-        let isForcedRedActive = false; 
+        let bufferState = [
+            { id: 1, reqIdx: -1, isReady: false, objUrl: null }, 
+            { id: 2, reqIdx: -1, isReady: false, objUrl: null }, 
+            { id: 3, reqIdx: -1, isReady: false, objUrl: null }, 
+            { id: 4, reqIdx: -1, isReady: false, objUrl: null }
+        ];
+        let toastTimeout, speedModeEndTime = 0, currentFinalState = null, postActionDone = false, isForcedRedActive = false; 
+        let globalTimerInt = null, hasForcedGlobalWin = false, isWheelSpinning = false;
         
-        // --- TTC Variables (Asynchron) ---
-        let ttcActive = false;
-        let ttcTimeout = null;
-        let ttcResolve = null;
+        let rouletteVibeEnabled = true;
+        let ttcActive = false, ttcTimeout = null, ttcResolve = null;
 
-        function sleepTTC(ms) {
-            return new Promise(resolve => {
-                ttcResolve = resolve;
-                ttcTimeout = setTimeout(resolve, ms);
-            });
+        // --- Haptik Utils ---
+        function sleepTTC(ms) { 
+            return new Promise(resolve => { 
+                ttcResolve = resolve; 
+                ttcTimeout = setTimeout(resolve, ms); 
+            }); 
+        }
+        
+        function abortTTC() { 
+            ttcActive = false; 
+            clearTimeout(ttcTimeout); 
+            if (ttcResolve) {
+                ttcResolve(); 
+                ttcResolve = null;
+            }
+            toyStop(); 
         }
 
-        function abortTTC() {
-            ttcActive = false;
-            clearTimeout(ttcTimeout);
-            if (ttcResolve) ttcResolve();
+        function toggleRouletteVibe(e) {
+            if (e) e.stopPropagation();
+            rouletteVibeEnabled = !rouletteVibeEnabled;
+            const btn = document.getElementById('roulette-vibe-btn');
+            if (btn) {
+                btn.classList.toggle('is-on', rouletteVibeEnabled);
+                btn.innerText = rouletteVibeEnabled ? "TICK VIBE: ON [SPACE]" : "TICK VIBE: OFF [SPACE]";
+            }
         }
 
+        // --- Setup Logic ---
         function handleMediaToggle() {
             const isLocal = document.getElementById('f-local-media') && document.getElementById('f-local-media').checked;
             const wReddit = document.getElementById('wrap-reddit-inputs');
             const wPicker = document.getElementById('wrap-local-picker');
             const btnStart = document.getElementById('btn-start');
             const localRow = document.getElementById('local-media-row');
-
+            
             if (isLocal) {
                 if (wReddit) { wReddit.style.opacity = '0.4'; wReddit.style.pointerEvents = 'none'; }
                 if (wPicker) wPicker.style.display = 'flex';
                 if (localRow) localRow.classList.add('cloud-active');
-                
-                if (localMediaFiles.length > 0) {
-                    if (btnStart) { btnStart.disabled = false; btnStart.innerText = "SPIEL STARTEN"; }
-                } else {
-                    if (btnStart) { btnStart.disabled = true; btnStart.innerText = "Bitte zuerst Ordner auswählen"; }
+                if (btnStart) { 
+                    btnStart.disabled = localMediaFiles.length === 0; 
+                    btnStart.innerText = localMediaFiles.length > 0 ? "SPIEL STARTEN" : "Bitte zuerst Ordner auswählen"; 
                 }
             } else {
                 if (wReddit) { wReddit.style.opacity = '1'; wReddit.style.pointerEvents = 'auto'; }
@@ -417,14 +514,13 @@
 
         function handleLocalFiles(e) {
             const files = Array.from(e.target.files || []);
-            localMediaFiles = files.filter(f => {
-                const type = f.type.toLowerCase();
-                return type.startsWith('image/') || type.startsWith('video/');
+            localMediaFiles = files.filter(f => { 
+                const type = f.type.toLowerCase(); 
+                return type.startsWith('image/') || type.startsWith('video/'); 
             });
-
             const status = document.getElementById('file-status');
             const startBtn = document.getElementById('btn-start');
-
+            
             if (localMediaFiles.length > 0) {
                 if (status) { status.innerText = `${localMediaFiles.length} kompatible Dateien geladen.`; status.style.color = "var(--green)"; }
                 if (startBtn) { startBtn.disabled = false; startBtn.innerText = "SPIEL STARTEN"; }
@@ -437,14 +533,14 @@
 
         function shuffleCycle() {
             mediaCycleList = Array.from({length: localMediaFiles.length}, (_, i) => i);
-            for (let i = mediaCycleList.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [mediaCycleList[i], mediaCycleList[j]] = [mediaCycleList[j], mediaCycleList[i]];
+            for (let i = mediaCycleList.length - 1; i > 0; i--) { 
+                const j = Math.floor(Math.random() * (i + 1)); 
+                [mediaCycleList[i], mediaCycleList[j]] = [mediaCycleList[j], mediaCycleList[i]]; 
             }
             mediaCycleIndex = 0;
         }
 
-        // --- Toy Logic ---
+        // --- Bluetooth Logic ---
         let bpClient = null, toyDevice = null, toyConnected = false, isManualVibeOn = false;
 
         function setToyDotState(state) {
@@ -455,12 +551,10 @@
                 else if (state === 'connected') dot.classList.add('connected');
                 else if (state === 'error') dot.classList.add('error');
             }
-            
             let htmlLabel = 'Nicht verbunden<br><small style="color:var(--text-sec); font-weight:normal;">Wartet auf Intiface Central</small>';
             if (state === 'scanning') htmlLabel = 'Suche Gerät…<br><small style="color:var(--text-sec); font-weight:normal;">Bitte im Intiface koppeln</small>';
             else if (state === 'connected') htmlLabel = toyDevice ? toyDevice.name : 'Verbunden';
             else if (state === 'error') htmlLabel = 'Verbindung fehlgeschlagen<br><small style="color:var(--text-sec); font-weight:normal;">Läuft Intiface Central?</small>';
-            
             safeSetHTML('toy-status-label', htmlLabel);
         }
 
@@ -491,43 +585,65 @@
 
                 if (typeof Buttplug.buttplugInit === 'function') await Buttplug.buttplugInit();
                 bpClient = new Buttplug.ButtplugClient("RLGL");
-                
                 let connector = new (Buttplug.ButtplugBrowserWebsocketClientConnector || Buttplug.ButtplugWebsocketClientConnector || Buttplug.WebsocketClientConnector)(addr);
                 await bpClient.connect(connector);
 
-                const onDeviceFound = (device) => {
-                    toyDevice = device; toyConnected = true;
-                    setToyDotState('connected');
-                    if (btn) { btn.innerText = 'Trennen'; btn.disabled = false; }
+                const onDeviceFound = (device) => { 
+                    toyDevice = device; 
+                    toyConnected = true; 
+                    setToyDotState('connected'); 
+                    if (btn) { btn.innerText = 'Trennen'; btn.disabled = false; } 
                 };
-
+                
                 bpClient.addListener("deviceadded", onDeviceFound);
-                bpClient.addListener("deviceremoved", () => {
-                    toyDevice = null; toyConnected = false; setToyDotState('idle');
-                    if (btn) btn.innerText = 'Verbinden';
+                bpClient.addListener("deviceremoved", () => { 
+                    toyDevice = null; 
+                    toyConnected = false; 
+                    setToyDotState('idle'); 
+                    if (btn) btn.innerText = 'Verbinden'; 
                 });
-                bpClient.addListener("disconnect", () => {
-                    toyDevice = null; toyConnected = false; setToyDotState('idle');
-                    if (btn) { btn.innerText = 'Verbinden'; btn.disabled = false; }
+                bpClient.addListener("disconnect", () => { 
+                    toyDevice = null; 
+                    toyConnected = false; 
+                    setToyDotState('idle'); 
+                    if (btn) { btn.innerText = 'Verbinden'; btn.disabled = false; } 
                 });
 
-                if (bpClient.devices && bpClient.devices.length > 0) onDeviceFound(bpClient.devices[0]);
-                else await bpClient.startScanning();
+                if (bpClient.devices && bpClient.devices.length > 0) {
+                    onDeviceFound(bpClient.devices[0]);
+                } else {
+                    await bpClient.startScanning();
+                }
 
-                setTimeout(() => {
-                    if (!toyDevice && bpClient && bpClient.connected) {
-                        setToyDotState('scanning');
-                        if (btn) { btn.innerText = 'Abbrechen'; btn.disabled = false; }
-                    }
+                setTimeout(() => { 
+                    if (!toyDevice && bpClient && bpClient.connected) { 
+                        setToyDotState('scanning'); 
+                        if (btn) { btn.innerText = 'Abbrechen'; btn.disabled = false; } 
+                    } 
                 }, 3000);
-            } catch (e) {
+            } catch (e) { 
                 setToyDotState('error'); 
-                if (btn) { btn.innerText = 'Erneut'; btn.disabled = false; }
+                if (btn) { btn.innerText = 'Erneut'; btn.disabled = false; } 
             }
         }
 
-        async function toyVibrate(intensity) { if (toyDevice) try { await toyDevice.vibrate(intensity); updateIngameDot(intensity > 0); } catch(e){} }
-        async function toyStop() { if (toyDevice) try { await toyDevice.stop(); updateIngameDot(false); } catch(e){} }
+        async function toyVibrate(intensity) { 
+            if (toyDevice) {
+                try { 
+                    await toyDevice.vibrate(intensity); 
+                    updateIngameDot(intensity > 0); 
+                } catch(e){} 
+            }
+        }
+        
+        async function toyStop() { 
+            if (toyDevice) {
+                try { 
+                    await toyDevice.stop(); 
+                    updateIngameDot(false); 
+                } catch(e){} 
+            }
+        }
 
         function toggleManualVibe(e) {
             if (e) e.stopPropagation();
@@ -543,74 +659,88 @@
             }
         }
 
-        window.addEventListener('pagehide', () => { toyStop(); for(let i=1;i<=3;i++) { let v=document.getElementById('vid-'+i); if(v)v.pause(); }});
-        document.addEventListener('visibilitychange', () => { if (document.hidden && isLive) toyStop(); });
+        // --- Event Listeners ---
+        window.addEventListener('pagehide', () => { 
+            toyStop(); 
+            for(let i=1;i<=4;i++) { 
+                let v=document.getElementById('vid-'+i); 
+                if(v) v.pause(); 
+            }
+        });
+        
+        document.addEventListener('visibilitychange', () => { 
+            if (document.hidden && isLive) toyStop(); 
+        });
         
         document.addEventListener('keydown', (e) => {
-            if (e.repeat) return; // Blockiert Dauerfeuer
-            if (!isLive && !isPostGame && !ttcActive) return; 
+            if (e.repeat) return; 
             
             if (e.code === 'Space') { 
                 e.preventDefault(); 
-                if (isLive) triggerEdge();
-                else if (ttcActive) onTTCButtonPressed();
-                else if (isPostGame && !postActionDone) executePostWinAction();
+                if (isWheelSpinning) {
+                    toggleRouletteVibe();
+                } else if (isLive) {
+                    triggerEdge();
+                } else if (ttcActive) {
+                    onTTCButtonPressed();
+                } else if (isPostGame && !postActionDone) {
+                    executePostWinAction();
+                }
+                return;
             }
+
+            if (!isLive && !isPostGame && !ttcActive) return; 
             if (e.code === 'ArrowRight') { e.preventDefault(); skipMedia(); }
             if (e.code === 'Escape') { e.preventDefault(); endGame(); }
             if (e.key === '+' || e.code === 'NumpadAdd') { e.preventDefault(); changeIntensity(0.05); }
             if (e.key === '-' || e.code === 'NumpadSubtract') { e.preventDefault(); changeIntensity(-0.05); }
         });
 
-        // --- TTC (Try to Cum) Button Pressed ---
+        // --- Game Controls ---
         function onTTCButtonPressed(e) {
             if (e) e.stopPropagation();
             if (!ttcActive) return;
-            
             abortTTC();
             document.getElementById('ttc-btn').style.display = 'none';
-            
             const label = document.getElementById('status-label');
             if (label) safeSetHTML('status-label', "CUM!");
             
             toyVibrate(cfg.toyIntensity);
+            
             const skipBtn = document.querySelector('.btn-skip');
             if (skipBtn) skipBtn.style.display = 'none';
             clearTimeout(mediaInt);
             
-            setTimeout(() => {
-                toyStop();
-                safeSetHTML('status-label', "GOOD BOY");
-            }, 2000); // Exakt 2 Sekunden
+            setTimeout(() => { 
+                toyStop(); 
+                safeSetHTML('status-label', "GOOD BOY"); 
+            }, 2000);
         }
 
-        // --- Standard Post-Win Action ---
         function executePostWinAction() {
             if (!isPostGame || postActionDone || !currentFinalState) return;
             postActionDone = true;
-
             const vibeBtn = document.getElementById('post-win-vibe');
             const actionBtn = document.getElementById('post-action-btn');
             const plusBtn = document.querySelector('.btn-plus');
             const minusBtn = document.querySelector('.btn-minus');
-
-            if (vibeBtn) vibeBtn.style.display = 'none';
+            
+            if (vibeBtn) vibeBtn.style.display = 'none'; 
             if (actionBtn) actionBtn.style.display = 'none';
-            if (plusBtn) plusBtn.style.display = 'none';
+            if (plusBtn) plusBtn.style.display = 'none'; 
             if (minusBtn) minusBtn.style.display = 'none';
-
-            if (currentFinalState === 'cum') {
-                toyVibrate(cfg.toyIntensity);
-                setTimeout(() => { toyStop(); }, 5000);
+            
+            if (currentFinalState === 'cum') { 
+                toyVibrate(cfg.toyIntensity); 
+                setTimeout(() => { toyStop(); }, 5000); 
             }
         }
 
         function getEffectiveIntensity() {
             let effectiveBase = cfg.toyIntensity;
             if (cfg.tensionModeActive) {
-                if (currentTension >= 81) { 
-                    effectiveBase -= 0.05; 
-                }
+                if (currentTension <= 15) effectiveBase += 0.05;
+                else if (currentTension >= 81) effectiveBase -= 0.05;
             }
             return Math.max(0, Math.min(1, effectiveBase));
         }
@@ -626,18 +756,17 @@
             if (toyIntensity) toyIntensity.value = newInt;
             safeSetText('toy-intensity-val', newInt + '%');
             
-            // Verhindert das versehentliche Anschalten in einer Off-Phase
             if (isManualVibeOn || (!ttcActive && isLive && document.body.classList.contains('green-active'))) {
                 toyVibrate(isLive ? getEffectiveIntensity() : cfg.toyIntensity);
             }
             
             if (!silent) {
                 const toast = document.getElementById('intensity-toast');
-                if (toast) {
-                    toast.innerText = "Basis: " + newInt + "%";
-                    toast.style.opacity = 1;
-                    clearTimeout(toastTimeout);
-                    toastTimeout = setTimeout(() => toast.style.opacity = 0, 1500);
+                if (toast) { 
+                    toast.innerText = "Basis: " + newInt + "%"; 
+                    toast.style.opacity = 1; 
+                    clearTimeout(toastTimeout); 
+                    toastTimeout = setTimeout(() => toast.style.opacity = 0, 1500); 
                 }
             }
         }
@@ -649,15 +778,24 @@
             tensionDecayTimer = setInterval(() => { 
                 if (isLive && currentTension > 0 && !isForcedRedActive) {
                     currentTension = Math.max(0, currentTension - 1); 
-                } 
+                }
             }, 2500); 
         }
 
-        function getHDUrl(p) { return p.preview?.images?.[0]?.source?.url ? p.preview.images[0].source.url.replace(/&amp;/g, '&') : p.url; }
+        function getHDUrl(p) { 
+            return p.preview?.images?.[0]?.source?.url ? p.preview.images[0].source.url.replace(/&amp;/g, '&') : p.url; 
+        }
 
         async function fetchRedditData(url) {
-            try { const r = await fetch(url); if (r.ok) return await r.json(); } catch(e) {}
-            try { const pr = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(url)}`); const res = await pr.json(); if (res.contents) return JSON.parse(res.contents); } catch(e) {}
+            try { 
+                const r = await fetch(url); 
+                if (r.ok) return await r.json(); 
+            } catch(e) {}
+            try { 
+                const pr = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(url)}`); 
+                const res = await pr.json(); 
+                if (res.contents) return JSON.parse(res.contents); 
+            } catch(e) {}
             return null;
         }
 
@@ -671,24 +809,34 @@
             const fImg = document.getElementById('f-img') ? document.getElementById('f-img').checked : true;
             const fVid = document.getElementById('f-vid') ? document.getElementById('f-vid').checked : true;
             const fGif = document.getElementById('f-gif') ? document.getElementById('f-gif').checked : true;
+            
             const fetchSort = sort === 'random' ? 'hot' : sort;
             const timeParam = sort === 'top' ? '&t=all' : '';
 
             const buckets = await Promise.all(srcList.map(async (src) => {
-                let url = src.toLowerCase().startsWith('u/') ? `https://www.reddit.com/user/${src.substring(2)}/submitted.json?sort=${fetchSort}&limit=50${timeParam}` : `https://www.reddit.com/r/${src}/${fetchSort}.json?limit=50${timeParam}`;
+                let url = src.toLowerCase().startsWith('u/') 
+                    ? `https://www.reddit.com/user/${src.substring(2)}/submitted.json?sort=${fetchSort}&limit=50${timeParam}` 
+                    : `https://www.reddit.com/r/${src}/${fetchSort}.json?limit=50${timeParam}`;
                 try {
                     const data = await fetchRedditData(url);
                     if (!data || !data.data || !data.data.children) return [];
                     return data.data.children.map(c => c.data).filter(p => {
-                        const isG = p.url.endsWith('.gif') || p.preview?.reddit_video_preview, isV = p.is_video || p.post_hint === 'hosted:video', isI = p.post_hint === 'image' || p.url.match(/\.(jpg|jpeg|png)$/i);
+                        const isG = p.url.endsWith('.gif') || p.preview?.reddit_video_preview;
+                        const isV = p.is_video || p.post_hint === 'hosted:video';
+                        const isI = p.post_hint === 'image' || p.url.match(/\.(jpg|jpeg|png)$/i);
                         return (fVid && isV) || (fImg && isI && !isG) || (fGif && isG);
                     });
                 } catch(e) { return []; }
             }));
 
-            let combined = []; buckets.forEach(b => { combined = combined.concat(b); });
+            let combined = []; 
+            buckets.forEach(b => { combined = combined.concat(b); });
             let unique = [...new Map(combined.map(item => [item.id, item])).values()];
-            for (let i = unique.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [unique[i], unique[j]] = [unique[j], unique[i]]; }
+            
+            for (let i = unique.length - 1; i > 0; i--) { 
+                const j = Math.floor(Math.random() * (i + 1)); 
+                [unique[i], unique[j]] = [unique[j], unique[i]]; 
+            }
             redditPosts = unique;
         }
 
@@ -705,7 +853,6 @@
             if (!isLive || document.body.classList.contains('red-active')) return;
             
             speedModeEndTime = 0; 
-
             edgeCount++; 
             safeSetText('edge-display', "EDGES: " + edgeCount);
             
@@ -726,27 +873,50 @@
             if (isLocal && localMediaFiles.length === 0) return;
             if (!isLocal && redditPosts.length === 0) return;
             
-            let bId = (idx % 3) + 1;
+            let bId = (idx % 4) + 1;
             let state = bufferState[bId - 1];
             
             if (state.reqIdx === idx) return;
-            state.reqIdx = idx; state.isReady = false;
+            state.reqIdx = idx; 
+            state.isReady = false;
             
             const img = document.getElementById('img-' + bId);
             const vid = document.getElementById('vid-' + bId);
             
             if (!img || !vid) return;
 
-            img.style.display = 'none'; vid.style.display = 'none';
-            vid.pause(); vid.removeAttribute('src'); img.removeAttribute('src'); vid.load();
+            img.style.display = 'none'; 
+            vid.style.display = 'none';
+            vid.pause(); 
+            vid.removeAttribute('src'); 
+            img.removeAttribute('src'); 
+            vid.load();
             
-            if (state.objUrl) { URL.revokeObjectURL(state.objUrl); state.objUrl = null; }
+            if (state.objUrl) { 
+                URL.revokeObjectURL(state.objUrl); 
+                state.objUrl = null; 
+            }
             
-            const handleReady = () => { if (state.reqIdx === idx) { state.isReady = true; checkDisplay(); } };
-            const handleErr  = () => { if (state.reqIdx === idx) { state.isReady = true; if (currentIndex === idx) { currentIndex++; manageBuffers(); } } };
+            const handleReady = () => { 
+                if (state.reqIdx === idx) { 
+                    state.isReady = true; 
+                    checkDisplay(); 
+                } 
+            };
+            const handleErr  = () => { 
+                if (state.reqIdx === idx) { 
+                    state.isReady = true; 
+                    if (currentIndex === idx) { 
+                        currentIndex++; 
+                        manageBuffers(); 
+                    } 
+                } 
+            };
             
-            img.onload = handleReady; img.onerror = handleErr;
-            vid.onloadeddata = handleReady; vid.onerror = handleErr;
+            img.onload = handleReady; 
+            img.onerror = handleErr; 
+            vid.onloadeddata = handleReady; 
+            vid.onerror = handleErr;
 
             if (isLocal) {
                 if (mediaCycleIndex >= mediaCycleList.length) shuffleCycle();
@@ -755,37 +925,61 @@
                 const fileUrl = URL.createObjectURL(file);
                 state.objUrl = fileUrl;
                 
-                if (file.type.startsWith('video/')) {
-                    vid.src = fileUrl; vid.style.display = 'block'; vid.load();
-                } else {
-                    img.src = fileUrl; img.style.display = 'block';
+                if (file.type.startsWith('video/')) { 
+                    vid.src = fileUrl; 
+                    vid.style.display = 'block'; 
+                    vid.load(); 
+                } else { 
+                    img.src = fileUrl; 
+                    img.style.display = 'block'; 
                 }
             } else {
                 let safeIdx = idx % redditPosts.length;
                 const post = redditPosts[safeIdx];
-                if (post.is_video && post.media?.reddit_video) { vid.src = post.media.reddit_video.fallback_url; vid.style.display = 'block'; vid.load(); } 
-                else if (post.preview?.reddit_video_preview) { vid.src = post.preview.reddit_video_preview.fallback_url; vid.style.display = 'block'; vid.load(); } 
-                else { img.src = getHDUrl(post); img.style.display = 'block'; }
+                if (post.is_video && post.media?.reddit_video) { 
+                    vid.src = post.media.reddit_video.fallback_url; 
+                    vid.style.display = 'block'; 
+                    vid.load(); 
+                } else if (post.preview?.reddit_video_preview) { 
+                    vid.src = post.preview.reddit_video_preview.fallback_url; 
+                    vid.style.display = 'block'; 
+                    vid.load(); 
+                } else { 
+                    img.src = getHDUrl(post); 
+                    img.style.display = 'block'; 
+                }
             }
         }
 
         function checkDisplay() {
-            let bId = (currentIndex % 3) + 1, state = bufferState[bId - 1];
+            let bId = (currentIndex % 4) + 1;
+            let state = bufferState[bId - 1];
+            
             if (state.isReady && state.reqIdx === currentIndex) {
                 document.querySelectorAll('.media-buffer').forEach(b => b.classList.remove('active'));
                 const targetBuffer = document.getElementById('buffer-' + bId);
                 if (targetBuffer) targetBuffer.classList.add('active');
                 
                 let vid = document.getElementById('vid-' + bId);
-                if (vid && vid.style.display === 'block') { let p = vid.play(); if(p) p.catch(()=>{}); }
-                for (let i = 1; i <= 3; i++) { 
-                    if (i !== bId) {
-                        let otherVid = document.getElementById('vid-' + i);
-                        if(otherVid) otherVid.pause(); 
-                    }
+                if (vid && vid.style.display === 'block') { 
+                    let p = vid.play(); 
+                    if(p) p.catch(()=>{}); 
                 }
+                
+                for (let i = 1; i <= 4; i++) { 
+                    if (i !== bId) { 
+                        let otherVid = document.getElementById('vid-' + i); 
+                        if(otherVid) otherVid.pause(); 
+                    } 
+                }
+                
                 clearTimeout(mediaInt);
-                if (!isPostGame) mediaInt = setTimeout(() => { currentIndex++; manageBuffers(); }, cfg.imgDur * 1000);
+                if (!isPostGame) {
+                    mediaInt = setTimeout(() => { 
+                        currentIndex++; 
+                        manageBuffers(); 
+                    }, cfg.imgDur * 1000);
+                }
             }
         }
 
@@ -794,6 +988,66 @@
             loadPostIntoBuffer(currentIndex); 
             loadPostIntoBuffer(currentIndex + 1); 
             loadPostIntoBuffer(currentIndex + 2); 
+        }
+
+        function updateGlobalTimer() {
+            if (!globalStartT) return;
+            let elapsedSec = Math.floor((Date.now() - globalStartT) / 1000);
+            let m = Math.floor(elapsedSec / 60).toString().padStart(2, '0');
+            let s = (elapsedSec % 60).toString().padStart(2, '0');
+            
+            const el = document.getElementById('global-timer');
+            if (el) el.innerText = `${m}:${s}`;
+            
+            if (!hasForcedGlobalWin && !isPostGame && !ttcActive && !isWheelSpinning) {
+                if (elapsedSec / 60 >= cfg.maxGlobalMin) { 
+                    hasForcedGlobalWin = true; 
+                    forceGlobalWin(); 
+                }
+            }
+        }
+
+        function forceGlobalWin() {
+            isLive = false; 
+            cancelAnimationFrame(animFrame); 
+            clearTimeout(clock); 
+            clearTimeout(mediaInt); 
+            clearInterval(countdownInt); 
+            clearInterval(tensionDecayTimer);
+            clearTimeout(toastTimeout); 
+            speedModeEndTime = 0; 
+            isForcedRedActive = false; 
+            toyStop();
+            
+            const btnEdge = document.querySelector('.btn-edge');
+            const btnSkip = document.querySelector('.btn-skip');
+            const bottomBar = document.querySelector('.bottom-bar');
+            if (btnEdge) btnEdge.style.display = 'none'; 
+            if (btnSkip) btnSkip.style.display = 'none'; 
+            if (bottomBar) bottomBar.style.display = 'none';
+            
+            for (let i = 1; i <= 4; i++) { 
+                const buf = document.getElementById('buffer-' + i);
+                const vid = document.getElementById('vid-' + i);
+                if (buf) buf.classList.remove('active'); 
+                if (vid) vid.pause(); 
+            }
+            
+            document.body.className = ''; 
+            document.body.style.backgroundColor = "var(--bg)";
+            
+            const label = document.getElementById('status-label'); 
+            if (label) { 
+                label.innerHTML = "TIME IS UP"; 
+                label.className = 'status-text adaptive'; 
+                label.style.color = "var(--white)"; 
+            }
+
+            let isTTC = cfg.ttcAlways ? true : (cfg.ttcEnabled && Math.random() < 0.10);
+            setTimeout(() => { 
+                if (isTTC) startTTCSequence(); 
+                else triggerNormalWin(); 
+            }, 3000);
         }
 
         async function bootGame() {
@@ -807,7 +1061,7 @@
                 await fetchRedditSources();
                 if (redditPosts.length === 0) { 
                     alert("Keine Medien gefunden oder Reddit blockiert."); 
-                    if(btn) { btn.innerText = originalText; btn.disabled = false; }
+                    if(btn) { btn.innerText = originalText; btn.disabled = false; } 
                     return; 
                 }
             } else {
@@ -817,20 +1071,28 @@
 
             edgeCount = 0; 
             safeSetText('edge-display', "EDGES: 0");
+            isPostGame = false; 
+            ttcActive = false; 
+            currentTension = 0; 
+            currentIndex = 0; 
+            speedModeEndTime = 0; 
+            currentFinalState = null; 
+            postActionDone = false; 
+            isForcedRedActive = false; 
+            hasForcedGlobalWin = false; 
+            isWheelSpinning = false;
             
-            isPostGame = false; ttcActive = false; currentTension = 0; currentIndex = 0; speedModeEndTime = 0;
-            currentFinalState = null; postActionDone = false; isForcedRedActive = false;
-            abortTTC();
+            abortTTC(); 
             bufferState.forEach(b => { b.reqIdx = -1; b.isReady = false; });
 
             const actionBtn = document.getElementById('post-action-btn');
             const ttcBtn = document.getElementById('ttc-btn');
-            if (actionBtn) actionBtn.style.display = 'none';
-            if (ttcBtn) ttcBtn.style.display = 'none';
-            
             const plusBtn = document.querySelector('.btn-plus');
             const minusBtn = document.querySelector('.btn-minus');
-            if (plusBtn) plusBtn.style.display = 'flex';
+            
+            if (actionBtn) actionBtn.style.display = 'none'; 
+            if (ttcBtn) ttcBtn.style.display = 'none';
+            if (plusBtn) plusBtn.style.display = 'flex'; 
             if (minusBtn) minusBtn.style.display = 'flex';
 
             const elTotalMin = document.getElementById('t-total-min');
@@ -846,37 +1108,40 @@
             const elLongBreakDur = document.getElementById('t-long-break-dur');
             const elDiff = document.getElementById('t-difficulty');
             const elIntensity = document.getElementById('toy-intensity');
-            
             const elTtcMode = document.getElementById('f-ttc-mode');
             const elTtcAlways = document.getElementById('f-ttc-always');
 
             cfg = {
-                total: parseFloat(elTotalMin ? elTotalMin.value : 12) * 60,
-                maxGlobalMin: parseFloat(elMaxGlobal ? elMaxGlobal.value : 45),
+                total: parseFloat(elTotalMin ? elTotalMin.value : 12) * 60, 
+                maxGlobalMin: parseFloat(elMaxGlobal ? elMaxGlobal.value : 45), 
                 imgDur: parseFloat(elImgDur ? elImgDur.value : 40),
                 gMin: parseFloat(elGMin ? elGMin.value : 1), 
-                gMax: parseFloat(elGMax ? elGMax.value : 12),
+                gMax: parseFloat(elGMax ? elGMax.value : 12), 
                 rMin: parseFloat(elRMin ? elRMin.value : 1), 
                 rMax: parseFloat(elRMax ? elRMax.value : 12),
-                tensionModeActive: elTension ? elTension.checked : true,
-                speedModeActive: elSpeed ? elSpeed.checked : true,
+                tensionModeActive: elTension ? elTension.checked : true, 
+                speedModeActive: elSpeed ? elSpeed.checked : true, 
                 longBreakActive: elLongBreak ? elLongBreak.checked : false,
-                longBreakDur: parseFloat(elLongBreakDur ? elLongBreakDur.value : 25),
-                difficulty: parseInt(elDiff ? elDiff.value : 1),
+                longBreakDur: parseFloat(elLongBreakDur ? elLongBreakDur.value : 25), 
+                difficulty: parseInt(elDiff ? elDiff.value : 2), 
                 toyIntensity: parseFloat(elIntensity ? elIntensity.value : 80) / 100,
-                ttcEnabled: elTtcMode ? elTtcMode.checked : true,
+                ttcEnabled: elTtcMode ? elTtcMode.checked : true, 
                 ttcAlways: elTtcAlways ? elTtcAlways.checked : false
             };
 
             const setupUi = document.getElementById('setup-ui');
             const gameUi = document.getElementById('game-ui');
-            if (setupUi) setupUi.style.display = 'none';
+            if (setupUi) setupUi.style.display = 'none'; 
             if (gameUi) gameUi.style.display = 'block';
             
             updateIngameDot(false);
             isLive = true; 
-            globalStartT = Date.now();
+            globalStartT = Date.now(); 
             startT = Date.now();
+            
+            clearInterval(globalTimerInt); 
+            globalTimerInt = setInterval(updateGlobalTimer, 1000); 
+            updateGlobalTimer();
             
             startTensionDecay(); 
             engine(); 
@@ -889,7 +1154,6 @@
             let elapsed = (Date.now() - startT) / 1000;
             const progress = document.getElementById('progress-bar');
             if (progress) progress.style.width = Math.min((elapsed / cfg.total) * 100, 100) + "%";
-            
             if (elapsed >= cfg.total) finish(); else animFrame = requestAnimationFrame(engine);
         }
 
@@ -899,7 +1163,7 @@
             const update = () => { 
                 let left = (endT - Date.now()) / 1000; 
                 if (left > 0) {
-                    safeSetHTML('status-label', Math.ceil(left));
+                    safeSetHTML('status-label', Math.ceil(left)); 
                 } else { 
                     safeSetHTML('status-label', ""); 
                     clearInterval(countdownInt); 
@@ -911,169 +1175,168 @@
 
         function executeRedPhase(dur, isForcedEdge = false) {
             clearInterval(countdownInt); 
-            document.body.className = 'red-active';
-            
+            document.body.className = 'red-active'; 
             isForcedRedActive = isForcedEdge;
-            
             const label = document.getElementById('status-label'); 
             if (label) label.classList.remove('countdown');
             
             if (isForcedEdge) { 
                 safeSetHTML('status-label', "DONT YOU <br> DARE CUM"); 
-                if (label) label.classList.add('adaptive', 'pulse'); 
+                if (label) label.className = 'status-text adaptive pulse'; 
             } else { 
                 const taunts = [
                     "Frustrating?", "Struggling?", "My Rules!", "Poor thing.", 
                     "Enjoying it?", "Aww.", "Begging?", "Hurts?", "Too bad.", 
                     "Sensitive?", "Cute :)", "Twitching?", "Good boy?", "Pathetic!"
                 ];
-                const randomTaunt = taunts[Math.floor(Math.random() * taunts.length)];
-                safeSetHTML('status-label', randomTaunt); 
-
-                if (label) { label.classList.remove('pulse'); label.classList.add('adaptive'); }
+                safeSetHTML('status-label', taunts[Math.floor(Math.random() * taunts.length)]); 
+                if (label) label.className = 'status-text adaptive';
             }
             toyStop(); 
-            clock = setTimeout(() => {
+            clock = setTimeout(() => { 
                 isForcedRedActive = false; 
-                cycle('green');
+                cycle('green'); 
             }, dur * 1000);
         }
 
         function cycle(type) {
             if (!isLive) return;
-
             let now = Date.now();
-            
             if (type === 'green' && cfg.speedModeActive && now > speedModeEndTime && Math.random() < 0.10) {
                 speedModeEndTime = now + 60000;
             }
 
             let isCurrentlySpeedMode = now < speedModeEndTime;
             let dur;
-
+            
             if (isCurrentlySpeedMode) {
-                if (type === 'green') dur = 1 + Math.random() * 4; 
-                else dur = 1 + Math.random() * 3;
+                dur = type === 'green' ? 1 + Math.random() * 4 : 1 + Math.random() * 3;
             } else {
-                if (type === 'red' && cfg.longBreakActive && Math.random() < 0.04) dur = cfg.longBreakDur;
-                else if (cfg.tensionModeActive) {
+                if (type === 'red' && cfg.longBreakActive && Math.random() < 0.04) {
+                    dur = cfg.longBreakDur;
+                } else if (cfg.tensionModeActive) {
                     let r = Math.random();
                     if (currentTension <= 15) {
-                        dur = type === 'green' ? cfg.gMin + (1 - Math.pow(r, 3.0)) * (cfg.gMax - cfg.gMin) : cfg.rMin + Math.pow(r, 4.0) * (cfg.rMax - cfg.rMin);
+                        dur = type === 'green' 
+                            ? cfg.gMin + (1 - Math.pow(r, 3.0)) * (cfg.gMax - cfg.gMin) 
+                            : cfg.rMin + Math.pow(r, 4.0) * (cfg.rMax - cfg.rMin);
                     } else if (currentTension >= 81) {
-                        dur = type === 'green' ? cfg.gMin + Math.pow(r, 3.0) * (cfg.gMax - cfg.gMin) : cfg.rMin + (1 - Math.pow(r, 1.5)) * (cfg.rMax - cfg.rMin);
+                        dur = type === 'green' 
+                            ? cfg.gMin + Math.pow(r, 3.0) * (cfg.gMax - cfg.gMin) 
+                            : cfg.rMin + (1 - Math.pow(r, 1.5)) * (cfg.rMax - cfg.rMin);
                     } else {
-                        dur = type === 'green' ? cfg.gMin + r * (cfg.gMax - cfg.gMin) : cfg.rMin + r * (cfg.rMax - cfg.rMin);
+                        dur = type === 'green' 
+                            ? cfg.gMin + r * (cfg.gMax - cfg.gMin) 
+                            : cfg.rMin + r * (cfg.rMax - cfg.rMin);
                     }
-                } else dur = type === 'green' ? cfg.gMin + Math.random() * (cfg.gMax - cfg.gMin) : cfg.rMin + Math.random() * (cfg.rMax - cfg.rMin);
+                } else {
+                    dur = type === 'green' 
+                        ? cfg.gMin + Math.random() * (cfg.gMax - cfg.gMin) 
+                        : cfg.rMin + Math.random() * (cfg.rMax - cfg.rMin);
+                }
             }
             
             dur = Math.max(dur, 0.4);
             const label = document.getElementById('status-label');
             if (type === 'green') {
                 document.body.className = 'green-active';
-                if (label) { label.classList.remove('pulse', 'adaptive'); label.classList.add('countdown'); }
-                
+                if (label) label.className = 'status-text countdown';
                 toyVibrate(getEffectiveIntensity());
-                
                 runCountdown(dur);
                 clock = setTimeout(() => cycle('red'), dur * 1000);
-            } else executeRedPhase(dur);
+            } else {
+                executeRedPhase(dur);
+            }
         }
 
-        // --- TTC Asynchrone Sequenz mit Varianz ---
         async function startTTCSequence() {
-            ttcActive = true;
+            ttcActive = true; 
             let ttcStartT = Date.now();
-            
-            document.body.className = '';
-            document.body.style.backgroundColor = "var(--green)"; // UI sieht aus wie normaler Win
-            
+            document.body.className = ''; 
+            document.body.style.backgroundColor = "#124d22"; // Weiches Dunkelgrün statt grelles var(--green)
             const label = document.getElementById('status-label');
+            
             if (label) { 
-                label.classList.remove('adaptive'); 
-                label.style.fontSize = "clamp(2.5rem, 9vw, 4rem)"; 
-                label.style.letterSpacing = "1px"; 
-                label.style.color = "var(--white)";
-                safeSetHTML('status-label', "TRY TO CUM");
+                label.className = 'status-text'; 
+                label.style.transform = "scale(0.8)"; 
+                label.style.color = "var(--white)"; 
+                safeSetHTML('status-label', "TRY TO CUM"); 
             }
 
             document.getElementById('ttc-btn').style.display = 'block';
-            
-            const skipBtn = document.querySelector('.btn-skip');
+            const skipBtn = document.querySelector('.btn-skip'); 
             if (skipBtn) skipBtn.style.display = 'flex';
             
-            mediaInt = setTimeout(() => { currentIndex++; manageBuffers(); }, cfg.imgDur * 1000);
+            // Fix: Bild sofort anzeigen, damit der Screen beim Start nicht komplett ohne Medien ist
+            checkDisplay();
+
+            mediaInt = setTimeout(() => { 
+                currentIndex++; 
+                manageBuffers(); 
+            }, cfg.imgDur * 1000);
             
             while (ttcActive) {
                 let elapsedSec = (Date.now() - ttcStartT) / 1000;
                 
-                if (elapsedSec >= 420) { // 7 Minuten überlebt
-                    abortTTC();
-                    document.getElementById('ttc-btn').style.display = 'none';
-                    triggerNormalWin();
-                    return;
+                if (elapsedSec >= 420) { 
+                    abortTTC(); 
+                    document.getElementById('ttc-btn').style.display = 'none'; 
+                    triggerNormalWin(); 
+                    return; 
                 }
                 
                 let baseOn = 0, baseOff = 0, isHeartbeat = false;
+                if (elapsedSec < 30) { baseOn = 1; baseOff = 9; } 
+                else if (elapsedSec < 60) { baseOn = 2; baseOff = 8; } 
+                else if (elapsedSec < 240) { baseOn = 3; baseOff = 8; isHeartbeat = true; } 
+                else if (elapsedSec < 300) { baseOn = 2; baseOff = 5; isHeartbeat = true; } 
+                else { baseOn = 1; baseOff = 4; }
                 
-                if (elapsedSec < 30) {
-                    baseOn = 1; baseOff = 9;
-                } else if (elapsedSec < 60) {
-                    baseOn = 2; baseOff = 8;
-                } else if (elapsedSec < 240) { // + 180s (3 Min)
-                    baseOn = 3; baseOff = 8; isHeartbeat = true;
-                } else if (elapsedSec < 300) { // + 60s (1 Min)
-                    baseOn = 2; baseOff = 5; isHeartbeat = true;
-                } else { // + 120s (2 Min) -> 420s
-                    baseOn = 1; baseOff = 4;
-                }
-                
-                // Varianz: ON bis 30% kürzer | OFF bis 40% kürzer ODER 20% länger
                 let actualOn = baseOn * (1 - Math.random() * 0.3);
                 let actualOff = baseOff * (1 + (Math.random() * 0.6 - 0.4));
                 
-                // ON Phase
                 if (isHeartbeat) {
                     let cycles = Math.ceil(actualOn);
                     for(let i = 0; i < cycles; i++) {
-                        if(!ttcActive) break;
-                        toyVibrate(cfg.toyIntensity); await sleepTTC(250); if(!ttcActive) break;
-                        toyStop(); await sleepTTC(150); if(!ttcActive) break;
-                        toyVibrate(cfg.toyIntensity); await sleepTTC(250); if(!ttcActive) break;
-                        toyStop(); await sleepTTC(350); if(!ttcActive) break;
+                        if(!ttcActive) break; 
+                        toyVibrate(cfg.toyIntensity); await sleepTTC(250);
+                        
+                        if(!ttcActive) break; 
+                        toyStop(); await sleepTTC(150);
+                        
+                        if(!ttcActive) break; 
+                        toyVibrate(cfg.toyIntensity); await sleepTTC(250);
+                        
+                        if(!ttcActive) break; 
+                        toyStop(); await sleepTTC(350);
                     }
                 } else {
-                    toyVibrate(cfg.toyIntensity);
+                    if(!ttcActive) break; 
+                    toyVibrate(cfg.toyIntensity); 
                     await sleepTTC(actualOn * 1000);
                 }
-                
                 if (!ttcActive) break;
-                
-                // OFF Phase
-                toyStop();
+                toyStop(); 
                 await sleepTTC(actualOff * 1000);
             }
         }
 
-        // --- Standard Win ---
         function triggerNormalWin() {
-            document.body.className = '';
-            document.body.style.backgroundColor = "var(--green)";
+            document.body.className = ''; 
+            document.body.style.backgroundColor = "#124d22"; // Weiches Dunkelgrün statt grelles var(--green)
             toyVibrate(cfg.toyIntensity); 
             setTimeout(() => toyStop(), 2500);
             
-            isPostGame = true;
-            currentFinalState = 'cum';
+            isPostGame = true; 
+            currentFinalState = 'cum'; 
             postActionDone = false;
             
             const label = document.getElementById('status-label');
             if (label) { 
-                safeSetHTML('status-label', "BE A GOOD BOY<br>AND CUM");
-                label.classList.remove('adaptive'); 
-                label.style.fontSize = "clamp(2.5rem, 9vw, 4rem)"; 
-                label.style.letterSpacing = "1px"; 
-                label.style.color = "var(--white)";
+                safeSetHTML('status-label', "BE A GOOD BOY<br>AND CUM"); 
+                label.className = 'status-text'; 
+                label.style.transform = "scale(0.8)"; 
+                label.style.color = "var(--white)"; 
             }
             
             const skipBtn = document.querySelector('.btn-skip');
@@ -1082,12 +1345,11 @@
             
             if (skipBtn) skipBtn.style.display = 'flex'; 
             if (vibeBtn) vibeBtn.style.display = 'block'; 
-            
-            if (actionBtn) {
-                actionBtn.style.display = 'block';
-                actionBtn.innerText = "FINISH (5s) [SPACE]";
-                actionBtn.style.color = "var(--accent)";
-                actionBtn.style.borderColor = "var(--accent)";
+            if (actionBtn) { 
+                actionBtn.style.display = 'block'; 
+                actionBtn.innerText = "FINISH (5s) [SPACE]"; 
+                actionBtn.style.color = "var(--accent)"; 
+                actionBtn.style.borderColor = "var(--accent)"; 
             }
             checkDisplay();
         }
@@ -1099,18 +1361,20 @@
             clearTimeout(mediaInt); 
             clearInterval(countdownInt); 
             clearInterval(tensionDecayTimer);
-            speedModeEndTime = 0;
-            isForcedRedActive = false;
+            clearTimeout(toastTimeout); 
+            speedModeEndTime = 0; 
+            isForcedRedActive = false; 
             toyStop();
             
             const btnEdge = document.querySelector('.btn-edge');
             const btnSkip = document.querySelector('.btn-skip');
             const bottomBar = document.querySelector('.bottom-bar');
+            
             if (btnEdge) btnEdge.style.display = 'none'; 
             if (btnSkip) btnSkip.style.display = 'none'; 
             if (bottomBar) bottomBar.style.display = 'none';
             
-            for (let i = 1; i <= 3; i++) { 
+            for (let i = 1; i <= 4; i++) { 
                 const buf = document.getElementById('buffer-' + i);
                 const vid = document.getElementById('vid-' + i);
                 if (buf) buf.classList.remove('active'); 
@@ -1120,57 +1384,101 @@
             document.body.style.backgroundColor = "var(--bg)";
             
             const label = document.getElementById('status-label'); 
-            if (label) { label.innerHTML = ""; label.classList.remove('pulse', 'countdown'); }
+            if (label) { 
+                label.innerHTML = ""; 
+                label.className = 'status-text'; 
+            }
 
-            let minEdgesRequired = 3, bonus = 0.06, cap = 0.70;
+            let minEdgesRequired = 8, bonus = 0.04, cap = 0.60;
             switch(cfg.difficulty) {
-                case 1: minEdgesRequired = 3; bonus = 0.06; cap = 0.70; break;
-                case 2: minEdgesRequired = 8; bonus = 0.03; cap = 0.60; break;
-                case 3: minEdgesRequired = 15; bonus = 0.02; cap = 0.60; break;
-                case 4: minEdgesRequired = 15; bonus = 0.02; cap = 0.50; break;
-                case 5: minEdgesRequired = 20; bonus = 0.015; cap = 0.50; break;
+                case 1: minEdgesRequired = 8; bonus = 0.04; cap = 0.60; break;
+                case 2: minEdgesRequired = 11; bonus = 0.03; cap = 0.55; break;
+                case 3: minEdgesRequired = 15; bonus = 0.02; cap = 0.50; break;
+                case 4: minEdgesRequired = 18; bonus = 0.015; cap = 0.45; break;
+                case 5: minEdgesRequired = 22; bonus = 0.01; cap = 0.40; break;
+                case 6: minEdgesRequired = 26; bonus = 0.005; cap = 0.30; break;
+                case 7: minEdgesRequired = 30; bonus = 0.005; cap = 0.25; break;
             }
 
             let currentWinChance = edgeCount >= minEdgesRequired ? Math.min(0.10 + edgeCount * bonus, cap) : 0;
             let isWin = Math.random() < currentWinChance;
-
             let globalElapsedMin = (Date.now() - globalStartT) / 1000 / 60;
-            if (globalElapsedMin >= cfg.maxGlobalMin) {
-                isWin = true;
-            }
+            if (globalElapsedMin >= cfg.maxGlobalMin) isWin = true;
 
-            let isTTC = false;
-            if (isWin) {
-                if (cfg.ttcAlways) {
-                    isTTC = true;
-                } else if (cfg.ttcEnabled && Math.random() < 0.10) { // <-- Reduziert auf 10%
-                    isTTC = true;
-                }
-            }
+            let isTTC = isWin ? (cfg.ttcAlways ? true : (cfg.ttcEnabled && Math.random() < 0.10)) : false;
 
+            // Roulette Phase Init
+            isWheelSpinning = true;
+            rouletteVibeEnabled = true;
+            const tickBtn = document.getElementById('roulette-vibe-btn');
+            if(tickBtn) {
+                tickBtn.style.display = 'block';
+                tickBtn.classList.toggle('is-on', rouletteVibeEnabled);
+                tickBtn.innerText = rouletteVibeEnabled ? "TICK VIBE: ON [SPACE]" : "TICK VIBE: OFF [SPACE]";
+            }
+            
             setTimeout(() => {
-                let ticks = 0; const maxTicks = 30; let currentSpeed = 35; const slowdownFactor = 1.16;
+                let ticks = 0; 
+                const maxTicks = 42; 
+                let currentSpeed = 35; 
+                const slowdownFactor = 1.09; 
+                
                 const spinWinText = "BE A GOOD BOY<br>AND CUM", spinLoseText = "AGAIN<br>LOSER", spinTTCText = "TRY<br>TO CUM";
                 const finalOutcome = isWin ? (isTTC ? spinTTCText : spinWinText) : spinLoseText;
-                if (label) label.classList.add('adaptive');
 
                 function spinWheel() {
-                    safeSetHTML('status-label', (ticks % 2 === 0) ? spinWinText : spinLoseText);
-                    if (label) label.style.color = (ticks % 2 === 0) ? "var(--green)" : "var(--red)";
+                    if (hasForcedGlobalWin) return; 
+                    
+                    let isFinal = ticks === maxTicks;
+
+                    if (isFinal) {
+                        safeSetHTML('status-label', finalOutcome);
+                        if (label) { 
+                            label.className = 'status-text pop-text'; 
+                            label.style.color = isWin ? "var(--green)" : "var(--white)"; 
+                            label.style.transform = "scale(1)"; 
+                        }
+                    } else {
+                        let showWin = ticks % 2 === 0;
+                        safeSetHTML('status-label', showWin ? (isTTC ? spinTTCText : spinWinText) : spinLoseText);
+                        if (label) { 
+                            label.className = 'status-text binary-text'; 
+                            label.style.color = showWin ? "var(--green)" : "var(--red)"; 
+                        }
+                    }
+
+                    if (rouletteVibeEnabled) {
+                        if (isFinal) {
+                            toyVibrate(0.6); 
+                        } else {
+                            let maxRouletteIntensity = cfg.toyIntensity * 0.6;
+                            
+                            if (currentSpeed < 100) {
+                                let baseIntensity = cfg.toyIntensity * 0.2; 
+                                toyVibrate(maxRouletteIntensity); 
+                                setTimeout(() => {
+                                    if (isWheelSpinning) toyVibrate(baseIntensity); 
+                                }, 25); 
+                            } else {
+                                toyVibrate(maxRouletteIntensity);
+                                setTimeout(() => {
+                                    if (isWheelSpinning) toyStop();
+                                }, 35);
+                            }
+                        }
+                    }
+
                     ticks++;
-                    if (ticks < maxTicks) { 
-                        currentSpeed *= slowdownFactor; 
+                    if (ticks <= maxTicks) { 
+                        currentSpeed = Math.min(currentSpeed * slowdownFactor, 1200); 
                         setTimeout(spinWheel, currentSpeed); 
                     } else {
-                        safeSetHTML('status-label', finalOutcome); 
-                        if (label) label.style.color = "var(--white)";
+                        isWheelSpinning = false;
+                        if(tickBtn) tickBtn.style.display = 'none';
                         
                         if (isWin) {
-                            if (isTTC) {
-                                startTTCSequence();
-                            } else {
-                                triggerNormalWin();
-                            }
+                            if (isTTC) startTTCSequence();
+                            else triggerNormalWin();
                         } else {
                             document.body.style.backgroundColor = "var(--red)";
                             setTimeout(() => startSeamlessRestart(), 5000);
@@ -1182,15 +1490,33 @@
         }
 
         function startSeamlessRestart() {
-            isPostGame = false; ttcActive = false; currentTension = 0; currentFinalState = null; isForcedRedActive = false;
+            if (hasForcedGlobalWin) return; 
+            let globalElapsedMin = (Date.now() - globalStartT) / 1000 / 60;
+            if (globalElapsedMin >= cfg.maxGlobalMin) { 
+                hasForcedGlobalWin = true; 
+                forceGlobalWin(); 
+                return; 
+            }
+            
+            isPostGame = false; 
+            ttcActive = false; 
+            currentTension = 0; 
+            currentFinalState = null; 
+            isForcedRedActive = false; 
+            clearTimeout(toastTimeout); 
             abortTTC();
-            const vibeBtn = document.getElementById('post-win-vibe'); 
+            
+            const vibeBtn = document.getElementById('post-win-vibe');
             const actionBtn = document.getElementById('post-action-btn');
             const ttcBtn = document.getElementById('ttc-btn');
             
-            if (vibeBtn) { vibeBtn.style.display = 'none'; vibeBtn.classList.remove('is-active'); vibeBtn.innerText = "VIBE AN"; }
-            if (actionBtn) actionBtn.style.display = 'none';
-            if (ttcBtn) ttcBtn.style.display = 'none';
+            if (vibeBtn) { 
+                vibeBtn.style.display = 'none'; 
+                vibeBtn.classList.remove('is-active'); 
+                vibeBtn.innerText = "VIBE AN"; 
+            }
+            if (actionBtn) actionBtn.style.display = 'none'; 
+            if (ttcBtn) ttcBtn.style.display = 'none'; 
             isManualVibeOn = false;
             
             const btnEdge = document.querySelector('.btn-edge');
@@ -1201,18 +1527,24 @@
             
             if (btnEdge) btnEdge.style.display = 'flex'; 
             if (btnSkip) btnSkip.style.display = 'flex'; 
-            if (plusBtn) plusBtn.style.display = 'flex';
-            if (minusBtn) minusBtn.style.display = 'flex';
+            if (plusBtn) plusBtn.style.display = 'flex'; 
+            if (minusBtn) minusBtn.style.display = 'flex'; 
             if (bottomBar) bottomBar.style.display = 'flex';
             
-            document.body.className = '';
+            document.body.className = ''; 
             document.body.style.backgroundColor = "";
+            
             const label = document.getElementById('status-label'); 
-            if (label) { label.classList.remove('adaptive', 'countdown'); label.style.cssText = ""; label.innerHTML = ""; }
+            if (label) { 
+                label.className = 'status-text'; 
+                label.style.cssText = ""; 
+                label.innerHTML = ""; 
+            }
             
             startT = Date.now(); 
             isLive = true; 
-            const progress = document.getElementById('progress-bar');
+            
+            const progress = document.getElementById('progress-bar'); 
             if (progress) progress.style.width = "0%";
             
             startTensionDecay(); 
