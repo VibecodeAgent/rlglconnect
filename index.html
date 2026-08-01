@@ -1,129 +1,126 @@
 <!DOCTYPE html>
-<html lang="de">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>Red Light Green Light - Pro Edition</title>
-    
-    <script src="https://unpkg.com/buttplug@3.0.0/dist/web/buttplug.min.js"></script>
-    
+    <meta name="referrer" content="no-referrer">
+    <title>Red Light Green Light — Pro Edition</title>
+
+    <!-- Optional hardware bridge. Only loaded when the user opens the device panel. -->
+
     <style>
-        /* Clean Apple Dark Mode Palette */
-        :root { 
-            --bg: #000000; 
-            --card: #1c1c1e; 
+        :root {
+            --bg: #000000;
+            --card: #1c1c1e;
             --input-bg: #2c2c2e;
-            --accent: #0a84ff; 
-            --green: #2da841; /* Entschärftes, weniger grelles Grün */
-            --red: #ff453a; 
+            --accent: #0a84ff;
+            --green: #2da841;
+            --red: #ff453a;
             --purple: #bf5af2;
-            --white: #ffffff; 
+            --white: #ffffff;
             --text-sec: #86868b;
         }
-        
-        html, body { 
-            margin: 0; 
-            padding: 0; 
-            width: 100vw; 
-            height: 100vh; 
-            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, sans-serif; 
-            background-color: var(--bg); 
-            color: var(--white); 
-            display: flex; 
-            justify-content: center; 
-            align-items: center; 
-            transition: background-color 0.4s ease; 
-            overflow: hidden; 
-            -webkit-font-smoothing: antialiased; 
+
+        html, body {
+            margin: 0;
+            padding: 0;
+            width: 100vw;
+            height: 100vh;
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, sans-serif;
+            background-color: var(--bg);
+            color: var(--white);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: background-color 0.4s ease;
+            overflow: hidden;
+            -webkit-font-smoothing: antialiased;
         }
-        
-        .setup-container { 
-            padding: 2.5rem; 
-            border-radius: 20px; 
-            width: 95%; 
-            max-width: 650px; 
-            background: var(--card); 
-            box-shadow: 0 20px 50px rgba(0,0,0,0.8); 
-            z-index: 100; 
-            max-height: 90vh; 
-            overflow-y: auto; 
-            scrollbar-width: none; 
-            border: 1px solid rgba(255,255,255,0.05); 
+
+        .setup-container {
+            padding: 2.5rem;
+            border-radius: 20px;
+            width: 95%;
+            max-width: 650px;
+            background: var(--card);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.8);
+            z-index: 100;
+            max-height: 90vh;
+            overflow-y: auto;
+            scrollbar-width: none;
+            border: 1px solid rgba(255,255,255,0.05);
         }
-        
         .setup-container::-webkit-scrollbar { display: none; }
-        
-        h2 { 
-            margin: 0 0 1.5rem 0; 
-            color: var(--white); 
-            font-size: 2rem; 
-            font-weight: 700; 
-            letter-spacing: -0.5px; 
-            text-align: center; 
+
+        h2 {
+            margin: 0 0 0.4rem 0;
+            color: var(--white);
+            font-size: 2rem;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            text-align: center;
         }
-        
-        .section-title { 
-            font-size: 0.75rem; 
-            text-transform: uppercase; 
-            color: var(--text-sec); 
-            letter-spacing: 1px; 
-            margin: 1.5rem 0 0.8rem 0; 
-            font-weight: 600; 
-            border-bottom: 1px solid rgba(255,255,255,0.1); 
-            padding-bottom: 0.4rem; 
+        .subtitle { text-align: center; color: var(--text-sec); font-size: 0.85rem; margin: 0 0 1.5rem 0; }
+
+        .section-title {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            color: var(--text-sec);
+            letter-spacing: 1px;
+            margin: 1.5rem 0 0.8rem 0;
+            font-weight: 600;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            padding-bottom: 0.4rem;
         }
-        
+
         .settings-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; }
         .full-width { grid-column: 1 / -1; }
-        
+
         .input-group { display: flex; flex-direction: column; gap: 0.4rem; transition: opacity 0.3s; }
         label { font-size: 0.8rem; color: var(--text-sec); font-weight: 600; }
-        
-        input[type="text"], input[type="number"], select { 
-            background: var(--input-bg); 
-            border: none; 
-            padding: 0.8rem 1rem; 
-            border-radius: 10px; 
-            color: var(--white); 
-            font-size: 1rem; 
-            font-family: inherit; 
-            outline: none; 
-            transition: box-shadow 0.2s; 
+
+        input[type="text"], input[type="number"], select {
+            background: var(--input-bg);
+            border: none;
+            padding: 0.8rem 1rem;
+            border-radius: 10px;
+            color: var(--white);
+            font-size: 1rem;
+            font-family: inherit;
+            outline: none;
+            transition: box-shadow 0.2s;
         }
-        
         input[type="text"]:focus, input[type="number"]:focus, select:focus { box-shadow: 0 0 0 2px var(--accent); }
-        
-        /* Native iOS-like Toggle */
+
         .toggle-row { display: flex; justify-content: space-between; align-items: center; background: var(--input-bg); padding: 0.8rem 1rem; border-radius: 10px; transition: box-shadow 0.3s; }
         .toggle-row label { color: var(--white); font-size: 0.95rem; font-weight: 500; margin: 0; }
         .ios-toggle { position: relative; width: 46px; height: 26px; -webkit-appearance: none; appearance: none; background: #39393d; border-radius: 26px; outline: none; cursor: pointer; transition: background 0.3s ease; flex-shrink: 0; margin: 0; }
         .ios-toggle::after { content: ''; position: absolute; top: 2px; left: 2px; width: 22px; height: 22px; background: white; border-radius: 50%; transition: transform 0.3s cubic-bezier(0.3, 1.5, 0.7, 1); box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
         .ios-toggle:checked { background: var(--green); }
         .ios-toggle:checked::after { transform: translateX(20px); }
-        
-        .cloud-active { box-shadow: inset 0 0 0 1px var(--accent); }
+        .ios-toggle:focus-visible { box-shadow: 0 0 0 2px var(--accent); }
 
-        /* Range Sliders */
+        .source-active { box-shadow: inset 0 0 0 1px var(--accent); }
+
         .slider-wrap { display: flex; align-items: center; gap: 1rem; background: var(--input-bg); padding: 0.8rem 1rem; border-radius: 10px; }
         input[type=range] { -webkit-appearance: none; appearance: none; width: 100%; background: transparent; height: 24px; outline: none; }
         input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 6px; background: #39393d; border-radius: 3px; }
         input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; height: 20px; width: 20px; border-radius: 50%; background: var(--white); margin-top: -7px; box-shadow: 0 2px 6px rgba(0,0,0,0.4); cursor: pointer; transition: transform 0.1s; }
         input[type=range]:active::-webkit-slider-thumb { transform: scale(1.15); }
         .slider-val { font-size: 0.95rem; font-weight: 600; color: var(--accent); min-width: 3rem; text-align: right; }
-        
-        .diff-info { font-size: 0.8rem; color: var(--text-sec); padding: 0.5rem 0.5rem 0 0.5rem; line-height: 1.4; }
 
-        /* File Picker */
+        .diff-info { font-size: 0.8rem; color: var(--text-sec); padding: 0.5rem 0.5rem 0 0.5rem; line-height: 1.4; }
+        .hint { font-size: 0.78rem; color: var(--text-sec); line-height: 1.45; padding: 0.2rem 0.2rem 0 0.2rem; }
+        .hint strong { color: var(--white); font-weight: 600; }
+
         .folder-btn { display: flex; justify-content: space-between; align-items: center; background: rgba(10, 132, 255, 0.15); border: 1px solid rgba(10, 132, 255, 0.3); color: var(--accent); padding: 1rem; border-radius: 10px; cursor: pointer; font-weight: 600; transition: all 0.2s; }
         .folder-btn:hover { background: rgba(10, 132, 255, 0.25); }
         .file-status { font-size: 0.8rem; color: var(--text-sec); margin-top: 0.4rem; padding-left: 0.5rem; font-weight: 500; }
 
-        /* Buttons */
         .start-btn { width: 100%; background: var(--accent); color: var(--white); border: none; padding: 1.2rem; border-radius: 12px; font-weight: 600; font-size: 1.2rem; cursor: pointer; margin-top: 2rem; transition: opacity 0.2s, transform 0.2s; }
         .start-btn:hover:not(:disabled) { opacity: 0.9; transform: scale(0.99); }
         .start-btn:disabled { background: #39393d; color: #86868b; cursor: not-allowed; }
 
-        /* Toy Panel */
         .toy-panel { background: var(--input-bg); border-radius: 12px; padding: 1rem; display: flex; flex-direction: column; gap: 0.8rem; }
         .toy-row { display: flex; align-items: center; gap: 0.8rem; }
         .toy-status-dot { width: 10px; height: 10px; border-radius: 50%; background: #48484a; flex-shrink: 0; transition: background 0.3s, box-shadow 0.3s; }
@@ -131,21 +128,19 @@
         .toy-status-dot.connected { background: var(--green); box-shadow: 0 0 8px var(--green); }
         .toy-status-dot.error { background: var(--red); }
         @keyframes pulse-dot { 0%,100% { opacity:1 } 50% { opacity:0.4 } }
-        
+
         .toy-status-label { font-size: 0.85rem; font-weight: 500; color: var(--white); flex: 1; }
         .toy-connect-btn { background: #3a3a3c; border: none; color: var(--white); padding: 0.5rem 1rem; border-radius: 8px; font-size: 0.8rem; font-weight: 600; cursor: pointer; transition: background 0.2s; }
         .toy-connect-btn:hover:not(:disabled) { background: #48484a; }
         .toy-connect-btn:disabled { opacity: 0.5; }
-        
-        /* Game UI */
+
         #game-ui { display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 10; }
-        
+
         .pc-btn { position: absolute; background: rgba(28,28,30,0.5); border: 1px solid rgba(255,255,255,0.1); color: var(--white); width: 3.5rem; height: 3.5rem; border-radius: 50%; display: flex; justify-content: center; align-items: center; cursor: pointer; z-index: 200; backdrop-filter: blur(10px); transition: all 0.2s; }
         .pc-btn:hover { background: rgba(44,44,46,0.8); transform: scale(1.05); }
         .pc-btn:active { transform: scale(0.95); }
         .pc-btn::after { content: attr(data-key); position: absolute; bottom: -20px; font-size: 0.65rem; color: rgba(255,255,255,0.6); font-weight: 600; letter-spacing: 1px; }
 
-        /* Left side buttons */
         .btn-close { top: 25px; left: 25px; }
         .btn-edge { top: 50%; left: 25px; transform: translateY(-50%); background: rgba(255, 69, 58, 0.15); border-color: rgba(255, 69, 58, 0.3); color: var(--red); }
         .btn-edge:hover { background: rgba(255, 69, 58, 0.3); color: var(--white); transform: translateY(-50%) scale(1.05); }
@@ -153,23 +148,21 @@
         .btn-skip { top: calc(50% + 5rem); left: 25px; transform: translateY(-50%); }
         .btn-skip:hover { transform: translateY(-50%) scale(1.05); }
         .btn-skip:active { transform: translateY(-50%) scale(0.95); }
-        
-        /* Right side buttons */
+
         .btn-plus { top: calc(50% - 3rem); right: 25px; transform: translateY(-50%); background: rgba(50, 215, 75, 0.15); border-color: rgba(50, 215, 75, 0.3); color: var(--green); }
         .btn-plus:hover { background: rgba(50, 215, 75, 0.3); color: var(--white); transform: translateY(-50%) scale(1.05); }
         .btn-plus:active { transform: translateY(-50%) scale(0.95); }
-        
+
         .btn-minus { top: calc(50% + 3rem); right: 25px; transform: translateY(-50%); background: rgba(255, 69, 58, 0.15); border-color: rgba(255, 69, 58, 0.3); color: var(--red); }
         .btn-minus:hover { background: rgba(255, 69, 58, 0.3); color: var(--white); transform: translateY(-50%) scale(1.05); }
         .btn-minus:active { transform: translateY(-50%) scale(0.95); }
-        
+
         .intensity-toast { position: absolute; top: calc(50% - 7.5rem); right: 25px; color: var(--white); background: rgba(28,28,30,0.8); border: 1px solid rgba(255,255,255,0.1); padding: 0.5rem 1rem; border-radius: 10px; font-weight: 600; font-size: 0.9rem; backdrop-filter: blur(5px); opacity: 0; transition: opacity 0.3s ease; pointer-events: none; z-index: 200; transform: translateY(-50%); }
 
         .toy-ingame-dot { position: absolute; top: 35px; right: 35px; width: 12px; height: 12px; border-radius: 50%; background: #48484a; z-index: 200; transition: background 0.2s, box-shadow 0.2s; }
         .toy-ingame-dot.vib-on { background: var(--green); box-shadow: 0 0 12px var(--green); }
         .toy-ingame-dot.vib-off { background: var(--red); box-shadow: none; }
-        
-        /* Roulette Tick Toggle Button */
+
         .tick-vibe-btn { position: absolute; bottom: 85px; left: 50%; transform: translateX(-50%); background: rgba(28,28,30,0.5); border: 1px solid rgba(255,255,255,0.1); color: var(--text-sec); padding: 0.5rem 1.2rem; border-radius: 20px; font-size: 0.75rem; font-weight: 600; letter-spacing: 1px; backdrop-filter: blur(10px); z-index: 200; cursor: pointer; display: none; transition: all 0.2s; }
         .tick-vibe-btn.is-on { color: var(--accent); border-color: rgba(10, 132, 255, 0.3); background: rgba(10, 132, 255, 0.1); }
         .tick-vibe-btn:hover { transform: translateX(-50%) scale(1.05); }
@@ -178,40 +171,43 @@
         .media-buffer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; transition: opacity 0.4s ease; z-index: 1; }
         .media-buffer.active { opacity: 1; z-index: 2; }
         .media-layer { width: 100%; height: 100%; object-fit: contain; position: absolute; top: 0; left: 0; display: none; }
-        
-        /* Accelerated Display & Roulette Phases */
+
+        /* Procedural demo tile — no network, no files, no user content */
+        .demo-layer { display: none; flex-direction: column; justify-content: center; align-items: center; gap: 0.6rem; }
+        .demo-badge { font-size: 0.7rem; letter-spacing: 3px; text-transform: uppercase; color: rgba(255,255,255,0.55); font-weight: 700; }
+        .demo-num { font-size: clamp(4rem, 14vw, 9rem); font-weight: 800; color: rgba(255,255,255,0.85); line-height: 1; font-variant-numeric: tabular-nums; }
+        .demo-sub { font-size: 0.8rem; color: rgba(255,255,255,0.45); font-weight: 600; letter-spacing: 1px; }
+
         .top-display { position: absolute; top: 15px; left: 0; width: 100%; z-index: 50; text-align: center; text-shadow: 0 4px 20px rgba(0,0,0,0.8); pointer-events: none; will-change: transform, opacity; }
-        
-        /* GPU Accelerated Status Text */
-        .status-text { 
-            font-size: clamp(2.5rem, 6vw, 4.5rem); 
-            font-weight: 800; 
-            text-transform: uppercase; 
-            letter-spacing: -1.5px; 
-            margin: 0; 
-            line-height: 1.1; 
-            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.2s; 
-            will-change: transform, filter; 
+
+        .status-text {
+            font-size: clamp(2.5rem, 6vw, 4.5rem);
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: -1.5px;
+            margin: 0;
+            line-height: 1.1;
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.2s;
+            will-change: transform, filter;
         }
-        
-        /* Roulette specific phases - Verkleinerte Fonts */
+
         .binary-text { opacity: 1; transform: scale(1); transition: color 0.1s ease-out; font-size: clamp(1.5rem, 4vw, 2.5rem); }
         .pop-text { opacity: 1; text-shadow: 0 0 30px rgba(255,255,255,0.2); transition: transform 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275); font-size: clamp(1.8rem, 4.5vw, 3.5rem); }
 
         .status-text.countdown { font-variant-numeric: tabular-nums; transform: scale(0.9); }
         .status-text.adaptive { transform: scale(0.65); letter-spacing: -1px; }
-        
+
         .bottom-bar { position: absolute; bottom: 15px; left: 50%; transform: translateX(-50%); width: 80%; max-width: 800px; z-index: 50; display: flex; flex-direction: column; align-items: center; }
         .progress-container { width: 100%; height: 8px; background: rgba(255,255,255,0.2); border-radius: 8px; position: relative; overflow: hidden; margin-bottom: 12px; backdrop-filter: blur(5px); }
         #progress-bar { width: 0%; height: 100%; background: var(--white); border-radius: 8px; transition: width 0.1s linear; }
         .edge-counter-text { font-size: 0.75rem; font-weight: 600; color: rgba(255,255,255,0.8); letter-spacing: 2px; text-transform: uppercase; margin: 0; }
-        
+
         .global-timer { position: absolute; bottom: 25px; left: 25px; font-size: 0.85rem; color: rgba(255,255,255,0.3); font-variant-numeric: tabular-nums; letter-spacing: 1px; font-weight: 600; z-index: 50; pointer-events: none; }
 
         .post-win-btn { display: none; position: absolute; left: 50%; transform: translateX(-50%); background: rgba(255, 255, 255, 0.15); border: 1px solid rgba(255, 255, 255, 0.2); color: var(--white); padding: 0.8rem 2.5rem; border-radius: 20px; font-size: 0.9rem; font-weight: 700; letter-spacing: 1px; cursor: pointer; z-index: 200; backdrop-filter: blur(10px); transition: all 0.3s; text-transform: uppercase; }
         .post-win-btn:hover { background: rgba(255, 255, 255, 0.25); transform: translateX(-50%) scale(1.05); }
         .post-win-btn.is-active { background: rgba(50, 215, 75, 0.2); border-color: var(--green); color: var(--green); box-shadow: 0 0 20px rgba(50, 215, 75, 0.2); }
-        
+
         #post-win-vibe { bottom: 100px; }
         #post-action-btn { bottom: 35px; }
         #ttc-btn { bottom: 50px; background: rgba(255, 255, 255, 0.15); border-color: var(--white); color: var(--white); }
@@ -219,142 +215,135 @@
         body.green-active { background-color: #0b3d16; }
         body.red-active { background-color: #4a0d0d; }
         .pulse { animation: pulse-dot 0.6s infinite alternate ease-in-out; }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
+        }
     </style>
 </head>
 <body class="setup-mode">
 
     <div class="setup-container" id="setup-ui">
-        <h2>Einstellungen</h2>
-        
-        <div class="section-title">Datenquelle</div>
+        <h2>Settings</h2>
+        <p class="subtitle">Runs fully offline in demo mode. Nothing leaves this device.</p>
+
+        <div class="section-title">Media source</div>
         <div class="settings-grid">
             <div class="input-group full-width">
-                <div class="toggle-row" id="local-media-row">
-                    <label style="color: var(--accent);">Lokale Medien verwenden</label>
-                    <input type="checkbox" class="ios-toggle" id="f-local-media" onchange="handleMediaToggle()">
+                <label for="t-source-mode">Where the visuals come from</label>
+                <select id="t-source-mode" onchange="onSourceChange()">
+                    <option value="demo" selected>Demo — generated placeholders (no media needed)</option>
+                    <option value="local">Local folder on this device</option>
+                    <option value="reddit">Reddit feed (network request)</option>
+                </select>
+            </div>
+
+            <div class="input-group full-width" id="wrap-demo-info">
+                <div class="hint">
+                    <strong>Demo mode</strong> draws its own coloured placeholder slides, so the full game loop
+                    works with no files and no internet. Good for showing the app to someone else.
                 </div>
             </div>
-            
+
             <div class="input-group full-width" id="wrap-local-picker" style="display: none; flex-direction: column; gap: 0.4rem;">
                 <input type="file" id="local-folder-picker" webkitdirectory directory multiple style="display:none;" onchange="handleLocalFiles(event)">
                 <div class="folder-btn" onclick="document.getElementById('local-folder-picker').click()">
-                    <span>Bilder & Video Ordner auswählen</span>
+                    <span>Choose an image and video folder</span>
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
                 </div>
-                <div id="file-status" class="file-status">Kein Ordner geladen.</div>
+                <div id="file-status" class="file-status">No folder loaded.</div>
+                <div class="hint">Files are read in the browser only. Nothing is uploaded, copied or logged.</div>
             </div>
         </div>
 
-        <div class="section-title">Inhalte Filter (Reddit)</div>
-        <div id="wrap-reddit-inputs" style="transition: opacity 0.3s;">
+        <div id="wrap-reddit-inputs" style="display: none;">
+            <div class="section-title">Reddit filter</div>
             <div class="settings-grid">
                 <div class="input-group full-width">
-                    <label>Quellen (Subreddits)</label>
-                    <input type="text" id="t-sources" value="" placeholder="z.B. memes, pics">
+                    <label for="t-sources">Sources (subreddits, comma separated)</label>
+                    <input type="text" id="t-sources" value="" placeholder="e.g. memes, pics" autocomplete="off" spellcheck="false">
                 </div>
-                
+
                 <div class="input-group full-width">
-                    <label>Medientypen</label>
+                    <label>Media types</label>
                     <div class="settings-grid" style="gap: 0.5rem; margin-top: 0.2rem;">
-                        <div class="toggle-row"><label>Bilder</label><input type="checkbox" class="ios-toggle" id="f-img" checked></div>
-                        <div class="toggle-row"><label>Videos</label><input type="checkbox" class="ios-toggle" id="f-vid" checked></div>
-                        <div class="toggle-row"><label>GIFs</label><input type="checkbox" class="ios-toggle" id="f-gif" checked></div>
+                        <div class="toggle-row"><label for="f-img">Images</label><input type="checkbox" class="ios-toggle" id="f-img" checked></div>
+                        <div class="toggle-row"><label for="f-vid">Videos</label><input type="checkbox" class="ios-toggle" id="f-vid" checked></div>
+                        <div class="toggle-row"><label for="f-gif">GIFs</label><input type="checkbox" class="ios-toggle" id="f-gif" checked></div>
                     </div>
                 </div>
 
                 <div class="input-group">
-                    <label>Sortierung</label>
+                    <label for="t-sort">Sorting</label>
                     <select id="t-sort">
-                        <option value="hot" selected>Beliebt</option>
-                        <option value="random">Zufall</option>
-                        <option value="new">Neu</option>
+                        <option value="hot" selected>Popular</option>
+                        <option value="random">Random</option>
+                        <option value="new">New</option>
                         <option value="top">Top</option>
                     </select>
+                </div>
+
+                <div class="input-group full-width">
+                    <div class="hint">
+                        This mode contacts reddit.com directly from your browser. Your source list is never
+                        saved and never sent through a third-party relay. If the request is blocked, switch
+                        back to demo or local mode.
+                    </div>
                 </div>
             </div>
         </div>
 
         <div class="settings-grid" style="margin-top: 1rem;">
             <div class="input-group full-width">
-                <label>Wechselintervall (Sekunden)</label>
+                <label for="t-img-dur">Slide interval (seconds)</label>
                 <input type="number" id="t-img-dur" value="40" min="1">
             </div>
         </div>
 
-        <div class="section-title">Gerät (Satisfyer)</div>
+        <div class="section-title">Device</div>
         <div class="settings-grid">
             <div class="input-group full-width">
                 <div class="toy-panel">
                     <div class="toy-row">
                         <div class="toy-status-dot" id="toy-dot"></div>
-                        <span class="toy-status-label" id="toy-status-label">Nicht verbunden <br><small style="color:var(--text-sec); font-weight:normal;">Wartet auf Intiface Central</small></span>
-                        <button class="toy-connect-btn" id="toy-connect-btn" onclick="connectToy()">Verbinden</button>
+                        <span class="toy-status-label" id="toy-status-label">Not connected <br><small style="color:var(--text-sec); font-weight:normal;">Optional — needs Intiface Central on this machine</small></span>
+                        <button class="toy-connect-btn" id="toy-connect-btn" onclick="connectToy()">Connect</button>
                     </div>
                     <div class="input-group" style="margin-top: 0.5rem;">
-                        <label>Vibrations Intensität</label>
+                        <label for="toy-intensity">Vibration intensity</label>
                         <div class="slider-wrap" style="padding: 0.5rem 0;">
-                            <input type="range" id="toy-intensity" min="0" max="100" value="30" oninput="if(document.getElementById('toy-intensity-val')) document.getElementById('toy-intensity-val').innerText = this.value + '%'">
+                            <input type="range" id="toy-intensity" min="0" max="100" value="30" oninput="document.getElementById('toy-intensity-val').innerText = this.value + '%'">
                             <span class="slider-val" id="toy-intensity-val">30%</span>
                         </div>
                     </div>
+                    <div class="hint">Talks to <code>ws://127.0.0.1:12345</code> on this computer only. Leave it unconnected and everything else still works.</div>
                 </div>
             </div>
         </div>
 
-        <div class="section-title">Spielregeln</div>
-        <div class="settings-grid">
+        <div class="section-title">Game rules</div>
+
+        <div class="settings-grid" style="margin-bottom: 1rem;">
             <div class="input-group full-width">
-                <label>Gesamtzeit pro Runde (Minuten)</label>
+                <div class="toggle-row">
+                    <label for="f-random-mode" style="color: var(--purple);">Mode: random ending (one game)</label>
+                    <input type="checkbox" class="ios-toggle" id="f-random-mode" onchange="toggleGameMode()">
+                </div>
+                <div class="diff-info">Instead of fixed rounds and difficulty tiers, the ending is rolled somewhere between the minimum and maximum time. No round bar, guaranteed finish.</div>
+            </div>
+        </div>
+
+        <div class="settings-grid" id="classic-settings">
+            <div class="input-group full-width">
+                <label for="t-total-min">Time per round (minutes)</label>
                 <input type="number" id="t-total-min" value="10" step="0.5" min="0.1">
             </div>
             <div class="input-group full-width">
-                <label>Max. Gesamtdauer bis garantierter Win (Minuten)</label>
+                <label for="t-max-global-min">Maximum total length before a guaranteed finish (minutes)</label>
                 <input type="number" id="t-max-global-min" value="45" step="1" min="1">
             </div>
-            
-            <div class="input-group"><label>Grün Min (Sek)</label><input type="number" id="t-gmin" value="1"></div>
-            <div class="input-group"><label>Grün Max (Sek)</label><input type="number" id="t-gmax" value="18"></div>
-            <div class="input-group"><label>Rot Min (Sek)</label><input type="number" id="t-rmin" value="1"></div>
-            <div class="input-group"><label>Rot Max (Sek)</label><input type="number" id="t-rmax" value="15"></div>
-            
-            <div class="input-group full-width">
-                <div class="toggle-row">
-                    <label>Lange Pause (Red Phase)</label>
-                    <input type="checkbox" class="ios-toggle" id="f-long-break">
-                </div>
-            </div>
-            <div class="input-group full-width">
-                <label>Pausen Dauer (Sek)</label>
-                <input type="number" id="t-long-break-dur" value="25" min="5">
-            </div>
-            <div class="input-group full-width">
-                <div class="toggle-row">
-                    <label>Dynamische Spannung (Tension)</label>
-                    <input type="checkbox" class="ios-toggle" id="f-tension-mode" checked>
-                </div>
-            </div>
-            <div class="input-group full-width">
-                <div class="toggle-row">
-                    <label>Speed Mode (10% Chance bei Grün)</label>
-                    <input type="checkbox" class="ios-toggle" id="f-speed-mode" checked>
-                </div>
-            </div>
-            
-            <div class="input-group full-width" style="margin-top: 0.5rem; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 1rem;">
-                <div class="toggle-row">
-                    <label style="color: var(--accent);">Try to Cum Finale (10% Chance bei Win)</label>
-                    <input type="checkbox" class="ios-toggle" id="f-ttc-mode" checked>
-                </div>
-            </div>
-            <div class="input-group full-width">
-                <div class="toggle-row">
-                    <label style="color: var(--accent);">Try to Cum: 100% erzwingen (Jeder Win)</label>
-                    <input type="checkbox" class="ios-toggle" id="f-ttc-always">
-                </div>
-            </div>
-
             <div class="input-group full-width" style="margin-top: 0.5rem;">
-                <label>Schwierigkeitsgrad (1-7)</label>
+                <label for="t-difficulty">Difficulty (1–7)</label>
                 <div class="slider-wrap">
                     <input type="range" id="t-difficulty" min="1" max="7" value="2" step="1" oninput="updateDiffUI(this.value)">
                     <span class="slider-val" id="difficulty-label" style="min-width: 4.5rem;">Advanced</span>
@@ -363,119 +352,234 @@
             </div>
         </div>
 
-        <button class="start-btn" id="btn-start" onclick="bootGame()">SPIEL STARTEN</button>
+        <div class="settings-grid" id="random-settings" style="display: none;">
+            <div class="input-group full-width">
+                <label for="t-rand-min">Minimum play time (minutes)</label>
+                <input type="number" id="t-rand-min" value="10" step="1" min="1">
+            </div>
+            <div class="input-group full-width">
+                <label for="t-rand-max">Maximum play time (minutes)</label>
+                <input type="number" id="t-rand-max" value="30" step="1" min="2">
+            </div>
+        </div>
+
+        <div class="settings-grid" style="margin-top: 1rem;">
+            <div class="input-group"><label for="t-gmin">Green min (sec)</label><input type="number" id="t-gmin" value="1"></div>
+            <div class="input-group"><label for="t-gmax">Green max (sec)</label><input type="number" id="t-gmax" value="18"></div>
+            <div class="input-group"><label for="t-rmin">Red min (sec)</label><input type="number" id="t-rmin" value="1"></div>
+            <div class="input-group"><label for="t-rmax">Red max (sec)</label><input type="number" id="t-rmax" value="15"></div>
+
+            <div class="input-group full-width">
+                <div class="toggle-row">
+                    <label for="f-long-break">Long break during red</label>
+                    <input type="checkbox" class="ios-toggle" id="f-long-break">
+                </div>
+            </div>
+            <div class="input-group full-width">
+                <label for="t-long-break-dur">Break length (sec)</label>
+                <input type="number" id="t-long-break-dur" value="25" min="5">
+            </div>
+            <div class="input-group full-width">
+                <div class="toggle-row">
+                    <label for="f-tension-mode">Dynamic tension</label>
+                    <input type="checkbox" class="ios-toggle" id="f-tension-mode" checked>
+                </div>
+            </div>
+            <div class="input-group full-width">
+                <div class="toggle-row">
+                    <label for="f-speed-mode">Speed mode (6% chance on green)</label>
+                    <input type="checkbox" class="ios-toggle" id="f-speed-mode" checked>
+                </div>
+            </div>
+
+            <div class="input-group full-width" style="margin-top: 0.5rem; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 1rem;">
+                <div class="toggle-row">
+                    <label for="f-ttc-mode" style="color: var(--accent);">Finale round (10% chance on a win)</label>
+                    <input type="checkbox" class="ios-toggle" id="f-ttc-mode" checked>
+                </div>
+            </div>
+            <div class="input-group full-width">
+                <div class="toggle-row">
+                    <label for="f-ttc-always" style="color: var(--accent);">Always use the finale round</label>
+                    <input type="checkbox" class="ios-toggle" id="f-ttc-always">
+                </div>
+            </div>
+        </div>
+
+        <button class="start-btn" id="btn-start" onclick="bootGame()">START GAME</button>
     </div>
 
     <div id="game-ui">
         <button id="roulette-vibe-btn" class="tick-vibe-btn" onclick="toggleRouletteVibe(event)">TICK VIBE: ON [SPACE]</button>
 
-        <button class="pc-btn btn-close" onclick="endGame()" aria-label="Beenden" data-key="[ESC]">
+        <button class="pc-btn btn-close" onclick="endGame()" aria-label="Quit" data-key="[ESC]">
             <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
         </button>
-        <button class="pc-btn btn-edge" onclick="triggerEdge(event)" aria-label="Notbremse" data-key="[SPACE]">
+        <button class="pc-btn btn-edge" onclick="triggerEdge(event)" aria-label="Stop" data-key="[SPACE]">
             <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
         </button>
-        <button class="pc-btn btn-skip" onclick="skipMedia(event)" aria-label="Nächstes Medium" data-key="[➔]">
+        <button class="pc-btn btn-skip" onclick="skipMedia(event)" aria-label="Next slide" data-key="[➔]">
             <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
         </button>
-        
-        <button class="pc-btn btn-plus" onclick="changeIntensity(0.05, event)" aria-label="Stärker" data-key="[ + ]">
+
+        <button class="pc-btn btn-plus" onclick="changeIntensity(0.05, event)" aria-label="Stronger" data-key="[ + ]">
             <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
         </button>
-        <button class="pc-btn btn-minus" onclick="changeIntensity(-0.05, event)" aria-label="Schwächer" data-key="[ - ]">
+        <button class="pc-btn btn-minus" onclick="changeIntensity(-0.05, event)" aria-label="Weaker" data-key="[ - ]">
             <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line></svg>
         </button>
         <div id="intensity-toast" class="intensity-toast">80%</div>
-        
-        <div class="toy-ingame-dot" id="toy-ingame-dot" title="Toy Status"></div>
-        
+
+        <div class="toy-ingame-dot" id="toy-ingame-dot" title="Device status"></div>
+
         <div class="media-background">
-            <div id="buffer-1" class="media-buffer"><img id="img-1" class="media-layer" src="" alt=""><video id="vid-1" class="media-layer" autoplay muted loop playsinline></video></div>
-            <div id="buffer-2" class="media-buffer"><img id="img-2" class="media-layer" src="" alt=""><video id="vid-2" class="media-layer" autoplay muted loop playsinline></video></div>
-            <div id="buffer-3" class="media-buffer"><img id="img-3" class="media-layer" src="" alt=""><video id="vid-3" class="media-layer" autoplay muted loop playsinline></video></div>
-            <div id="buffer-4" class="media-buffer"><img id="img-4" class="media-layer" src="" alt=""><video id="vid-4" class="media-layer" autoplay muted loop playsinline></video></div>
+            <div id="buffer-1" class="media-buffer"><img id="img-1" class="media-layer" src="" alt="" referrerpolicy="no-referrer"><video id="vid-1" class="media-layer" autoplay muted loop playsinline></video><div id="demo-1" class="media-layer demo-layer"><span class="demo-badge">Demo slide</span><span class="demo-num"></span><span class="demo-sub">placeholder — no media loaded</span></div></div>
+            <div id="buffer-2" class="media-buffer"><img id="img-2" class="media-layer" src="" alt="" referrerpolicy="no-referrer"><video id="vid-2" class="media-layer" autoplay muted loop playsinline></video><div id="demo-2" class="media-layer demo-layer"><span class="demo-badge">Demo slide</span><span class="demo-num"></span><span class="demo-sub">placeholder — no media loaded</span></div></div>
+            <div id="buffer-3" class="media-buffer"><img id="img-3" class="media-layer" src="" alt="" referrerpolicy="no-referrer"><video id="vid-3" class="media-layer" autoplay muted loop playsinline></video><div id="demo-3" class="media-layer demo-layer"><span class="demo-badge">Demo slide</span><span class="demo-num"></span><span class="demo-sub">placeholder — no media loaded</span></div></div>
+            <div id="buffer-4" class="media-buffer"><img id="img-4" class="media-layer" src="" alt="" referrerpolicy="no-referrer"><video id="vid-4" class="media-layer" autoplay muted loop playsinline></video><div id="demo-4" class="media-layer demo-layer"><span class="demo-badge">Demo slide</span><span class="demo-num"></span><span class="demo-sub">placeholder — no media loaded</span></div></div>
         </div>
-        
+
         <div class="top-display"><h1 id="status-label" class="status-text"></h1></div>
-        
-        <button id="post-win-vibe" class="post-win-btn" onclick="toggleManualVibe(event)">VIBE AN</button>
+
+        <button id="post-win-vibe" class="post-win-btn" onclick="toggleManualVibe(event)">VIBE ON</button>
         <button id="post-action-btn" class="post-win-btn" onclick="executePostWinAction()">[SPACE]</button>
-        <button id="ttc-btn" class="post-win-btn" onclick="onTTCButtonPressed(event)">CUM NOW [SPACE]</button>
-        
+        <button id="ttc-btn" class="post-win-btn" onclick="onTTCButtonPressed(event)">FINISH NOW [SPACE]</button>
+
         <div class="bottom-bar">
             <div class="progress-container"><div id="progress-bar"></div></div>
             <div id="edge-display" class="edge-counter-text">EDGES: 0</div>
         </div>
-        
+
         <div id="global-timer" class="global-timer">00:00</div>
     </div>
 
     <script>
-        // --- Safe DOM Helpers ---
-        function safeSetText(id, text) { 
-            const el = document.getElementById(id); 
-            if (el) el.innerText = text; 
+        "use strict";
+
+        // ---------------------------------------------------------------
+        // Privacy notes for anyone reading this file:
+        //  - No analytics, no telemetry, no cookies, no localStorage.
+        //  - Nothing is persisted between sessions. Every setting resets on reload.
+        //  - Demo mode makes zero network requests.
+        //  - Local mode reads files via object URLs in-page and revokes them again.
+        //  - Reddit mode talks to reddit.com directly. No third-party CORS relay,
+        //    so your source list is never handed to an intermediary.
+        //  - The hardware bridge is loaded on demand and only from 127.0.0.1.
+        // ---------------------------------------------------------------
+
+        const BUTTPLUG_CDN = "https://unpkg.com/buttplug@3.0.0/dist/web/buttplug.min.js";
+
+        // --- Safe DOM helpers ---
+        function safeSetText(id, text) {
+            const el = document.getElementById(id);
+            if (el) el.innerText = text;
         }
-        
-        function safeSetHTML(id, html) { 
-            const el = document.getElementById(id); 
-            if (el) el.innerHTML = html; 
+        function safeSetHTML(id, html) {
+            const el = document.getElementById(id);
+            if (el) el.innerHTML = html;
         }
 
-        // --- UI Updates ---
+        // --- Source mode ---
+        function getSourceMode() {
+            const el = document.getElementById('t-source-mode');
+            return el ? el.value : 'demo';
+        }
+
+        function onSourceChange() {
+            const mode = getSourceMode();
+            const wReddit = document.getElementById('wrap-reddit-inputs');
+            const wPicker = document.getElementById('wrap-local-picker');
+            const wDemo   = document.getElementById('wrap-demo-info');
+            const btnStart = document.getElementById('btn-start');
+
+            wReddit.style.display = mode === 'reddit' ? 'block' : 'none';
+            wPicker.style.display = mode === 'local'  ? 'flex'  : 'none';
+            wDemo.style.display   = mode === 'demo'   ? 'flex'  : 'none';
+
+            if (mode === 'local') {
+                btnStart.disabled = localMediaFiles.length === 0;
+                btnStart.innerText = localMediaFiles.length > 0 ? "START GAME" : "Choose a folder first";
+            } else {
+                btnStart.disabled = false;
+                btnStart.innerText = "START GAME";
+            }
+        }
+
+        function toggleGameMode() {
+            const isRand = document.getElementById('f-random-mode').checked;
+            document.getElementById('classic-settings').style.display = isRand ? 'none' : 'grid';
+            document.getElementById('random-settings').style.display = isRand ? 'grid' : 'none';
+        }
+
         const diffData = {
-            1: { title: "Normal", color: "var(--accent)", desc: "<b>Level 1:</b> Min. 8 Edges. Harte Grenze bei exakt 60% (+4.0% pro Edge).<br><span style='color:var(--white)'>Limit (60%) erreicht nach exakt 13 Edges.</span>" },
-            2: { title: "Advanced", color: "#ffcc00", desc: "<b>Level 2:</b> Min. 11 Edges. Harte Grenze bei exakt 55% (+3.0% pro Edge).<br><span style='color:var(--white)'>Limit (55%) erreicht nach exakt 15 Edges.</span>" },
-            3: { title: "Hard", color: "#ff9500", desc: "<b>Level 3:</b> Min. 15 Edges. Harte Grenze bei exakt 50% (+2.0% pro Edge).<br><span style='color:var(--white)'>Limit (50%) erreicht nach exakt 20 Edges.</span>" },
-            4: { title: "Expert", color: "var(--red)", desc: "<b>Level 4:</b> Min. 18 Edges. Harte Grenze bei exakt 45% (+1.5% pro Edge).<br><span style='color:var(--white)'>Limit (45%) erreicht nach exakt 24 Edges.</span>" },
-            5: { title: "Extreme", color: "#bf5af2", desc: "<b>Level 5:</b> Min. 22 Edges. Harte Grenze bei exakt 40% (+1.0% pro Edge).<br><span style='color:var(--white)'>Limit (40%) erreicht nach exakt 30 Edges.</span>" },
-            6: { title: "Nightmare", color: "#5e5ce6", desc: "<b>Level 6:</b> Min. 26 Edges. Harte Grenze bei exakt 30% (+0.5% pro Edge).<br><span style='color:var(--white)'>Limit (30%) erreicht nach exakt 40 Edges.</span>" },
-            7: { title: "Impossible", color: "#ff3b30", desc: "<b>Level 7:</b> Min. 30 Edges. Harte Grenze bei exakt 25% (+0.5% pro Edge).<br><span style='color:var(--white)'>Limit (25%) erreicht nach exakt 30 Edges. Mehr Edges erhöhen die Chance nicht weiter.</span>" }
+            1: { title: "Normal",     color: "var(--accent)", desc: "<b>Level 1:</b> 8 edges minimum. Hard ceiling at 60% (+4.0% per edge).<br><span style='color:var(--white)'>Ceiling reached after 13 edges.</span>" },
+            2: { title: "Advanced",   color: "#ffcc00",       desc: "<b>Level 2:</b> 11 edges minimum. Hard ceiling at 55% (+3.0% per edge).<br><span style='color:var(--white)'>Ceiling reached after 15 edges.</span>" },
+            3: { title: "Hard",       color: "#ff9500",       desc: "<b>Level 3:</b> 15 edges minimum. Hard ceiling at 50% (+2.0% per edge).<br><span style='color:var(--white)'>Ceiling reached after 20 edges.</span>" },
+            4: { title: "Expert",     color: "var(--red)",    desc: "<b>Level 4:</b> 18 edges minimum. Hard ceiling at 45% (+1.5% per edge).<br><span style='color:var(--white)'>Ceiling reached after 24 edges.</span>" },
+            5: { title: "Extreme",    color: "#bf5af2",       desc: "<b>Level 5:</b> 22 edges minimum. Hard ceiling at 40% (+1.0% per edge).<br><span style='color:var(--white)'>Ceiling reached after 30 edges.</span>" },
+            6: { title: "Nightmare",  color: "#5e5ce6",       desc: "<b>Level 6:</b> 26 edges minimum. Hard ceiling at 30% (+0.5% per edge).<br><span style='color:var(--white)'>Ceiling reached after 40 edges.</span>" },
+            7: { title: "Impossible", color: "#ff3b30",       desc: "<b>Level 7:</b> 30 edges minimum. Hard ceiling at 25% (+0.5% per edge).<br><span style='color:var(--white)'>Ceiling reached after 30 edges. Further edges add nothing.</span>" }
         };
 
         function updateDiffUI(val) {
             const data = diffData[val];
             const lbl = document.getElementById('difficulty-label');
-            if (lbl) { 
-                lbl.innerText = data.title; 
-                lbl.style.color = data.color; 
+            if (lbl) {
+                lbl.innerText = data.title;
+                lbl.style.color = data.color;
             }
             safeSetHTML('diff-desc', data.desc);
         }
         updateDiffUI(2);
 
-        // --- Variabeln ---
+        // --- State ---
         let localMediaFiles = [], mediaCycleList = [], mediaCycleIndex = 0;
         let cfg = {}, isLive = false, startT = 0, globalStartT = 0, clock = null, countdownInt = null, mediaInt = null, animFrame = null;
         let redditPosts = [], edgeCount = 0, isPostGame = false, currentTension = 0, tensionDecayTimer = null, currentIndex = 0;
         let bufferState = [
-            { id: 1, reqIdx: -1, isReady: false, objUrl: null }, 
-            { id: 2, reqIdx: -1, isReady: false, objUrl: null }, 
-            { id: 3, reqIdx: -1, isReady: false, objUrl: null }, 
+            { id: 1, reqIdx: -1, isReady: false, objUrl: null },
+            { id: 2, reqIdx: -1, isReady: false, objUrl: null },
+            { id: 3, reqIdx: -1, isReady: false, objUrl: null },
             { id: 4, reqIdx: -1, isReady: false, objUrl: null }
         ];
-        let toastTimeout, speedModeEndTime = 0, currentFinalState = null, postActionDone = false, isForcedRedActive = false; 
+        let toastTimeout, speedModeEndTime = 0, currentFinalState = null, postActionDone = false, isForcedRedActive = false;
         let globalTimerInt = null, hasForcedGlobalWin = false, isWheelSpinning = false;
-        
+
         let rouletteVibeEnabled = true;
         let ttcActive = false, ttcTimeout = null, ttcResolve = null;
 
-        // --- Haptik Utils ---
-        function sleepTTC(ms) { 
-            return new Promise(resolve => { 
-                ttcResolve = resolve; 
-                ttcTimeout = setTimeout(resolve, ms); 
-            }); 
+        // --- Demo media generator (fully offline) ---
+        // Demo tiles stay translucent so the red/green phase colour of the body
+        // remains readable straight through the placeholder.
+        const DEMO_COUNT = 24;
+
+        function paintDemoTile(bId, idx) {
+            const el = document.getElementById('demo-' + bId);
+            if (!el) return;
+            const n = ((idx % DEMO_COUNT) + DEMO_COUNT) % DEMO_COUNT;
+            const angle = (n * 37) % 360;
+            const light = 0.05 + (n % 4) * 0.03;
+            el.style.background = `linear-gradient(${angle}deg, rgba(255,255,255,${light.toFixed(2)}) 0%, rgba(255,255,255,0.02) 45%, rgba(0,0,0,0.28) 100%)`;
+            const num = el.querySelector('.demo-num');
+            if (num) num.innerText = String(n + 1).padStart(2, '0');
         }
-        
-        function abortTTC() { 
-            ttcActive = false; 
-            clearTimeout(ttcTimeout); 
+
+        // --- Haptics utils ---
+        function sleepTTC(ms) {
+            return new Promise(resolve => {
+                ttcResolve = resolve;
+                ttcTimeout = setTimeout(resolve, ms);
+            });
+        }
+
+        function abortTTC() {
+            ttcActive = false;
+            clearTimeout(ttcTimeout);
             if (ttcResolve) {
-                ttcResolve(); 
+                ttcResolve();
                 ttcResolve = null;
             }
-            toyStop(); 
+            toyStop();
         }
 
         function toggleRouletteVibe(e) {
@@ -488,60 +592,57 @@
             }
         }
 
-        // --- Setup Logic ---
-        function handleMediaToggle() {
-            const isLocal = document.getElementById('f-local-media') && document.getElementById('f-local-media').checked;
-            const wReddit = document.getElementById('wrap-reddit-inputs');
-            const wPicker = document.getElementById('wrap-local-picker');
-            const btnStart = document.getElementById('btn-start');
-            const localRow = document.getElementById('local-media-row');
-            
-            if (isLocal) {
-                if (wReddit) { wReddit.style.opacity = '0.4'; wReddit.style.pointerEvents = 'none'; }
-                if (wPicker) wPicker.style.display = 'flex';
-                if (localRow) localRow.classList.add('cloud-active');
-                if (btnStart) { 
-                    btnStart.disabled = localMediaFiles.length === 0; 
-                    btnStart.innerText = localMediaFiles.length > 0 ? "SPIEL STARTEN" : "Bitte zuerst Ordner auswählen"; 
-                }
-            } else {
-                if (wReddit) { wReddit.style.opacity = '1'; wReddit.style.pointerEvents = 'auto'; }
-                if (wPicker) wPicker.style.display = 'none';
-                if (localRow) localRow.classList.remove('cloud-active');
-                if (btnStart) { btnStart.disabled = false; btnStart.innerText = "SPIEL STARTEN"; }
-            }
-        }
-
+        // --- Local files ---
         function handleLocalFiles(e) {
             const files = Array.from(e.target.files || []);
-            localMediaFiles = files.filter(f => { 
-                const type = f.type.toLowerCase(); 
-                return type.startsWith('image/') || type.startsWith('video/'); 
+            localMediaFiles = files.filter(f => {
+                const type = (f.type || "").toLowerCase();
+                return type.startsWith('image/') || type.startsWith('video/');
             });
             const status = document.getElementById('file-status');
             const startBtn = document.getElementById('btn-start');
-            
+
             if (localMediaFiles.length > 0) {
-                if (status) { status.innerText = `${localMediaFiles.length} kompatible Dateien geladen.`; status.style.color = "var(--green)"; }
-                if (startBtn) { startBtn.disabled = false; startBtn.innerText = "SPIEL STARTEN"; }
+                // Only the count is shown — never a path or a file name.
+                status.innerText = `${localMediaFiles.length} compatible files ready.`;
+                status.style.color = "var(--green)";
+                startBtn.disabled = false;
+                startBtn.innerText = "START GAME";
                 shuffleCycle();
             } else {
-                if (status) { status.innerText = "Keine kompatiblen Bilder/Videos gefunden."; status.style.color = "var(--red)"; }
-                if (startBtn) { startBtn.disabled = true; startBtn.innerText = "Bitte zuerst Ordner auswählen"; }
+                status.innerText = "No compatible images or videos in that folder.";
+                status.style.color = "var(--red)";
+                startBtn.disabled = true;
+                startBtn.innerText = "Choose a folder first";
             }
         }
 
         function shuffleCycle() {
             mediaCycleList = Array.from({length: localMediaFiles.length}, (_, i) => i);
-            for (let i = mediaCycleList.length - 1; i > 0; i--) { 
-                const j = Math.floor(Math.random() * (i + 1)); 
-                [mediaCycleList[i], mediaCycleList[j]] = [mediaCycleList[j], mediaCycleList[i]]; 
+            for (let i = mediaCycleList.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [mediaCycleList[i], mediaCycleList[j]] = [mediaCycleList[j], mediaCycleList[i]];
             }
             mediaCycleIndex = 0;
         }
 
-        // --- Bluetooth Logic ---
-        let bpClient = null, toyDevice = null, toyConnected = false, isManualVibeOn = false;
+        // --- Device bridge ---
+        let bpClient = null, toyDevice = null, toyConnected = false, isManualVibeOn = false, bpLibLoading = null;
+
+        function loadButtplugLib() {
+            if (typeof Buttplug !== 'undefined') return Promise.resolve();
+            if (bpLibLoading) return bpLibLoading;
+            bpLibLoading = new Promise((resolve, reject) => {
+                const s = document.createElement('script');
+                s.src = BUTTPLUG_CDN;
+                s.crossOrigin = "anonymous";
+                s.referrerPolicy = "no-referrer";
+                s.onload = resolve;
+                s.onerror = () => reject(new Error("library unavailable"));
+                document.head.appendChild(s);
+            });
+            return bpLibLoading;
+        }
 
         function setToyDotState(state) {
             const dot = document.getElementById('toy-dot');
@@ -551,10 +652,10 @@
                 else if (state === 'connected') dot.classList.add('connected');
                 else if (state === 'error') dot.classList.add('error');
             }
-            let htmlLabel = 'Nicht verbunden<br><small style="color:var(--text-sec); font-weight:normal;">Wartet auf Intiface Central</small>';
-            if (state === 'scanning') htmlLabel = 'Suche Gerät…<br><small style="color:var(--text-sec); font-weight:normal;">Bitte im Intiface koppeln</small>';
-            else if (state === 'connected') htmlLabel = toyDevice ? toyDevice.name : 'Verbunden';
-            else if (state === 'error') htmlLabel = 'Verbindung fehlgeschlagen<br><small style="color:var(--text-sec); font-weight:normal;">Läuft Intiface Central?</small>';
+            let htmlLabel = 'Not connected<br><small style="color:var(--text-sec); font-weight:normal;">Optional — needs Intiface Central on this machine</small>';
+            if (state === 'scanning') htmlLabel = 'Searching…<br><small style="color:var(--text-sec); font-weight:normal;">Pair the device in Intiface</small>';
+            else if (state === 'connected') htmlLabel = 'Device connected';
+            else if (state === 'error') htmlLabel = 'Connection failed<br><small style="color:var(--text-sec); font-weight:normal;">Is Intiface Central running?</small>';
             safeSetHTML('toy-status-label', htmlLabel);
         }
 
@@ -571,42 +672,41 @@
             if (btn) btn.disabled = true;
             const addr = "ws://127.0.0.1:12345";
             try {
-                if (typeof Buttplug === 'undefined') throw new Error("Buttplug missing");
-                setToyDotState('scanning'); 
-                if (btn) btn.innerText = 'Verbinde…';
+                setToyDotState('scanning');
+                if (btn) btn.innerText = 'Connecting…';
+
+                await loadButtplugLib();
 
                 if (bpClient && bpClient.connected) {
-                    try { await toyStop(); await bpClient.disconnect(); } catch(e) {}
+                    try { await toyStop(); await bpClient.disconnect(); } catch (e) {}
                     bpClient = null; toyDevice = null; toyConnected = false;
                     setToyDotState('idle');
-                    if (btn) { btn.innerText = 'Verbinden'; btn.disabled = false; }
+                    if (btn) { btn.innerText = 'Connect'; btn.disabled = false; }
                     return;
                 }
 
                 if (typeof Buttplug.buttplugInit === 'function') await Buttplug.buttplugInit();
                 bpClient = new Buttplug.ButtplugClient("RLGL");
-                let connector = new (Buttplug.ButtplugBrowserWebsocketClientConnector || Buttplug.ButtplugWebsocketClientConnector || Buttplug.WebsocketClientConnector)(addr);
-                await bpClient.connect(connector);
+                const Connector = Buttplug.ButtplugBrowserWebsocketClientConnector || Buttplug.ButtplugWebsocketClientConnector || Buttplug.WebsocketClientConnector;
+                await bpClient.connect(new Connector(addr));
 
-                const onDeviceFound = (device) => { 
-                    toyDevice = device; 
-                    toyConnected = true; 
-                    setToyDotState('connected'); 
-                    if (btn) { btn.innerText = 'Trennen'; btn.disabled = false; } 
+                const onDeviceFound = (device) => {
+                    toyDevice = device;
+                    toyConnected = true;
+                    setToyDotState('connected');
+                    if (btn) { btn.innerText = 'Disconnect'; btn.disabled = false; }
                 };
-                
+
                 bpClient.addListener("deviceadded", onDeviceFound);
-                bpClient.addListener("deviceremoved", () => { 
-                    toyDevice = null; 
-                    toyConnected = false; 
-                    setToyDotState('idle'); 
-                    if (btn) btn.innerText = 'Verbinden'; 
+                bpClient.addListener("deviceremoved", () => {
+                    toyDevice = null; toyConnected = false;
+                    setToyDotState('idle');
+                    if (btn) btn.innerText = 'Connect';
                 });
-                bpClient.addListener("disconnect", () => { 
-                    toyDevice = null; 
-                    toyConnected = false; 
-                    setToyDotState('idle'); 
-                    if (btn) { btn.innerText = 'Verbinden'; btn.disabled = false; } 
+                bpClient.addListener("disconnect", () => {
+                    toyDevice = null; toyConnected = false;
+                    setToyDotState('idle');
+                    if (btn) { btn.innerText = 'Connect'; btn.disabled = false; }
                 });
 
                 if (bpClient.devices && bpClient.devices.length > 0) {
@@ -615,105 +715,99 @@
                     await bpClient.startScanning();
                 }
 
-                setTimeout(() => { 
-                    if (!toyDevice && bpClient && bpClient.connected) { 
-                        setToyDotState('scanning'); 
-                        if (btn) { btn.innerText = 'Abbrechen'; btn.disabled = false; } 
-                    } 
+                setTimeout(() => {
+                    if (!toyDevice && bpClient && bpClient.connected) {
+                        setToyDotState('scanning');
+                        if (btn) { btn.innerText = 'Cancel'; btn.disabled = false; }
+                    }
                 }, 3000);
-            } catch (e) { 
-                setToyDotState('error'); 
-                if (btn) { btn.innerText = 'Erneut'; btn.disabled = false; } 
+            } catch (e) {
+                setToyDotState('error');
+                if (btn) { btn.innerText = 'Retry'; btn.disabled = false; }
             }
         }
 
-        async function toyVibrate(intensity) { 
+        async function toyVibrate(intensity) {
             if (toyDevice) {
-                try { 
-                    await toyDevice.vibrate(intensity); 
-                    updateIngameDot(intensity > 0); 
-                } catch(e){} 
+                try {
+                    await toyDevice.vibrate(intensity);
+                    updateIngameDot(intensity > 0);
+                } catch (e) {}
             }
         }
-        
-        async function toyStop() { 
+
+        async function toyStop() {
             if (toyDevice) {
-                try { 
-                    await toyDevice.stop(); 
-                    updateIngameDot(false); 
-                } catch(e){} 
+                try {
+                    await toyDevice.stop();
+                    updateIngameDot(false);
+                } catch (e) {}
             }
         }
 
         function toggleManualVibe(e) {
             if (e) e.stopPropagation();
             const btn = document.getElementById('post-win-vibe');
-            if (isManualVibeOn) { 
-                toyStop(); 
-                isManualVibeOn = false; 
-                if (btn) { btn.innerText = "VIBE AN"; btn.classList.remove('is-active'); } 
-            } else { 
-                toyVibrate(cfg.toyIntensity); 
-                isManualVibeOn = true; 
-                if (btn) { btn.innerText = "VIBE AUS"; btn.classList.add('is-active'); } 
+            if (isManualVibeOn) {
+                toyStop();
+                isManualVibeOn = false;
+                if (btn) { btn.innerText = "VIBE ON"; btn.classList.remove('is-active'); }
+            } else {
+                toyVibrate(cfg.toyIntensity);
+                isManualVibeOn = true;
+                if (btn) { btn.innerText = "VIBE OFF"; btn.classList.add('is-active'); }
             }
         }
 
-        // --- Event Listeners ---
-        window.addEventListener('pagehide', () => { 
-            toyStop(); 
-            for(let i=1;i<=4;i++) { 
-                let v=document.getElementById('vid-'+i); 
-                if(v) v.pause(); 
+        // --- Event listeners ---
+        window.addEventListener('pagehide', () => {
+            toyStop();
+            for (let i = 1; i <= 4; i++) {
+                const v = document.getElementById('vid-' + i);
+                if (v) v.pause();
             }
         });
-        
-        document.addEventListener('visibilitychange', () => { 
-            if (document.hidden && isLive) toyStop(); 
+
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden && isLive) toyStop();
         });
-        
+
         document.addEventListener('keydown', (e) => {
-            if (e.repeat) return; 
-            
-            if (e.code === 'Space') { 
-                e.preventDefault(); 
-                if (isWheelSpinning) {
-                    toggleRouletteVibe();
-                } else if (isLive) {
-                    triggerEdge();
-                } else if (ttcActive) {
-                    onTTCButtonPressed();
-                } else if (isPostGame && !postActionDone) {
-                    executePostWinAction();
-                }
+            if (e.repeat) return;
+
+            if (e.code === 'Space') {
+                e.preventDefault();
+                if (isWheelSpinning) toggleRouletteVibe();
+                else if (isLive) triggerEdge();
+                else if (ttcActive) onTTCButtonPressed();
+                else if (isPostGame && !postActionDone) executePostWinAction();
                 return;
             }
 
-            if (!isLive && !isPostGame && !ttcActive) return; 
+            if (!isLive && !isPostGame && !ttcActive) return;
             if (e.code === 'ArrowRight') { e.preventDefault(); skipMedia(); }
             if (e.code === 'Escape') { e.preventDefault(); endGame(); }
             if (e.key === '+' || e.code === 'NumpadAdd') { e.preventDefault(); changeIntensity(0.05); }
             if (e.key === '-' || e.code === 'NumpadSubtract') { e.preventDefault(); changeIntensity(-0.05); }
         });
 
-        // --- Game Controls ---
+        // --- Game controls ---
         function onTTCButtonPressed(e) {
             if (e) e.stopPropagation();
             if (!ttcActive) return;
             abortTTC();
             document.getElementById('ttc-btn').style.display = 'none';
-            const label = document.getElementById('status-label');
-            if (label) safeSetHTML('status-label', "CUM!");
-            
+            safeSetHTML('status-label', "FINISH");
+
             toyVibrate(cfg.toyIntensity);
-            
+
             const skipBtn = document.querySelector('.btn-skip');
             if (skipBtn) skipBtn.style.display = 'none';
             clearTimeout(mediaInt);
-            
-            setTimeout(() => { 
-                toyStop(); 
-                safeSetHTML('status-label', "GOOD BOY"); 
+
+            setTimeout(() => {
+                toyStop();
+                safeSetHTML('status-label', "WELL DONE");
             }, 2000);
         }
 
@@ -724,15 +818,15 @@
             const actionBtn = document.getElementById('post-action-btn');
             const plusBtn = document.querySelector('.btn-plus');
             const minusBtn = document.querySelector('.btn-minus');
-            
-            if (vibeBtn) vibeBtn.style.display = 'none'; 
+
+            if (vibeBtn) vibeBtn.style.display = 'none';
             if (actionBtn) actionBtn.style.display = 'none';
-            if (plusBtn) plusBtn.style.display = 'none'; 
+            if (plusBtn) plusBtn.style.display = 'none';
             if (minusBtn) minusBtn.style.display = 'none';
-            
-            if (currentFinalState === 'cum') { 
-                toyVibrate(cfg.toyIntensity); 
-                setTimeout(() => { toyStop(); }, 5000); 
+
+            if (currentFinalState === 'win') {
+                toyVibrate(cfg.toyIntensity);
+                setTimeout(() => { toyStop(); }, 5000);
             }
         }
 
@@ -748,494 +842,515 @@
         function changeIntensity(amount, e = null, silent = false) {
             if (e) e.stopPropagation();
             if (typeof cfg.toyIntensity === 'undefined') return;
-            
+
             cfg.toyIntensity = Math.max(0, Math.min(1, cfg.toyIntensity + amount));
             const newInt = Math.round(cfg.toyIntensity * 100);
-            
+
             const toyIntensity = document.getElementById('toy-intensity');
             if (toyIntensity) toyIntensity.value = newInt;
             safeSetText('toy-intensity-val', newInt + '%');
-            
+
             if (isManualVibeOn || (!ttcActive && isLive && document.body.classList.contains('green-active'))) {
                 toyVibrate(isLive ? getEffectiveIntensity() : cfg.toyIntensity);
             }
-            
+
             if (!silent) {
                 const toast = document.getElementById('intensity-toast');
-                if (toast) { 
-                    toast.innerText = "Basis: " + newInt + "%"; 
-                    toast.style.opacity = 1; 
-                    clearTimeout(toastTimeout); 
-                    toastTimeout = setTimeout(() => toast.style.opacity = 0, 1500); 
+                if (toast) {
+                    toast.innerText = "Base: " + newInt + "%";
+                    toast.style.opacity = 1;
+                    clearTimeout(toastTimeout);
+                    toastTimeout = setTimeout(() => toast.style.opacity = 0, 1500);
                 }
             }
         }
 
         function endGame() { toyStop(); location.reload(); }
 
-        function startTensionDecay() { 
-            clearInterval(tensionDecayTimer); 
-            tensionDecayTimer = setInterval(() => { 
+        function startTensionDecay() {
+            clearInterval(tensionDecayTimer);
+            tensionDecayTimer = setInterval(() => {
                 if (isLive && currentTension > 0 && !isForcedRedActive) {
-                    currentTension = Math.max(0, currentTension - 1); 
+                    currentTension = Math.max(0, currentTension - 1);
                 }
-            }, 2500); 
+            }, 2500);
         }
 
-        function getHDUrl(p) { 
-            return p.preview?.images?.[0]?.source?.url ? p.preview.images[0].source.url.replace(/&amp;/g, '&') : p.url; 
-        }
-
-        async function fetchRedditData(url) {
-            try { 
-                const r = await fetch(url); 
-                if (r.ok) return await r.json(); 
-            } catch(e) {}
-            try { 
-                const pr = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(url)}`); 
-                const res = await pr.json(); 
-                if (res.contents) return JSON.parse(res.contents); 
-            } catch(e) {}
-            return null;
+        function getHDUrl(p) {
+            return p.preview?.images?.[0]?.source?.url ? p.preview.images[0].source.url.replace(/&amp;/g, '&') : p.url;
         }
 
         async function fetchRedditSources() {
             const elSources = document.getElementById('t-sources');
             const elSort = document.getElementById('t-sort');
-            const srcStr = elSources ? elSources.value : "memes";
+            const srcStr = elSources ? elSources.value : "";
             const sort = elSort ? elSort.value : "hot";
             const srcList = srcStr.split(',').map(s => s.trim()).filter(s => s !== "");
-            
-            const fImg = document.getElementById('f-img') ? document.getElementById('f-img').checked : true;
-            const fVid = document.getElementById('f-vid') ? document.getElementById('f-vid').checked : true;
-            const fGif = document.getElementById('f-gif') ? document.getElementById('f-gif').checked : true;
-            
+
+            const fImg = document.getElementById('f-img').checked;
+            const fVid = document.getElementById('f-vid').checked;
+            const fGif = document.getElementById('f-gif').checked;
+
             const fetchSort = sort === 'random' ? 'hot' : sort;
             const timeParam = sort === 'top' ? '&t=all' : '';
 
             const buckets = await Promise.all(srcList.map(async (src) => {
-                let url = src.toLowerCase().startsWith('u/') 
-                    ? `https://www.reddit.com/user/${src.substring(2)}/submitted.json?sort=${fetchSort}&limit=50${timeParam}` 
-                    : `https://www.reddit.com/r/${src}/${fetchSort}.json?limit=50${timeParam}`;
+                const clean = src.replace(/[^a-zA-Z0-9_\/-]/g, '');
+                if (!clean) return [];
+                const url = clean.toLowerCase().startsWith('u/')
+                    ? `https://www.reddit.com/user/${encodeURIComponent(clean.substring(2))}/submitted.json?sort=${fetchSort}&limit=50${timeParam}`
+                    : `https://www.reddit.com/r/${encodeURIComponent(clean)}/${fetchSort}.json?limit=50${timeParam}`;
                 try {
-                    const data = await fetchRedditData(url);
-                    if (!data || !data.data || !data.data.children) return [];
+                    // Direct request only — deliberately no third-party CORS relay,
+                    // so the source list is never disclosed to an intermediary.
+                    const r = await fetch(url, { referrerPolicy: "no-referrer", credentials: "omit" });
+                    if (!r.ok) return [];
+                    const data = await r.json();
+                    if (!data?.data?.children) return [];
                     return data.data.children.map(c => c.data).filter(p => {
                         const isG = p.url.endsWith('.gif') || p.preview?.reddit_video_preview;
                         const isV = p.is_video || p.post_hint === 'hosted:video';
                         const isI = p.post_hint === 'image' || p.url.match(/\.(jpg|jpeg|png)$/i);
                         return (fVid && isV) || (fImg && isI && !isG) || (fGif && isG);
                     });
-                } catch(e) { return []; }
+                } catch (e) { return []; }
             }));
 
-            let combined = []; 
+            let combined = [];
             buckets.forEach(b => { combined = combined.concat(b); });
-            let unique = [...new Map(combined.map(item => [item.id, item])).values()];
-            
-            for (let i = unique.length - 1; i > 0; i--) { 
-                const j = Math.floor(Math.random() * (i + 1)); 
-                [unique[i], unique[j]] = [unique[j], unique[i]]; 
+            const unique = [...new Map(combined.map(item => [item.id, item])).values()];
+
+            for (let i = unique.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [unique[i], unique[j]] = [unique[j], unique[i]];
             }
             redditPosts = unique;
         }
 
-        function skipMedia(e) { 
-            if (e) e.stopPropagation(); 
-            if (!isLive && !isPostGame && !ttcActive) return; 
-            clearTimeout(mediaInt); 
-            currentIndex++; 
-            manageBuffers(); 
+        function skipMedia(e) {
+            if (e) e.stopPropagation();
+            if (!isLive && !isPostGame && !ttcActive) return;
+            clearTimeout(mediaInt);
+            currentIndex++;
+            manageBuffers();
         }
 
         function triggerEdge(e) {
             if (e) e.stopPropagation();
             if (!isLive || document.body.classList.contains('red-active')) return;
-            
-            speedModeEndTime = 0; 
-            edgeCount++; 
+
+            speedModeEndTime = 0;
+            edgeCount++;
             safeSetText('edge-display', "EDGES: " + edgeCount);
-            
-            toyStop(); 
-            clearTimeout(clock); 
+
+            toyStop();
+            clearTimeout(clock);
             clearInterval(countdownInt);
-            executeRedPhase(cfg.longBreakDur, true); 
-            
+            executeRedPhase(cfg.longBreakDur, true);
+
             if (cfg.tensionModeActive) {
                 currentTension = Math.min(100, currentTension + 18);
             }
         }
 
         function loadPostIntoBuffer(idx) {
-            const elLocal = document.getElementById('f-local-media');
-            const isLocal = elLocal ? elLocal.checked : false;
-            
-            if (isLocal && localMediaFiles.length === 0) return;
-            if (!isLocal && redditPosts.length === 0) return;
-            
-            let bId = (idx % 4) + 1;
-            let state = bufferState[bId - 1];
-            
+            const mode = cfg.sourceMode || getSourceMode();
+
+            if (mode === 'local' && localMediaFiles.length === 0) return;
+            if (mode === 'reddit' && redditPosts.length === 0) return;
+
+            const bId = (idx % 4) + 1;
+            const state = bufferState[bId - 1];
+
             if (state.reqIdx === idx) return;
-            state.reqIdx = idx; 
+            state.reqIdx = idx;
             state.isReady = false;
-            
+
             const img = document.getElementById('img-' + bId);
             const vid = document.getElementById('vid-' + bId);
-            
-            if (!img || !vid) return;
+            const demo = document.getElementById('demo-' + bId);
+            if (!img || !vid || !demo) return;
 
-            img.style.display = 'none'; 
+            img.style.display = 'none';
             vid.style.display = 'none';
-            vid.pause(); 
-            vid.removeAttribute('src'); 
-            img.removeAttribute('src'); 
+            demo.style.display = 'none';
+            vid.pause();
+            vid.removeAttribute('src');
+            img.removeAttribute('src');
             vid.load();
-            
-            if (state.objUrl) { 
-                URL.revokeObjectURL(state.objUrl); 
-                state.objUrl = null; 
+
+            if (state.objUrl) {
+                URL.revokeObjectURL(state.objUrl);
+                state.objUrl = null;
             }
-            
-            const handleReady = () => { 
-                if (state.reqIdx === idx) { 
-                    state.isReady = true; 
-                    checkDisplay(); 
-                } 
+
+            const handleReady = () => {
+                if (state.reqIdx === idx) {
+                    state.isReady = true;
+                    checkDisplay();
+                }
             };
-            const handleErr  = () => { 
-                if (state.reqIdx === idx) { 
-                    state.isReady = true; 
-                    if (currentIndex === idx) { 
-                        currentIndex++; 
-                        manageBuffers(); 
-                    } 
-                } 
+            const handleErr = () => {
+                if (state.reqIdx === idx) {
+                    state.isReady = true;
+                    if (currentIndex === idx) {
+                        currentIndex++;
+                        manageBuffers();
+                    }
+                }
             };
-            
-            img.onload = handleReady; 
-            img.onerror = handleErr; 
-            vid.onloadeddata = handleReady; 
+
+            img.onload = handleReady;
+            img.onerror = handleErr;
+            vid.onloadeddata = handleReady;
             vid.onerror = handleErr;
 
-            if (isLocal) {
+            if (mode === 'demo') {
+                paintDemoTile(bId, idx);
+                demo.style.display = 'flex';
+                setTimeout(handleReady, 0);
+                return;
+            }
+
+            if (mode === 'local') {
                 if (mediaCycleIndex >= mediaCycleList.length) shuffleCycle();
                 const fileIdx = mediaCycleList[mediaCycleIndex++];
                 const file = localMediaFiles[fileIdx];
                 const fileUrl = URL.createObjectURL(file);
                 state.objUrl = fileUrl;
-                
-                if (file.type.startsWith('video/')) { 
-                    vid.src = fileUrl; 
-                    vid.style.display = 'block'; 
-                    vid.load(); 
-                } else { 
-                    img.src = fileUrl; 
-                    img.style.display = 'block'; 
+
+                if (file.type.startsWith('video/')) {
+                    vid.src = fileUrl;
+                    vid.style.display = 'block';
+                    vid.load();
+                } else {
+                    img.src = fileUrl;
+                    img.style.display = 'block';
                 }
+                return;
+            }
+
+            const safeIdx = idx % redditPosts.length;
+            const post = redditPosts[safeIdx];
+            if (post.is_video && post.media?.reddit_video) {
+                vid.src = post.media.reddit_video.fallback_url;
+                vid.style.display = 'block';
+                vid.load();
+            } else if (post.preview?.reddit_video_preview) {
+                vid.src = post.preview.reddit_video_preview.fallback_url;
+                vid.style.display = 'block';
+                vid.load();
             } else {
-                let safeIdx = idx % redditPosts.length;
-                const post = redditPosts[safeIdx];
-                if (post.is_video && post.media?.reddit_video) { 
-                    vid.src = post.media.reddit_video.fallback_url; 
-                    vid.style.display = 'block'; 
-                    vid.load(); 
-                } else if (post.preview?.reddit_video_preview) { 
-                    vid.src = post.preview.reddit_video_preview.fallback_url; 
-                    vid.style.display = 'block'; 
-                    vid.load(); 
-                } else { 
-                    img.src = getHDUrl(post); 
-                    img.style.display = 'block'; 
-                }
+                img.src = getHDUrl(post);
+                img.style.display = 'block';
             }
         }
 
         function checkDisplay() {
-            let bId = (currentIndex % 4) + 1;
-            let state = bufferState[bId - 1];
-            
+            const bId = (currentIndex % 4) + 1;
+            const state = bufferState[bId - 1];
+
             if (state.isReady && state.reqIdx === currentIndex) {
                 document.querySelectorAll('.media-buffer').forEach(b => b.classList.remove('active'));
                 const targetBuffer = document.getElementById('buffer-' + bId);
                 if (targetBuffer) targetBuffer.classList.add('active');
-                
-                let vid = document.getElementById('vid-' + bId);
-                if (vid && vid.style.display === 'block') { 
-                    let p = vid.play(); 
-                    if(p) p.catch(()=>{}); 
+
+                const vid = document.getElementById('vid-' + bId);
+                if (vid && vid.style.display === 'block') {
+                    const p = vid.play();
+                    if (p) p.catch(() => {});
                 }
-                
-                for (let i = 1; i <= 4; i++) { 
-                    if (i !== bId) { 
-                        let otherVid = document.getElementById('vid-' + i); 
-                        if(otherVid) otherVid.pause(); 
-                    } 
+
+                for (let i = 1; i <= 4; i++) {
+                    if (i !== bId) {
+                        const otherVid = document.getElementById('vid-' + i);
+                        if (otherVid) otherVid.pause();
+                    }
                 }
-                
+
                 clearTimeout(mediaInt);
                 if (!isPostGame) {
-                    mediaInt = setTimeout(() => { 
-                        currentIndex++; 
-                        manageBuffers(); 
+                    mediaInt = setTimeout(() => {
+                        currentIndex++;
+                        manageBuffers();
                     }, cfg.imgDur * 1000);
                 }
             }
         }
 
-        function manageBuffers() { 
-            checkDisplay(); 
-            loadPostIntoBuffer(currentIndex); 
-            loadPostIntoBuffer(currentIndex + 1); 
-            loadPostIntoBuffer(currentIndex + 2); 
+        function manageBuffers() {
+            checkDisplay();
+            loadPostIntoBuffer(currentIndex);
+            loadPostIntoBuffer(currentIndex + 1);
+            loadPostIntoBuffer(currentIndex + 2);
         }
 
         function updateGlobalTimer() {
             if (!globalStartT) return;
-            let elapsedSec = Math.floor((Date.now() - globalStartT) / 1000);
-            let m = Math.floor(elapsedSec / 60).toString().padStart(2, '0');
-            let s = (elapsedSec % 60).toString().padStart(2, '0');
-            
+            const elapsedSec = Math.floor((Date.now() - globalStartT) / 1000);
+            const m = Math.floor(elapsedSec / 60).toString().padStart(2, '0');
+            const s = (elapsedSec % 60).toString().padStart(2, '0');
+
             const el = document.getElementById('global-timer');
             if (el) el.innerText = `${m}:${s}`;
-            
+
             if (!hasForcedGlobalWin && !isPostGame && !ttcActive && !isWheelSpinning) {
-                if (elapsedSec / 60 >= cfg.maxGlobalMin) { 
-                    hasForcedGlobalWin = true; 
-                    forceGlobalWin(); 
+                if (!cfg.isRandomMode && elapsedSec / 60 >= cfg.maxGlobalMin) {
+                    hasForcedGlobalWin = true;
+                    forceGlobalWin();
                 }
             }
         }
 
         function forceGlobalWin() {
-            isLive = false; 
-            cancelAnimationFrame(animFrame); 
-            clearTimeout(clock); 
-            clearTimeout(mediaInt); 
-            clearInterval(countdownInt); 
+            isLive = false;
+            cancelAnimationFrame(animFrame);
+            clearTimeout(clock);
+            clearTimeout(mediaInt);
+            clearInterval(countdownInt);
             clearInterval(tensionDecayTimer);
-            clearTimeout(toastTimeout); 
-            speedModeEndTime = 0; 
-            isForcedRedActive = false; 
+            clearTimeout(toastTimeout);
+            speedModeEndTime = 0;
+            isForcedRedActive = false;
             toyStop();
-            
+
             const btnEdge = document.querySelector('.btn-edge');
             const btnSkip = document.querySelector('.btn-skip');
             const bottomBar = document.querySelector('.bottom-bar');
-            if (btnEdge) btnEdge.style.display = 'none'; 
-            if (btnSkip) btnSkip.style.display = 'none'; 
+            if (btnEdge) btnEdge.style.display = 'none';
+            if (btnSkip) btnSkip.style.display = 'none';
             if (bottomBar) bottomBar.style.display = 'none';
-            
-            for (let i = 1; i <= 4; i++) { 
+
+            for (let i = 1; i <= 4; i++) {
                 const buf = document.getElementById('buffer-' + i);
                 const vid = document.getElementById('vid-' + i);
-                if (buf) buf.classList.remove('active'); 
-                if (vid) vid.pause(); 
-            }
-            
-            document.body.className = ''; 
-            document.body.style.backgroundColor = "var(--bg)";
-            
-            const label = document.getElementById('status-label'); 
-            if (label) { 
-                label.innerHTML = "TIME IS UP"; 
-                label.className = 'status-text adaptive'; 
-                label.style.color = "var(--white)"; 
+                if (buf) buf.classList.remove('active');
+                if (vid) vid.pause();
             }
 
-            let isTTC = cfg.ttcAlways ? true : (cfg.ttcEnabled && Math.random() < 0.10);
-            setTimeout(() => { 
-                if (isTTC) startTTCSequence(); 
-                else triggerNormalWin(); 
+            document.body.className = '';
+            document.body.style.backgroundColor = "var(--bg)";
+
+            const label = document.getElementById('status-label');
+            if (label) {
+                label.innerHTML = "TIME IS UP";
+                label.className = 'status-text adaptive';
+                label.style.color = "var(--white)";
+            }
+
+            const isTTC = cfg.ttcAlways ? true : (cfg.ttcEnabled && Math.random() < 0.10);
+            setTimeout(() => {
+                if (isTTC) startTTCSequence();
+                else triggerNormalWin();
             }, 3000);
         }
 
         async function bootGame() {
-            const elLocal = document.getElementById('f-local-media');
-            const isLocal = elLocal ? elLocal.checked : false;
+            const mode = getSourceMode();
             const btn = document.getElementById('btn-start');
-            const originalText = btn ? btn.innerText : "SPIEL STARTEN";
+            const originalText = btn ? btn.innerText : "START GAME";
 
-            if (!isLocal) {
-                if(btn) { btn.innerText = "LADE STREAMS..."; btn.disabled = true; }
+            if (mode === 'reddit') {
+                btn.innerText = "LOADING…";
+                btn.disabled = true;
                 await fetchRedditSources();
-                if (redditPosts.length === 0) { 
-                    alert("Keine Medien gefunden oder Reddit blockiert."); 
-                    if(btn) { btn.innerText = originalText; btn.disabled = false; } 
-                    return; 
+                if (redditPosts.length === 0) {
+                    alert("No media found. Reddit may be unreachable from this page — try demo or local mode.");
+                    btn.innerText = originalText;
+                    btn.disabled = false;
+                    return;
                 }
-            } else {
+            } else if (mode === 'local') {
                 if (localMediaFiles.length === 0) return;
                 shuffleCycle();
             }
 
-            edgeCount = 0; 
+            edgeCount = 0;
             safeSetText('edge-display', "EDGES: 0");
-            isPostGame = false; 
-            ttcActive = false; 
-            currentTension = 0; 
-            currentIndex = 0; 
-            speedModeEndTime = 0; 
-            currentFinalState = null; 
-            postActionDone = false; 
-            isForcedRedActive = false; 
-            hasForcedGlobalWin = false; 
+            isPostGame = false;
+            ttcActive = false;
+            currentTension = 0;
+            currentIndex = 0;
+            speedModeEndTime = 0;
+            currentFinalState = null;
+            postActionDone = false;
+            isForcedRedActive = false;
+            hasForcedGlobalWin = false;
             isWheelSpinning = false;
-            
-            abortTTC(); 
+
+            abortTTC();
             bufferState.forEach(b => { b.reqIdx = -1; b.isReady = false; });
 
             const actionBtn = document.getElementById('post-action-btn');
             const ttcBtn = document.getElementById('ttc-btn');
             const plusBtn = document.querySelector('.btn-plus');
             const minusBtn = document.querySelector('.btn-minus');
-            
-            if (actionBtn) actionBtn.style.display = 'none'; 
+
+            if (actionBtn) actionBtn.style.display = 'none';
             if (ttcBtn) ttcBtn.style.display = 'none';
-            if (plusBtn) plusBtn.style.display = 'flex'; 
+            if (plusBtn) plusBtn.style.display = 'flex';
             if (minusBtn) minusBtn.style.display = 'flex';
 
-            const elTotalMin = document.getElementById('t-total-min');
-            const elMaxGlobal = document.getElementById('t-max-global-min');
-            const elImgDur = document.getElementById('t-img-dur');
-            const elGMin = document.getElementById('t-gmin');
-            const elGMax = document.getElementById('t-gmax');
-            const elRMin = document.getElementById('t-rmin');
-            const elRMax = document.getElementById('t-rmax');
-            const elTension = document.getElementById('f-tension-mode');
-            const elSpeed = document.getElementById('f-speed-mode');
-            const elLongBreak = document.getElementById('f-long-break');
-            const elLongBreakDur = document.getElementById('t-long-break-dur');
-            const elDiff = document.getElementById('t-difficulty');
-            const elIntensity = document.getElementById('toy-intensity');
-            const elTtcMode = document.getElementById('f-ttc-mode');
-            const elTtcAlways = document.getElementById('f-ttc-always');
-
-            cfg = {
-                total: parseFloat(elTotalMin ? elTotalMin.value : 12) * 60, 
-                maxGlobalMin: parseFloat(elMaxGlobal ? elMaxGlobal.value : 45), 
-                imgDur: parseFloat(elImgDur ? elImgDur.value : 40),
-                gMin: parseFloat(elGMin ? elGMin.value : 1), 
-                gMax: parseFloat(elGMax ? elGMax.value : 12), 
-                rMin: parseFloat(elRMin ? elRMin.value : 1), 
-                rMax: parseFloat(elRMax ? elRMax.value : 12),
-                tensionModeActive: elTension ? elTension.checked : true, 
-                speedModeActive: elSpeed ? elSpeed.checked : true, 
-                longBreakActive: elLongBreak ? elLongBreak.checked : false,
-                longBreakDur: parseFloat(elLongBreakDur ? elLongBreakDur.value : 25), 
-                difficulty: parseInt(elDiff ? elDiff.value : 2), 
-                toyIntensity: parseFloat(elIntensity ? elIntensity.value : 80) / 100,
-                ttcEnabled: elTtcMode ? elTtcMode.checked : true, 
-                ttcAlways: elTtcAlways ? elTtcAlways.checked : false
+            const isRandomMode = document.getElementById('f-random-mode').checked;
+            const num = (id, fallback) => {
+                const el = document.getElementById(id);
+                const v = el ? parseFloat(el.value) : NaN;
+                return Number.isFinite(v) ? v : fallback;
+            };
+            const flag = (id, fallback) => {
+                const el = document.getElementById(id);
+                return el ? el.checked : fallback;
             };
 
-            const setupUi = document.getElementById('setup-ui');
-            const gameUi = document.getElementById('game-ui');
-            if (setupUi) setupUi.style.display = 'none'; 
-            if (gameUi) gameUi.style.display = 'block';
-            
+            let calculatedTotalTime;
+            if (isRandomMode) {
+                const rMin = num('t-rand-min', 10);
+                const rMax = Math.max(num('t-rand-max', 30), rMin);
+                calculatedTotalTime = (rMin + Math.random() * (rMax - rMin)) * 60;
+            } else {
+                calculatedTotalTime = num('t-total-min', 10) * 60;
+            }
+
+            cfg = {
+                sourceMode: mode,
+                isRandomMode: isRandomMode,
+                total: calculatedTotalTime,
+                maxGlobalMin: num('t-max-global-min', 45),
+                imgDur: Math.max(num('t-img-dur', 40), 1),
+                gMin: num('t-gmin', 1),
+                gMax: num('t-gmax', 18),
+                rMin: num('t-rmin', 1),
+                rMax: num('t-rmax', 15),
+                tensionModeActive: flag('f-tension-mode', true),
+                speedModeActive: flag('f-speed-mode', true),
+                longBreakActive: flag('f-long-break', false),
+                longBreakDur: num('t-long-break-dur', 25),
+                difficulty: Math.round(num('t-difficulty', 2)),
+                toyIntensity: num('toy-intensity', 30) / 100,
+                ttcEnabled: flag('f-ttc-mode', true),
+                ttcAlways: flag('f-ttc-always', false)
+            };
+
+            document.getElementById('setup-ui').style.display = 'none';
+            document.getElementById('game-ui').style.display = 'block';
+
+            const progCont = document.querySelector('.progress-container');
+            if (progCont) progCont.style.display = isRandomMode ? 'none' : 'block';
+
             updateIngameDot(false);
-            isLive = true; 
-            globalStartT = Date.now(); 
+            isLive = true;
+            globalStartT = Date.now();
             startT = Date.now();
-            
-            clearInterval(globalTimerInt); 
-            globalTimerInt = setInterval(updateGlobalTimer, 1000); 
+
+            clearInterval(globalTimerInt);
+            globalTimerInt = setInterval(updateGlobalTimer, 1000);
             updateGlobalTimer();
-            
-            startTensionDecay(); 
-            engine(); 
-            cycle('green'); 
+
+            startTensionDecay();
+
+            engine();
+            cycle('green');
             manageBuffers();
         }
 
         function engine() {
             if (!isLive) return;
-            let elapsed = (Date.now() - startT) / 1000;
+            const elapsed = (Date.now() - startT) / 1000;
             const progress = document.getElementById('progress-bar');
-            if (progress) progress.style.width = Math.min((elapsed / cfg.total) * 100, 100) + "%";
-            if (elapsed >= cfg.total) finish(); else animFrame = requestAnimationFrame(engine);
+
+            if (progress && !cfg.isRandomMode) {
+                progress.style.width = Math.min((elapsed / cfg.total) * 100, 100) + "%";
+            }
+
+            if (elapsed >= cfg.total) {
+                if (cfg.isRandomMode) {
+                    hasForcedGlobalWin = true;
+                    forceGlobalWin();
+                } else {
+                    finish();
+                }
+            } else {
+                animFrame = requestAnimationFrame(engine);
+            }
         }
 
         function runCountdown(dur) {
-            clearInterval(countdownInt); 
+            clearInterval(countdownInt);
             const endT = Date.now() + dur * 1000;
-            const update = () => { 
-                let left = (endT - Date.now()) / 1000; 
+            const update = () => {
+                const left = (endT - Date.now()) / 1000;
                 if (left > 0) {
-                    safeSetHTML('status-label', Math.ceil(left)); 
-                } else { 
-                    safeSetHTML('status-label', ""); 
-                    clearInterval(countdownInt); 
-                } 
+                    safeSetHTML('status-label', Math.ceil(left));
+                } else {
+                    safeSetHTML('status-label', "");
+                    clearInterval(countdownInt);
+                }
             };
-            update(); 
+            update();
             countdownInt = setInterval(update, 100);
         }
 
         function executeRedPhase(dur, isForcedEdge = false) {
-            clearInterval(countdownInt); 
-            document.body.className = 'red-active'; 
+            clearInterval(countdownInt);
+            document.body.className = 'red-active';
             isForcedRedActive = isForcedEdge;
-            const label = document.getElementById('status-label'); 
+            const label = document.getElementById('status-label');
             if (label) label.classList.remove('countdown');
-            
-            if (isForcedEdge) { 
-                safeSetHTML('status-label', "DONT YOU <br> DARE CUM"); 
-                if (label) label.className = 'status-text adaptive pulse'; 
-            } else { 
+
+            if (isForcedEdge) {
+                safeSetHTML('status-label', "HOLD IT");
+                if (label) label.className = 'status-text adaptive pulse';
+            } else {
                 const taunts = [
-                    "Frustrating?", "Struggling?", "My Rules!", "Poor thing.", 
-                    "Enjoying it?", "Aww.", "Begging?", "Hurts?", "Too bad.", 
-                    "Sensitive?", "Cute :)", "Twitching?", "Good boy?", "Pathetic!"
+                    "Frustrating?", "Struggling?", "My rules.", "Poor thing.",
+                    "Enjoying it?", "Aww.", "Begging?", "Too bad.",
+                    "Sensitive?", "Cute :)", "Not yet.", "Patience."
                 ];
-                safeSetHTML('status-label', taunts[Math.floor(Math.random() * taunts.length)]); 
+                safeSetHTML('status-label', taunts[Math.floor(Math.random() * taunts.length)]);
                 if (label) label.className = 'status-text adaptive';
             }
-            toyStop(); 
-            clock = setTimeout(() => { 
-                isForcedRedActive = false; 
-                cycle('green'); 
+            toyStop();
+            clock = setTimeout(() => {
+                isForcedRedActive = false;
+                cycle('green');
             }, dur * 1000);
         }
 
         function cycle(type) {
             if (!isLive) return;
-            let now = Date.now();
-            if (type === 'green' && cfg.speedModeActive && now > speedModeEndTime && Math.random() < 0.10) {
+            const now = Date.now();
+            if (type === 'green' && cfg.speedModeActive && now > speedModeEndTime && Math.random() < 0.06) {
                 speedModeEndTime = now + 60000;
             }
 
-            let isCurrentlySpeedMode = now < speedModeEndTime;
+            const isCurrentlySpeedMode = now < speedModeEndTime;
             let dur;
-            
+
             if (isCurrentlySpeedMode) {
                 dur = type === 'green' ? 1 + Math.random() * 4 : 1 + Math.random() * 3;
-            } else {
-                if (type === 'red' && cfg.longBreakActive && Math.random() < 0.04) {
-                    dur = cfg.longBreakDur;
-                } else if (cfg.tensionModeActive) {
-                    let r = Math.random();
-                    if (currentTension <= 15) {
-                        dur = type === 'green' 
-                            ? cfg.gMin + (1 - Math.pow(r, 3.0)) * (cfg.gMax - cfg.gMin) 
-                            : cfg.rMin + Math.pow(r, 4.0) * (cfg.rMax - cfg.rMin);
-                    } else if (currentTension >= 81) {
-                        dur = type === 'green' 
-                            ? cfg.gMin + Math.pow(r, 3.0) * (cfg.gMax - cfg.gMin) 
-                            : cfg.rMin + (1 - Math.pow(r, 1.5)) * (cfg.rMax - cfg.rMin);
-                    } else {
-                        dur = type === 'green' 
-                            ? cfg.gMin + r * (cfg.gMax - cfg.gMin) 
-                            : cfg.rMin + r * (cfg.rMax - cfg.rMin);
-                    }
+            } else if (type === 'red' && cfg.longBreakActive && Math.random() < 0.04) {
+                dur = cfg.longBreakDur;
+            } else if (cfg.tensionModeActive) {
+                const r = Math.random();
+                if (currentTension <= 15) {
+                    dur = type === 'green'
+                        ? cfg.gMin + (1 - Math.pow(r, 3.0)) * (cfg.gMax - cfg.gMin)
+                        : cfg.rMin + Math.pow(r, 4.0) * (cfg.rMax - cfg.rMin);
+                } else if (currentTension >= 81) {
+                    dur = type === 'green'
+                        ? cfg.gMin + Math.pow(r, 3.0) * (cfg.gMax - cfg.gMin)
+                        : cfg.rMin + (1 - Math.pow(r, 1.5)) * (cfg.rMax - cfg.rMin);
                 } else {
-                    dur = type === 'green' 
-                        ? cfg.gMin + Math.random() * (cfg.gMax - cfg.gMin) 
-                        : cfg.rMin + Math.random() * (cfg.rMax - cfg.rMin);
+                    dur = type === 'green'
+                        ? cfg.gMin + r * (cfg.gMax - cfg.gMin)
+                        : cfg.rMin + r * (cfg.rMax - cfg.rMin);
                 }
+            } else {
+                dur = type === 'green'
+                    ? cfg.gMin + Math.random() * (cfg.gMax - cfg.gMin)
+                    : cfg.rMin + Math.random() * (cfg.rMax - cfg.rMin);
             }
-            
+
             dur = Math.max(dur, 0.4);
             const label = document.getElementById('status-label');
             if (type === 'green') {
@@ -1250,232 +1365,212 @@
         }
 
         async function startTTCSequence() {
-            ttcActive = true; 
-            let ttcStartT = Date.now();
-            document.body.className = ''; 
-            document.body.style.backgroundColor = "#124d22"; // Weiches Dunkelgrün statt grelles var(--green)
+            ttcActive = true;
+            const ttcStartT = Date.now();
+            document.body.className = '';
+            document.body.style.backgroundColor = "#124d22";
             const label = document.getElementById('status-label');
-            
-            if (label) { 
-                label.className = 'status-text'; 
-                label.style.transform = "scale(0.8)"; 
-                label.style.color = "var(--white)"; 
-                safeSetHTML('status-label', "TRY TO CUM"); 
+
+            if (label) {
+                label.className = 'status-text';
+                label.style.transform = "scale(0.8)";
+                label.style.color = "var(--white)";
+                safeSetHTML('status-label', "FINALE");
             }
 
             document.getElementById('ttc-btn').style.display = 'block';
-            const skipBtn = document.querySelector('.btn-skip'); 
+            const skipBtn = document.querySelector('.btn-skip');
             if (skipBtn) skipBtn.style.display = 'flex';
-            
-            // Fix: Bild sofort anzeigen, damit der Screen beim Start nicht komplett ohne Medien ist
+
             checkDisplay();
 
-            mediaInt = setTimeout(() => { 
-                currentIndex++; 
-                manageBuffers(); 
+            mediaInt = setTimeout(() => {
+                currentIndex++;
+                manageBuffers();
             }, cfg.imgDur * 1000);
-            
+
             while (ttcActive) {
-                let elapsedSec = (Date.now() - ttcStartT) / 1000;
-                
-                if (elapsedSec >= 420) { 
-                    abortTTC(); 
-                    document.getElementById('ttc-btn').style.display = 'none'; 
-                    triggerNormalWin(); 
-                    return; 
+                const elapsedSec = (Date.now() - ttcStartT) / 1000;
+
+                if (elapsedSec >= 300) {
+                    abortTTC();
+                    document.getElementById('ttc-btn').style.display = 'none';
+                    triggerNormalWin();
+                    return;
                 }
-                
-                let baseOn = 0, baseOff = 0, isHeartbeat = false;
-                if (elapsedSec < 30) { baseOn = 1; baseOff = 9; } 
-                else if (elapsedSec < 60) { baseOn = 2; baseOff = 8; } 
-                else if (elapsedSec < 240) { baseOn = 3; baseOff = 8; isHeartbeat = true; } 
-                else if (elapsedSec < 300) { baseOn = 2; baseOff = 5; isHeartbeat = true; } 
-                else { baseOn = 1; baseOff = 4; }
-                
-                let actualOn = baseOn * (1 - Math.random() * 0.3);
-                let actualOff = baseOff * (1 + (Math.random() * 0.6 - 0.4));
-                
-                if (isHeartbeat) {
-                    let cycles = Math.ceil(actualOn);
-                    for(let i = 0; i < cycles; i++) {
-                        if(!ttcActive) break; 
-                        toyVibrate(cfg.toyIntensity); await sleepTTC(250);
-                        
-                        if(!ttcActive) break; 
-                        toyStop(); await sleepTTC(150);
-                        
-                        if(!ttcActive) break; 
-                        toyVibrate(cfg.toyIntensity); await sleepTTC(250);
-                        
-                        if(!ttcActive) break; 
-                        toyStop(); await sleepTTC(350);
-                    }
-                } else {
-                    if(!ttcActive) break; 
-                    toyVibrate(cfg.toyIntensity); 
-                    await sleepTTC(actualOn * 1000);
+
+                let actualOn, actualOff;
+                if (elapsedSec < 120) { actualOn = 2; actualOff = 8; }
+                else if (elapsedSec < 240) { actualOn = 3; actualOff = 8; }
+                else { actualOn = 2; actualOff = 4 + (Math.random() * 2); }
+
+                const cycles = Math.ceil(actualOn);
+                for (let i = 0; i < cycles; i++) {
+                    if (!ttcActive) break;
+                    toyVibrate(cfg.toyIntensity); await sleepTTC(250);
+                    if (!ttcActive) break;
+                    toyStop(); await sleepTTC(150);
+                    if (!ttcActive) break;
+                    toyVibrate(cfg.toyIntensity); await sleepTTC(250);
+                    if (!ttcActive) break;
+                    toyStop(); await sleepTTC(350);
                 }
+
                 if (!ttcActive) break;
-                toyStop(); 
+                toyStop();
                 await sleepTTC(actualOff * 1000);
             }
         }
 
         function triggerNormalWin() {
-            document.body.className = ''; 
-            document.body.style.backgroundColor = "#124d22"; // Weiches Dunkelgrün statt grelles var(--green)
-            toyVibrate(cfg.toyIntensity); 
+            document.body.className = '';
+            document.body.style.backgroundColor = "#124d22";
+            toyVibrate(cfg.toyIntensity);
             setTimeout(() => toyStop(), 2500);
-            
-            isPostGame = true; 
-            currentFinalState = 'cum'; 
+
+            isPostGame = true;
+            currentFinalState = 'win';
             postActionDone = false;
-            
+
             const label = document.getElementById('status-label');
-            if (label) { 
-                safeSetHTML('status-label', "BE A GOOD BOY<br>AND CUM"); 
-                label.className = 'status-text'; 
-                label.style.transform = "scale(0.8)"; 
-                label.style.color = "var(--white)"; 
+            if (label) {
+                safeSetHTML('status-label', "YOU WIN");
+                label.className = 'status-text';
+                label.style.transform = "scale(0.8)";
+                label.style.color = "var(--white)";
             }
-            
+
             const skipBtn = document.querySelector('.btn-skip');
             const vibeBtn = document.getElementById('post-win-vibe');
             const actionBtn = document.getElementById('post-action-btn');
-            
-            if (skipBtn) skipBtn.style.display = 'flex'; 
-            if (vibeBtn) vibeBtn.style.display = 'block'; 
-            if (actionBtn) { 
-                actionBtn.style.display = 'block'; 
-                actionBtn.innerText = "FINISH (5s) [SPACE]"; 
-                actionBtn.style.color = "var(--accent)"; 
-                actionBtn.style.borderColor = "var(--accent)"; 
+
+            if (skipBtn) skipBtn.style.display = 'flex';
+            if (vibeBtn) vibeBtn.style.display = 'block';
+            if (actionBtn) {
+                actionBtn.style.display = 'block';
+                actionBtn.innerText = "FINISH (5s) [SPACE]";
+                actionBtn.style.color = "var(--accent)";
+                actionBtn.style.borderColor = "var(--accent)";
             }
             checkDisplay();
         }
 
         function finish() {
-            isLive = false; 
-            cancelAnimationFrame(animFrame); 
-            clearTimeout(clock); 
-            clearTimeout(mediaInt); 
-            clearInterval(countdownInt); 
+            isLive = false;
+            cancelAnimationFrame(animFrame);
+            clearTimeout(clock);
+            clearTimeout(mediaInt);
+            clearInterval(countdownInt);
             clearInterval(tensionDecayTimer);
-            clearTimeout(toastTimeout); 
-            speedModeEndTime = 0; 
-            isForcedRedActive = false; 
+            clearTimeout(toastTimeout);
+            speedModeEndTime = 0;
+            isForcedRedActive = false;
             toyStop();
-            
+
             const btnEdge = document.querySelector('.btn-edge');
             const btnSkip = document.querySelector('.btn-skip');
             const bottomBar = document.querySelector('.bottom-bar');
-            
-            if (btnEdge) btnEdge.style.display = 'none'; 
-            if (btnSkip) btnSkip.style.display = 'none'; 
+
+            if (btnEdge) btnEdge.style.display = 'none';
+            if (btnSkip) btnSkip.style.display = 'none';
             if (bottomBar) bottomBar.style.display = 'none';
-            
-            for (let i = 1; i <= 4; i++) { 
+
+            for (let i = 1; i <= 4; i++) {
                 const buf = document.getElementById('buffer-' + i);
                 const vid = document.getElementById('vid-' + i);
-                if (buf) buf.classList.remove('active'); 
-                if (vid) vid.pause(); 
+                if (buf) buf.classList.remove('active');
+                if (vid) vid.pause();
             }
-            document.body.className = ''; 
+            document.body.className = '';
             document.body.style.backgroundColor = "var(--bg)";
-            
-            const label = document.getElementById('status-label'); 
-            if (label) { 
-                label.innerHTML = ""; 
-                label.className = 'status-text'; 
+
+            const label = document.getElementById('status-label');
+            if (label) {
+                label.innerHTML = "";
+                label.className = 'status-text';
             }
 
             let minEdgesRequired = 8, bonus = 0.04, cap = 0.60;
-            switch(cfg.difficulty) {
-                case 1: minEdgesRequired = 8; bonus = 0.04; cap = 0.60; break;
-                case 2: minEdgesRequired = 11; bonus = 0.03; cap = 0.55; break;
-                case 3: minEdgesRequired = 15; bonus = 0.02; cap = 0.50; break;
+            switch (cfg.difficulty) {
+                case 1: minEdgesRequired = 8;  bonus = 0.04;  cap = 0.60; break;
+                case 2: minEdgesRequired = 11; bonus = 0.03;  cap = 0.55; break;
+                case 3: minEdgesRequired = 15; bonus = 0.02;  cap = 0.50; break;
                 case 4: minEdgesRequired = 18; bonus = 0.015; cap = 0.45; break;
-                case 5: minEdgesRequired = 22; bonus = 0.01; cap = 0.40; break;
+                case 5: minEdgesRequired = 22; bonus = 0.01;  cap = 0.40; break;
                 case 6: minEdgesRequired = 26; bonus = 0.005; cap = 0.30; break;
                 case 7: minEdgesRequired = 30; bonus = 0.005; cap = 0.25; break;
             }
 
-            let currentWinChance = edgeCount >= minEdgesRequired ? Math.min(0.10 + edgeCount * bonus, cap) : 0;
+            const currentWinChance = edgeCount >= minEdgesRequired ? Math.min(0.10 + edgeCount * bonus, cap) : 0;
             let isWin = Math.random() < currentWinChance;
-            let globalElapsedMin = (Date.now() - globalStartT) / 1000 / 60;
+            const globalElapsedMin = (Date.now() - globalStartT) / 1000 / 60;
             if (globalElapsedMin >= cfg.maxGlobalMin) isWin = true;
 
-            let isTTC = isWin ? (cfg.ttcAlways ? true : (cfg.ttcEnabled && Math.random() < 0.10)) : false;
+            const isTTC = isWin ? (cfg.ttcAlways ? true : (cfg.ttcEnabled && Math.random() < 0.10)) : false;
 
-            // Roulette Phase Init
             isWheelSpinning = true;
             rouletteVibeEnabled = true;
             const tickBtn = document.getElementById('roulette-vibe-btn');
-            if(tickBtn) {
+
+            if (tickBtn) {
                 tickBtn.style.display = 'block';
                 tickBtn.classList.toggle('is-on', rouletteVibeEnabled);
-                tickBtn.innerText = rouletteVibeEnabled ? "TICK VIBE: ON [SPACE]" : "TICK VIBE: OFF [SPACE]";
+                tickBtn.innerText = "TICK VIBE: ON [SPACE]";
             }
-            
+
             setTimeout(() => {
-                let ticks = 0; 
-                const maxTicks = 42; 
-                let currentSpeed = 35; 
-                const slowdownFactor = 1.09; 
-                
-                const spinWinText = "BE A GOOD BOY<br>AND CUM", spinLoseText = "AGAIN<br>LOSER", spinTTCText = "TRY<br>TO CUM";
+                let ticks = 0;
+                const maxTicks = 42;
+                let currentSpeed = 35;
+                const slowdownFactor = 1.09;
+
+                const spinWinText = "YOU<br>WIN", spinLoseText = "AGAIN<br>LOSER", spinTTCText = "FINALE<br>ROUND";
                 const finalOutcome = isWin ? (isTTC ? spinTTCText : spinWinText) : spinLoseText;
 
                 function spinWheel() {
-                    if (hasForcedGlobalWin) return; 
-                    
-                    let isFinal = ticks === maxTicks;
+                    if (hasForcedGlobalWin) return;
+
+                    const isFinal = ticks === maxTicks;
 
                     if (isFinal) {
                         safeSetHTML('status-label', finalOutcome);
-                        if (label) { 
-                            label.className = 'status-text pop-text'; 
-                            label.style.color = isWin ? "var(--green)" : "var(--white)"; 
-                            label.style.transform = "scale(1)"; 
+                        if (label) {
+                            label.className = 'status-text pop-text';
+                            label.style.color = isWin ? "var(--green)" : "var(--white)";
+                            label.style.transform = "scale(1)";
                         }
                     } else {
-                        let showWin = ticks % 2 === 0;
+                        const showWin = ticks % 2 === 0;
                         safeSetHTML('status-label', showWin ? (isTTC ? spinTTCText : spinWinText) : spinLoseText);
-                        if (label) { 
-                            label.className = 'status-text binary-text'; 
-                            label.style.color = showWin ? "var(--green)" : "var(--red)"; 
+                        if (label) {
+                            label.className = 'status-text binary-text';
+                            label.style.color = showWin ? "var(--green)" : "var(--red)";
                         }
                     }
 
                     if (rouletteVibeEnabled) {
                         if (isFinal) {
-                            toyVibrate(0.6); 
+                            toyVibrate(cfg.toyIntensity);
+                            setTimeout(() => { if (!isWin) toyStop(); }, 800);
+                        } else if (currentSpeed < 80) {
+                            toyVibrate(cfg.toyIntensity * 0.5);
                         } else {
-                            let maxRouletteIntensity = cfg.toyIntensity * 0.6;
-                            
-                            if (currentSpeed < 100) {
-                                let baseIntensity = cfg.toyIntensity * 0.2; 
-                                toyVibrate(maxRouletteIntensity); 
-                                setTimeout(() => {
-                                    if (isWheelSpinning) toyVibrate(baseIntensity); 
-                                }, 25); 
-                            } else {
-                                toyVibrate(maxRouletteIntensity);
-                                setTimeout(() => {
-                                    if (isWheelSpinning) toyStop();
-                                }, 35);
-                            }
+                            toyVibrate(cfg.toyIntensity);
+                            const pulseDur = Math.min(100, currentSpeed * 0.5);
+                            setTimeout(() => {
+                                if (isWheelSpinning && ticks < maxTicks) toyStop();
+                            }, pulseDur);
                         }
                     }
 
                     ticks++;
-                    if (ticks <= maxTicks) { 
-                        currentSpeed = Math.min(currentSpeed * slowdownFactor, 1200); 
-                        setTimeout(spinWheel, currentSpeed); 
+                    if (ticks <= maxTicks) {
+                        currentSpeed = Math.min(currentSpeed * slowdownFactor, 1200);
+                        setTimeout(spinWheel, currentSpeed);
                     } else {
                         isWheelSpinning = false;
-                        if(tickBtn) tickBtn.style.display = 'none';
-                        
+                        if (tickBtn) tickBtn.style.display = 'none';
+
                         if (isWin) {
                             if (isTTC) startTTCSequence();
                             else triggerNormalWin();
@@ -1490,69 +1585,73 @@
         }
 
         function startSeamlessRestart() {
-            if (hasForcedGlobalWin) return; 
-            let globalElapsedMin = (Date.now() - globalStartT) / 1000 / 60;
-            if (globalElapsedMin >= cfg.maxGlobalMin) { 
-                hasForcedGlobalWin = true; 
-                forceGlobalWin(); 
-                return; 
+            if (hasForcedGlobalWin) return;
+            const globalElapsedMin = (Date.now() - globalStartT) / 1000 / 60;
+            if (globalElapsedMin >= cfg.maxGlobalMin) {
+                hasForcedGlobalWin = true;
+                forceGlobalWin();
+                return;
             }
-            
-            isPostGame = false; 
-            ttcActive = false; 
-            currentTension = 0; 
-            currentFinalState = null; 
-            isForcedRedActive = false; 
-            clearTimeout(toastTimeout); 
+
+            isPostGame = false;
+            ttcActive = false;
+            currentTension = 0;
+            currentFinalState = null;
+            isForcedRedActive = false;
+            clearTimeout(toastTimeout);
             abortTTC();
-            
+
             const vibeBtn = document.getElementById('post-win-vibe');
             const actionBtn = document.getElementById('post-action-btn');
             const ttcBtn = document.getElementById('ttc-btn');
-            
-            if (vibeBtn) { 
-                vibeBtn.style.display = 'none'; 
-                vibeBtn.classList.remove('is-active'); 
-                vibeBtn.innerText = "VIBE AN"; 
+
+            if (vibeBtn) {
+                vibeBtn.style.display = 'none';
+                vibeBtn.classList.remove('is-active');
+                vibeBtn.innerText = "VIBE ON";
             }
-            if (actionBtn) actionBtn.style.display = 'none'; 
-            if (ttcBtn) ttcBtn.style.display = 'none'; 
+            if (actionBtn) actionBtn.style.display = 'none';
+            if (ttcBtn) ttcBtn.style.display = 'none';
             isManualVibeOn = false;
-            
+
             const btnEdge = document.querySelector('.btn-edge');
             const btnSkip = document.querySelector('.btn-skip');
             const plusBtn = document.querySelector('.btn-plus');
             const minusBtn = document.querySelector('.btn-minus');
             const bottomBar = document.querySelector('.bottom-bar');
-            
-            if (btnEdge) btnEdge.style.display = 'flex'; 
-            if (btnSkip) btnSkip.style.display = 'flex'; 
-            if (plusBtn) plusBtn.style.display = 'flex'; 
-            if (minusBtn) minusBtn.style.display = 'flex'; 
+
+            if (btnEdge) btnEdge.style.display = 'flex';
+            if (btnSkip) btnSkip.style.display = 'flex';
+            if (plusBtn) plusBtn.style.display = 'flex';
+            if (minusBtn) minusBtn.style.display = 'flex';
             if (bottomBar) bottomBar.style.display = 'flex';
-            
-            document.body.className = ''; 
+
+            document.body.className = '';
             document.body.style.backgroundColor = "";
-            
-            const label = document.getElementById('status-label'); 
-            if (label) { 
-                label.className = 'status-text'; 
-                label.style.cssText = ""; 
-                label.innerHTML = ""; 
+
+            const label = document.getElementById('status-label');
+            if (label) {
+                label.className = 'status-text';
+                label.style.cssText = "";
+                label.innerHTML = "";
             }
-            
-            startT = Date.now(); 
-            isLive = true; 
-            
-            const progress = document.getElementById('progress-bar'); 
+
+            startT = Date.now();
+            isLive = true;
+
+            const progress = document.getElementById('progress-bar');
             if (progress) progress.style.width = "0%";
-            
-            startTensionDecay(); 
-            engine(); 
-            cycle('green'); 
-            currentIndex++; 
+
+            startTensionDecay();
+            engine();
+            cycle('green');
+            currentIndex++;
             manageBuffers();
         }
+
+        // Initial UI sync
+        onSourceChange();
+        toggleGameMode();
     </script>
 </body>
 </html>
