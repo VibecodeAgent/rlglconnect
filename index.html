@@ -6,63 +6,111 @@
 <meta name="referrer" content="no-referrer">
 <title>Watch</title>
 <style>
-:root{--bg:#000;--card:#1c1c1e;--input-bg:#2c2c2e;--accent:#0a84ff;--green:#2da841;--red:#ff453a;--purple:#bf5af2;--white:#fff;--text-sec:#86868b}
+:root{
+  --bg:#120810;
+  --card:#1e1019;
+  --input-bg:#2a1622;
+  --accent:#ff7ab8;
+  --accent-soft:rgba(255,122,184,.16);
+  --green:#5fd6a4;
+  --red:#ff4d7e;
+  --plum:#b06de0;
+  --gold:#e8c07d;
+  --white:#fff5fa;
+  --text-sec:#b593a8;
+}
 *{box-sizing:border-box}
-html,body{margin:0;padding:0;min-height:100vh;font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Roboto,Helvetica,sans-serif;background:var(--bg);color:var(--white);-webkit-font-smoothing:antialiased;transition:background-color .4s ease}
-body.green-active{background-color:#0b3d16}
-body.red-active{background-color:#4a0d0d}
-.wrap{max-width:620px;margin:0 auto;padding:1.5rem 1.2rem 3rem}
-.join{background:var(--card);border-radius:20px;padding:2rem;margin-top:15vh;border:1px solid rgba(255,255,255,.05)}
+html,body{margin:0;padding:0;min-height:100vh;
+  font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Roboto,Helvetica,sans-serif;
+  background:var(--bg);color:var(--white);-webkit-font-smoothing:antialiased;
+  transition:background-color .5s ease}
+body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:radial-gradient(120% 80% at 50% -10%,rgba(255,122,184,.14),transparent 60%),
+             radial-gradient(90% 60% at 100% 100%,rgba(176,109,224,.10),transparent 65%)}
+body.green-active{background-color:#123328}
+body.red-active{background-color:#490d26}
+.wrap{max-width:620px;margin:0 auto;padding:1.8rem 1.2rem 3rem;position:relative;z-index:1}
+.join{background:var(--card);border-radius:24px;padding:2rem;margin-top:15vh;border:1px solid rgba(255,122,184,.18)}
 h1{font-size:1.6rem;font-weight:700;letter-spacing:-.5px;margin:0 0 1.2rem}
-input{width:100%;background:var(--input-bg);border:none;padding:.8rem 1rem;border-radius:10px;color:var(--white);font-size:1rem;font-family:inherit;outline:none;margin-bottom:.8rem}
-input:focus{box-shadow:0 0 0 2px var(--accent)}
-label{font-size:.8rem;color:var(--text-sec);font-weight:600;display:block;margin-bottom:.4rem}
-.btn{width:100%;background:var(--accent);color:#fff;border:none;padding:1rem;border-radius:12px;font-weight:600;font-size:1.05rem;cursor:pointer}
-.status{font-size:clamp(1.8rem,7vw,3rem);font-weight:800;text-transform:uppercase;letter-spacing:-1px;text-align:center;line-height:1.1;margin:.5rem 0 1.2rem;text-shadow:0 4px 20px rgba(0,0,0,.8);min-height:1.2em}
-.phase{text-align:center;font-size:.7rem;letter-spacing:3px;font-weight:700;color:rgba(255,255,255,.6);text-transform:uppercase}
+
+.status{font-size:clamp(1.8rem,7vw,3rem);font-weight:800;
+  letter-spacing:-1px;text-align:center;line-height:1.15;margin:.4rem 0 1.3rem;
+  text-shadow:0 4px 26px rgba(0,0,0,.7);min-height:1.2em;text-transform:uppercase}
+
+.bar{height:6px;background:rgba(255,255,255,.14);border-radius:8px;overflow:hidden;margin:.4rem 0 1.2rem}
+.bar>i{display:block;height:100%;background:linear-gradient(90deg,var(--accent),var(--plum));
+  border-radius:8px;width:0;transition:width .2s linear}
+
 .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:.7rem;margin:1.2rem 0}
-.cell{background:rgba(28,28,30,.75);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:.8rem}
-.cell .k{font-size:.65rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-sec);font-weight:700}
-.cell .v{font-size:1.5rem;font-weight:700;font-variant-numeric:tabular-nums;margin-top:.15rem}
-.cell.hidden-info{border-color:rgba(191,90,242,.35)}
-.cell.hidden-info .k{color:var(--purple)}
-.bar{height:8px;background:rgba(255,255,255,.15);border-radius:8px;overflow:hidden;margin:.4rem 0 1rem}
-.bar>i{display:block;height:100%;background:#fff;width:0;transition:width .2s linear}
-.sect{font-size:.65rem;letter-spacing:2px;text-transform:uppercase;color:var(--text-sec);font-weight:700;border-bottom:1px solid rgba(255,255,255,.1);padding-bottom:.3rem;margin:1.5rem 0 .8rem}
-.ctl{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:.6rem}
+.cell{background:rgba(42,22,34,.62);border:1px solid rgba(255,122,184,.14);border-radius:16px;padding:.85rem}
+.cell .k{font-size:.6rem;letter-spacing:2.5px;text-transform:uppercase;color:var(--text-sec);font-weight:700}
+.cell .v{font-size:1.5rem;font-weight:700;font-variant-numeric:tabular-nums;margin-top:.2rem}
+.cell.hidden-info{border-color:rgba(232,192,125,.32);background:rgba(58,34,26,.42)}
+.cell.hidden-info .k{color:var(--gold)}
+
+.sect{font-size:.68rem;letter-spacing:2.5px;text-transform:uppercase;
+  color:var(--accent);font-weight:700;border-bottom:1px solid rgba(255,122,184,.22);
+  padding-bottom:.45rem;margin:1.9rem 0 .9rem}
+
+.ctl{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:.7rem}
 .ctlcard{display:flex;flex-direction:column;gap:.4rem}
-.ctlcard span{font-size:.72rem;color:var(--text-sec);line-height:1.4;padding:0 .2rem}
+.ctlcard span{font-size:.73rem;color:var(--text-sec);line-height:1.45;padding:0 .2rem}
 .ctlcard button{width:100%}
-.ctl button{background:rgba(28,28,30,.85);border:1px solid rgba(255,255,255,.12);color:#fff;padding:.9rem .5rem;border-radius:12px;font-weight:700;font-size:.85rem;cursor:pointer;transition:transform .1s,background .2s}
-.ctl button:hover{background:rgba(60,60,64,.9)}
+.ctl button{background:rgba(42,22,34,.85);border:1px solid rgba(255,122,184,.22);color:var(--white);
+  padding:.95rem .6rem;border-radius:14px;font-weight:700;font-size:.85rem;cursor:pointer;
+  letter-spacing:.5px;transition:transform .1s,background .2s,border-color .2s}
+.ctl button:hover{background:var(--accent-soft);border-color:rgba(255,122,184,.5)}
 .ctl button:active{transform:scale(.96)}
-.ctl button.warn{border-color:rgba(255,69,58,.4);color:var(--red)}
+.ctl button.warn{border-color:rgba(255,77,126,.42);color:var(--red)}
+.ctl button.warn:hover{background:rgba(255,77,126,.2)}
+
 .say{display:flex;gap:.5rem;margin-top:.6rem}
-.say input{margin:0}
-.say button{flex-shrink:0;background:var(--purple);border:none;color:#fff;padding:0 1.2rem;border-radius:10px;font-weight:700;cursor:pointer}
-.conn{text-align:center;font-size:.75rem;font-weight:600;letter-spacing:1px;color:var(--text-sec);margin-top:1.5rem}
+.say input{margin:0;flex:1;background:var(--input-bg);border:1px solid rgba(255,122,184,.18);
+  padding:.85rem 1rem;border-radius:14px;color:var(--white);font-size:.95rem;font-family:inherit;outline:none}
+.say input::placeholder{color:var(--text-sec)}
+.say input:focus{border-color:var(--accent)}
+.say button{flex-shrink:0;background:linear-gradient(135deg,var(--accent),var(--plum));border:none;
+  color:#2a0a1a;padding:0 1.4rem;border-radius:14px;font-weight:800;letter-spacing:1px;cursor:pointer}
+
+.conn{text-align:center;font-size:.72rem;font-weight:600;letter-spacing:2px;text-transform:uppercase;
+  color:var(--text-sec);margin-top:1.8rem}
 .conn.bad{color:var(--red)}
-.out{text-align:center;font-weight:800;font-size:1.1rem;letter-spacing:1px;padding:.6rem;border-radius:10px;margin-bottom:1rem;display:none}
-.screen{position:relative;width:100%;aspect-ratio:16/10;background:rgba(28,28,30,.75);border:1px solid rgba(255,255,255,.08);border-radius:14px;overflow:hidden;margin-bottom:1rem;display:flex;align-items:center;justify-content:center}
+
+.out{text-align:center;font-weight:800;font-size:1.15rem;letter-spacing:1px;
+  padding:.8rem;border-radius:14px;margin-bottom:1rem;display:none}
+
+.screen{position:relative;width:100%;aspect-ratio:16/10;background:rgba(42,22,34,.62);
+  border:1px solid rgba(255,122,184,.16);border-radius:18px;overflow:hidden;margin-bottom:1rem;
+  display:flex;align-items:center;justify-content:center}
 .screen img{width:100%;height:100%;object-fit:contain;display:none}
-.screen-off{color:var(--text-sec);font-size:.8rem;font-weight:600;letter-spacing:1px;text-align:center;padding:1rem}
-.shockbtn{width:100%;padding:1.1rem;border-radius:12px;font-weight:800;font-size:1rem;letter-spacing:2px;cursor:pointer;border:1px solid rgba(191,90,242,.5);background:rgba(191,90,242,.18);color:var(--purple);transition:all .15s}
-.shockbtn:hover:not(:disabled){background:rgba(191,90,242,.32)}
-.shockbtn:active:not(:disabled){transform:scale(.98)}
-.shockbtn:disabled{opacity:.4;cursor:not-allowed;border-color:rgba(255,255,255,.12);background:rgba(28,28,30,.75);color:var(--text-sec)}
-.shockbtn.firing{background:var(--purple);color:#fff;border-color:var(--purple)}
-.rebtn{display:none;width:100%;margin:0 0 1.4rem;padding:1.6rem 1rem;border-radius:16px;border:1px solid rgba(10,132,255,.5);background:rgba(10,132,255,.2);color:var(--accent);cursor:pointer;flex-direction:column;gap:.4rem;align-items:center;transition:background .2s,transform .1s}
-.rebtn:hover{background:rgba(10,132,255,.32)}
+.screen-off{color:var(--text-sec);font-size:.78rem;font-weight:600;letter-spacing:1.5px;text-align:center;padding:1rem}
+
+.rebtn{display:none;width:100%;margin:0 0 1.4rem;padding:1.5rem 1rem;border-radius:18px;
+  border:none;background:linear-gradient(135deg,var(--accent),var(--plum));color:#2a0a1a;
+  cursor:pointer;font-size:1.3rem;font-weight:800;letter-spacing:3px;
+  box-shadow:0 8px 30px rgba(255,122,184,.25);transition:transform .1s,box-shadow .2s}
+.rebtn:hover{box-shadow:0 10px 38px rgba(255,122,184,.4)}
 .rebtn:active{transform:scale(.985)}
-.rebtn-big{font-size:1.35rem;font-weight:800;letter-spacing:2px}
-.rebtn-sub{font-size:.78rem;font-weight:600;color:var(--text-sec);letter-spacing:0}
-.note{font-size:.75rem;color:var(--text-sec);line-height:1.45;margin-top:.6rem}
-.pace{background:rgba(28,28,30,.75);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:1rem}
+
+.shockbtn{width:100%;padding:1.15rem;border-radius:16px;font-weight:800;font-size:1rem;letter-spacing:3px;
+  cursor:pointer;border:1px solid rgba(176,109,224,.5);background:rgba(176,109,224,.2);
+  color:var(--plum);transition:all .15s}
+.shockbtn:hover:not(:disabled){background:rgba(176,109,224,.34)}
+.shockbtn:active:not(:disabled){transform:scale(.98)}
+.shockbtn:disabled{opacity:.4;cursor:not-allowed;border-color:rgba(255,255,255,.1);
+  background:rgba(42,22,34,.6);color:var(--text-sec)}
+.shockbtn.firing{background:linear-gradient(135deg,var(--accent),var(--plum));color:#2a0a1a;border-color:transparent}
+
+.note{font-size:.74rem;color:var(--text-sec);line-height:1.55;margin-top:.6rem}
+
+.pace{background:rgba(42,22,34,.62);border:1px solid rgba(255,122,184,.16);border-radius:18px;padding:1.1rem}
 .pace input[type=range]{-webkit-appearance:none;appearance:none;width:100%;background:transparent;height:26px;outline:none;margin:0}
-.pace input[type=range]::-webkit-slider-runnable-track{height:6px;background:#39393d;border-radius:3px}
-.pace input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;height:22px;width:22px;border-radius:50%;background:#fff;margin-top:-8px;box-shadow:0 2px 6px rgba(0,0,0,.4);cursor:pointer}
-.pace-name{font-weight:800;font-size:1.05rem;margin-top:.4rem}
-.pace-desc{font-size:.82rem;color:var(--text-sec);line-height:1.5;margin-top:.3rem}
+.pace input[type=range]::-webkit-slider-runnable-track{height:6px;background:rgba(255,255,255,.16);border-radius:3px}
+.pace input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;height:24px;width:24px;
+  border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--plum));margin-top:-9px;
+  box-shadow:0 3px 12px rgba(255,122,184,.5);cursor:pointer}
+.pace-name{font-weight:800;font-size:1.1rem;margin-top:.5rem;color:var(--accent)}
+.pace-desc{font-size:.83rem;color:var(--text-sec);line-height:1.55;margin-top:.35rem}
 @media(prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
 </head>
@@ -77,10 +125,7 @@ label{font-size:.8rem;color:var(--text-sec);font-weight:600;display:block;margin
   </div>
 
   <div id="live" style="display:none">
-    <button class="rebtn" id="rebtn" onclick="reconnect()">
-      <span class="rebtn-big" id="rebtn-big">CONNECT</span>
-      <span class="rebtn-sub" id="rebtn-sub">Not connected right now. Tap to try again.</span>
-    </button>
+    <button class="rebtn" id="rebtn" onclick="location.reload()">REFRESH</button>
     <div class="status" id="label"></div>
 
     <div class="bar"><i id="bar"></i></div>
@@ -89,7 +134,7 @@ label{font-size:.8rem;color:var(--text-sec);font-weight:600;display:block;margin
 
     <div class="screen" id="screen">
       <img id="frame" alt="">
-      <div class="screen-off" id="frameoff">Player is not sharing their screen</div>
+      <div class="screen-off" id="frameoff">He is not sharing his screen</div>
     </div>
 
     <div class="grid">
@@ -99,7 +144,7 @@ label{font-size:.8rem;color:var(--text-sec);font-weight:600;display:block;margin
       <div class="cell"><div class="k">Device</div><div class="v" id="toy">—</div></div>
     </div>
 
-    <div class="sect">Hidden from the player</div>
+    <div class="sect">Only you can see this</div>
     <div class="grid">
       <div class="cell hidden-info"><div class="k">Phase ends in</div><div class="v" id="phaseleft">—</div></div>
       <div class="cell hidden-info"><div class="k">Win chance</div><div class="v" id="chance">0%</div></div>
@@ -108,12 +153,12 @@ label{font-size:.8rem;color:var(--text-sec);font-weight:600;display:block;margin
       <div class="cell hidden-info"><div class="k">Needs edges</div><div class="v" id="needed">0</div></div>
     </div>
 
-    <div class="sect">Cut them off — forced red</div>
-    <div class="note" style="margin:0 0 .7rem">Each of these stops the vibration on the spot and holds red for the length shown. It never counts as an edge, so their win chance stays exactly where it was.</div>
+    <div class="sect">Cut him off</div>
+    <div class="note" style="margin:0 0 .7rem">Each of these stops the vibration on the spot and holds red for the length shown. It never counts as an edge, so his win chance stays exactly where it was.</div>
     <div class="ctl">
       <div class="ctlcard">
         <button class="warn" onclick="send({cmd:'red',secs:5})">Red · 5s</button>
-        <span>A short interruption. Breaks the rhythm without really cooling them down.</span>
+        <span>A short interruption. Breaks the rhythm without really cooling him down.</span>
       </div>
       <div class="ctlcard">
         <button class="warn" onclick="send({cmd:'red',secs:15})">Red · 15s</button>
@@ -121,7 +166,7 @@ label{font-size:.8rem;color:var(--text-sec);font-weight:600;display:block;margin
       </div>
       <div class="ctlcard">
         <button class="warn" onclick="send({cmd:'red',secs:30})">Red · 30s</button>
-        <span>A hard stop. Half a minute of nothing — sends them back to the start.</span>
+        <span>A hard stop. Half a minute of nothing — sends him back to the start.</span>
       </div>
     </div>
 
@@ -129,8 +174,8 @@ label{font-size:.8rem;color:var(--text-sec);font-weight:600;display:block;margin
     <button class="shockbtn" id="shockbtn" onclick="send({cmd:'shock'})">SHOCK · 2s AT MAX</button>
     <div class="note">Slams the device to the 80% ceiling for two seconds, then drops back to whatever it was. Works during green only, and locks itself for 20 seconds after each use — the button tells you when it's ready again.</div>
 
-    <div class="sect">Vibration strength</div>
-    <div class="note" style="margin:0 0 .7rem">Changes the base level for the rest of the session, not just once. The player's machine refuses anything above 80%.</div>
+    <div class="sect">How much he gets</div>
+    <div class="note" style="margin:0 0 .7rem">Changes the base level for the rest of the session, not just once. His machine refuses anything above 80%.</div>
     <div class="ctl">
       <div class="ctlcard">
         <button onclick="send({cmd:'intensity',delta:0.05})">Stronger +5%</button>
@@ -138,28 +183,28 @@ label{font-size:.8rem;color:var(--text-sec);font-weight:600;display:block;margin
       </div>
       <div class="ctlcard">
         <button onclick="send({cmd:'intensity',delta:-0.05})">Weaker −5%</button>
-        <span>Lowers it again. At 0% they get nothing at all during green.</span>
+        <span>Lowers it again. At 0% he gets nothing at all during green.</span>
       </div>
     </div>
 
-    <div class="sect">Pacing — how long green and red last</div>
-    <div class="note" style="margin:0 0 .7rem">You control this, not the game. The middle position is neutral: green and red are picked at random across the player's own settings, with no bias. Moving left stretches green and shortens red; moving right does the reverse. It applies from the next phase onward.</div>
+    <div class="sect">Set the pace</div>
+    <div class="note" style="margin:0 0 .7rem">You control this, not the game. The middle position is neutral: green and red are picked at random across his own settings, with no bias. Moving left stretches green and shortens red; moving right does the reverse. It applies from the next phase onward.</div>
     <div class="pace">
       <input type="range" id="tlevel" min="1" max="5" step="1" value="3" oninput="onTension()">
       <div class="pace-name" id="tname">3 · Balanced</div>
       <div class="pace-desc" id="tdesc"></div>
     </div>
 
-    <div class="sect">Interact</div>
+    <div class="sect">Little things</div>
     <div class="ctl">
       <div class="ctlcard">
         <button onclick="send({cmd:'skip'})">Next slide</button>
         <span>Jumps to the next image straight away instead of waiting for the timer.</span>
       </div>
     </div>
-    <div class="note" style="margin:.9rem 0 .4rem">Write something that replaces the usual taunt on their screen. Only lands while red is on, and gets cut at 60 characters.</div>
+    <div class="note" style="margin:.9rem 0 .4rem">Write something that replaces the usual taunt on his screen. Only lands while red is on, and gets cut at 60 characters.</div>
     <div class="say">
-      <input id="msg" maxlength="60" placeholder="Message shown during red…">
+      <input id="msg" maxlength="60" placeholder="Tell him something…">
       <button onclick="say()">Send</button>
     </div>
 
@@ -203,43 +248,20 @@ function boot() {
 const IDLE_LIMIT_MS = 5 * 60 * 1000;
 let idleSince = Date.now(), gaveUp = false, cfgRelay = '', cfgRoom = '';
 
-function reconnect() {
-  gaveUp = false;
-  idleSince = Date.now();
-  lastSeen = 0;
-  open(cfgRelay, cfgRoom);
-}
-
 // The button is shown whenever the socket is not actually open, so a dead
 // connection can always be retried by hand — not just after a timeout.
-function syncButton() {
-  const live = sock && sock.readyState === 1;
-  const btn = document.getElementById('rebtn');
-  const big = document.getElementById('rebtn-big');
-  const sub = document.getElementById('rebtn-sub');
-  btn.style.display = live ? 'none' : 'flex';
-  if (live) return;
-  if (gaveUp) {
-    big.innerText = 'RECONNECT';
-    sub.innerText = 'The connection went idle. Tap to reopen it.';
-  } else {
-    big.innerText = 'CONNECT';
-    sub.innerText = 'Not connected right now. Tap to try again.';
-  }
-}
-
 function giveUp() {
   gaveUp = true;
   try { if (sock) sock.close(); } catch (e) {}
   sock = null;
   setConn('disconnected after 5 minutes of silence', true);
-  syncButton();
+  document.getElementById('rebtn').style.display = 'block';
 }
 
 function open(relay, room) {
   cfgRelay = relay; cfgRoom = room;
   sock = new WebSocket(`${relay}/?room=${encodeURIComponent(room)}&role=viewer`);
-  sock.onopen = () => { setConn('connected', false); syncButton(); };
+  sock.onopen = () => setConn('connected', false);
   sock.onmessage = e => {
     try {
       const m = JSON.parse(e.data);
@@ -272,10 +294,10 @@ function say() {
 document.getElementById('msg').addEventListener('keydown', e => { if (e.key === 'Enter') say(); });
 
 const PACE = [
-  ["1 · Gentle",
-   "Green runs long, red is brief. Steady stimulation with barely any interruption. The easy setting — use it to build up, or to give them a break."],
-  ["2 · Relaxed",
-   "Green still leans long, red stays fairly short. Noticeably kinder than the middle, but the stops start to matter."],
+  ["1 · Edge Baby",
+   "Green runs longest, red is brief. Steady stimulation with barely any interruption. Use it to build up, or to make him reach the edge fast."],
+  ["2 · Getting Close?",
+   "Green gets longer, red stays fairly short. If you wanna give him more stimulation"],
   ["3 · Balanced",
    "Green and red are drawn evenly at random across the whole range. No bias in either direction — this is the neutral setting."],
   ["4 · Tense",
@@ -301,9 +323,9 @@ function showFrame(m) {
   }
 }
 const OUT_MAP = {
-  win:    ['PLAYER WILL WIN',    'rgba(45,168,65,.25)',  '#2da841'],
-  finale: ['FINALE ROUND COMING','rgba(10,132,255,.25)', '#0a84ff'],
-  lose:   ['PLAYER WILL LOSE',   'rgba(255,69,58,.25)',  '#ff453a']
+  win:    ['HE WILL WIN',         'rgba(95,214,164,.22)',  '#5fd6a4'],
+  finale: ['FINALE ROUND COMING',  'rgba(176,109,224,.24)', '#b06de0'],
+  lose:   ['HE WILL LOSE',         'rgba(255,77,126,.22)',  '#ff4d7e']
 };
 const OUT = OUT_MAP;
 
@@ -315,7 +337,7 @@ function mmss(s) {
 function render(s) {
   lastSeen = Date.now();
   idleSince = Date.now();
-  setConn(s.killed ? 'player cut the link' : 'connected', !!s.killed);
+  setConn(s.killed ? 'he cut the link' : 'connected', !!s.killed);
 
   document.body.className = s.phase === 'green' ? 'green-active'
                           : s.phase === 'red' ? 'red-active' : '';
@@ -325,7 +347,7 @@ function render(s) {
   document.getElementById('elapsed').innerText = mmss(s.elapsed);
   document.getElementById('toy').innerText = s.toy ? 'on' : 'off';
 
-  document.getElementById('phaseleft').innerText = s.phaseLeft.toFixed(1) + 's';
+  document.getElementById('phaseleft').innerText = Math.ceil(s.phaseLeft) + 's';
   document.getElementById('intensity').innerText = s.intensity + '%';
 
   if (!s.sharing) {
@@ -366,10 +388,9 @@ function render(s) {
 }
 
 setInterval(() => {
-  syncButton();
   if (gaveUp) return;
   if (Date.now() - idleSince > IDLE_LIMIT_MS) { giveUp(); return; }
-  if (lastSeen && Date.now() - lastSeen > 3000) setConn('no signal from player', true);
+  if (lastSeen && Date.now() - lastSeen > 3000) setConn('no signal from him', true);
 }, 1000);
 
 boot();
