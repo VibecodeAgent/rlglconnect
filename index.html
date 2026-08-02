@@ -78,8 +78,8 @@ label{font-size:.8rem;color:var(--text-sec);font-weight:600;display:block;margin
 
   <div id="live" style="display:none">
     <button class="rebtn" id="rebtn" onclick="reconnect()">
-      <span class="rebtn-big">RECONNECT</span>
-      <span class="rebtn-sub">The connection went idle. Tap to reopen it.</span>
+      <span class="rebtn-big" id="rebtn-big">CONNECT</span>
+      <span class="rebtn-sub" id="rebtn-sub">Not connected right now. Tap to try again.</span>
     </button>
     <div class="status" id="label"></div>
 
@@ -176,8 +176,8 @@ label{font-size:.8rem;color:var(--text-sec);font-weight:600;display:block;margin
 //  Set both, commit, done. The link then opens straight into
 //  the session with nothing to type.
 // ============================================================
-const RELAY = "ws://localhost:8000";   // live: wss://your-project.deno.dev
-const ROOM  = "test";                 // live: a long random string
+const RELAY = "wss://perky-finch-4817.vibecodeagent.deno.net";
+const ROOM  = "cwre5c3c2FR";
 // ============================================================
 
 let sock = null, lastSeen = 0;
@@ -207,8 +207,25 @@ function reconnect() {
   gaveUp = false;
   idleSince = Date.now();
   lastSeen = 0;
-  document.getElementById('rebtn').style.display = 'none';
   open(cfgRelay, cfgRoom);
+}
+
+// The button is shown whenever the socket is not actually open, so a dead
+// connection can always be retried by hand — not just after a timeout.
+function syncButton() {
+  const live = sock && sock.readyState === 1;
+  const btn = document.getElementById('rebtn');
+  const big = document.getElementById('rebtn-big');
+  const sub = document.getElementById('rebtn-sub');
+  btn.style.display = live ? 'none' : 'flex';
+  if (live) return;
+  if (gaveUp) {
+    big.innerText = 'RECONNECT';
+    sub.innerText = 'The connection went idle. Tap to reopen it.';
+  } else {
+    big.innerText = 'CONNECT';
+    sub.innerText = 'Not connected right now. Tap to try again.';
+  }
 }
 
 function giveUp() {
@@ -216,13 +233,13 @@ function giveUp() {
   try { if (sock) sock.close(); } catch (e) {}
   sock = null;
   setConn('disconnected after 5 minutes of silence', true);
-  document.getElementById('rebtn').style.display = 'flex';
+  syncButton();
 }
 
 function open(relay, room) {
   cfgRelay = relay; cfgRoom = room;
   sock = new WebSocket(`${relay}/?room=${encodeURIComponent(room)}&role=viewer`);
-  sock.onopen = () => setConn('connected', false);
+  sock.onopen = () => { setConn('connected', false); syncButton(); };
   sock.onmessage = e => {
     try {
       const m = JSON.parse(e.data);
@@ -349,6 +366,7 @@ function render(s) {
 }
 
 setInterval(() => {
+  syncButton();
   if (gaveUp) return;
   if (Date.now() - idleSince > IDLE_LIMIT_MS) { giveUp(); return; }
   if (lastSeen && Date.now() - lastSeen > 3000) setConn('no signal from player', true);
