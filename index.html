@@ -51,6 +51,11 @@ label{font-size:.8rem;color:var(--text-sec);font-weight:600;display:block;margin
 .shockbtn:active:not(:disabled){transform:scale(.98)}
 .shockbtn:disabled{opacity:.4;cursor:not-allowed;border-color:rgba(255,255,255,.12);background:rgba(28,28,30,.75);color:var(--text-sec)}
 .shockbtn.firing{background:var(--purple);color:#fff;border-color:var(--purple)}
+.rebtn{display:none;width:100%;margin:0 0 1.4rem;padding:1.6rem 1rem;border-radius:16px;border:1px solid rgba(10,132,255,.5);background:rgba(10,132,255,.2);color:var(--accent);cursor:pointer;flex-direction:column;gap:.4rem;align-items:center;transition:background .2s,transform .1s}
+.rebtn:hover{background:rgba(10,132,255,.32)}
+.rebtn:active{transform:scale(.985)}
+.rebtn-big{font-size:1.35rem;font-weight:800;letter-spacing:2px}
+.rebtn-sub{font-size:.78rem;font-weight:600;color:var(--text-sec);letter-spacing:0}
 .note{font-size:.75rem;color:var(--text-sec);line-height:1.45;margin-top:.6rem}
 .pace{background:rgba(28,28,30,.75);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:1rem}
 .pace input[type=range]{-webkit-appearance:none;appearance:none;width:100%;background:transparent;height:26px;outline:none;margin:0}
@@ -72,6 +77,10 @@ label{font-size:.8rem;color:var(--text-sec);font-weight:600;display:block;margin
   </div>
 
   <div id="live" style="display:none">
+    <button class="rebtn" id="rebtn" onclick="reconnect()">
+      <span class="rebtn-big">RECONNECT</span>
+      <span class="rebtn-sub">The connection went idle. Tap to reopen it.</span>
+    </button>
     <div class="status" id="label"></div>
 
     <div class="bar"><i id="bar"></i></div>
@@ -167,8 +176,8 @@ label{font-size:.8rem;color:var(--text-sec);font-weight:600;display:block;margin
 //  Set both, commit, done. The link then opens straight into
 //  the session with nothing to type.
 // ============================================================
-const RELAY = "wss://perky-finch-4817.vibecodeagent.deno.net";   // live: wss://your-project.deno.dev
-const ROOM  = "cwre5c3c2FR";                 // live: a long random string
+const RELAY = "ws://localhost:8000";   // live: wss://your-project.deno.dev
+const ROOM  = "test";                 // live: a long random string
 // ============================================================
 
 let sock = null, lastSeen = 0;
@@ -189,7 +198,29 @@ function boot() {
   open(relay, room);
 }
 
+// After 5 minutes with no data the page gives up instead of retrying
+// forever — an abandoned tab would otherwise keep the relay awake.
+const IDLE_LIMIT_MS = 5 * 60 * 1000;
+let idleSince = Date.now(), gaveUp = false, cfgRelay = '', cfgRoom = '';
+
+function reconnect() {
+  gaveUp = false;
+  idleSince = Date.now();
+  lastSeen = 0;
+  document.getElementById('rebtn').style.display = 'none';
+  open(cfgRelay, cfgRoom);
+}
+
+function giveUp() {
+  gaveUp = true;
+  try { if (sock) sock.close(); } catch (e) {}
+  sock = null;
+  setConn('disconnected after 5 minutes of silence', true);
+  document.getElementById('rebtn').style.display = 'flex';
+}
+
 function open(relay, room) {
+  cfgRelay = relay; cfgRoom = room;
   sock = new WebSocket(`${relay}/?room=${encodeURIComponent(room)}&role=viewer`);
   sock.onopen = () => setConn('connected', false);
   sock.onmessage = e => {
@@ -200,8 +231,10 @@ function open(relay, room) {
     } catch (err) {}
   };
   sock.onclose = () => {
+    if (gaveUp) return;
+    if (Date.now() - idleSince > IDLE_LIMIT_MS) { giveUp(); return; }
     setConn('reconnecting…', true);
-    setTimeout(() => open(relay, room), 2000);
+    setTimeout(() => { if (!gaveUp) open(relay, room); }, 2000);
   };
 }
 
@@ -222,16 +255,16 @@ function say() {
 document.getElementById('msg').addEventListener('keydown', e => { if (e.key === 'Enter') say(); });
 
 const PACE = [
-  ["1 · Edge Baby",
-   "Green runs long, red is brief. Steady stimulation with barely any interruption. The easy setting — use it to build up, and make him edge fast"],
-  ["2 · More Green",
-   "Green still leans long, red stays fairly short. To make him faster on the edge"],
+  ["1 · Gentle",
+   "Green runs long, red is brief. Steady stimulation with barely any interruption. The easy setting — use it to build up, or to give them a break."],
+  ["2 · Relaxed",
+   "Green still leans long, red stays fairly short. Noticeably kinder than the middle, but the stops start to matter."],
   ["3 · Balanced",
    "Green and red are drawn evenly at random across the whole range. No bias in either direction — this is the neutral setting."],
-  ["4 · Enough Baby?",
+  ["4 · Tense",
    "Green gets cut short, red stretches out. Long waits broken by brief bursts. Frustrating on purpose."],
   ["5 · Brutal",
-   "Green is over almost as soon as it starts, red drags on. Barely any stimulation, mostly waiting. To make him cool down when he is to horny"]
+   "Green is over almost as soon as it starts, red drags on. Barely any stimulation, mostly waiting. The harshest setting."]
 ];
 
 function onTension() {
@@ -264,6 +297,7 @@ function mmss(s) {
 
 function render(s) {
   lastSeen = Date.now();
+  idleSince = Date.now();
   setConn(s.killed ? 'player cut the link' : 'connected', !!s.killed);
 
   document.body.className = s.phase === 'green' ? 'green-active'
@@ -315,6 +349,8 @@ function render(s) {
 }
 
 setInterval(() => {
+  if (gaveUp) return;
+  if (Date.now() - idleSince > IDLE_LIMIT_MS) { giveUp(); return; }
   if (lastSeen && Date.now() - lastSeen > 3000) setConn('no signal from player', true);
 }, 1000);
 
