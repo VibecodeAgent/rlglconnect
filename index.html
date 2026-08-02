@@ -104,6 +104,7 @@ h1{font-size:1.6rem;font-weight:700;letter-spacing:-.5px;margin:0 0 1.2rem}
 
 .finalebox{display:none;background:rgba(255,122,184,.1);border:1px solid rgba(255,122,184,.3);border-radius:18px;padding:1.1rem 1.2rem;margin-bottom:1.2rem;font-size:.86rem;line-height:1.6;color:var(--white)}
 .finalebox b{color:var(--accent)}
+.vibestate{display:none;text-align:center;font-weight:800;font-size:.95rem;letter-spacing:3px;padding:.9rem;border:1px solid;border-radius:14px;margin-bottom:1.2rem}
 .finalebox em{color:var(--text-sec);font-style:normal;display:block;margin-top:.5rem;font-size:.8rem}
 .note{font-size:.74rem;color:var(--text-sec);line-height:1.55;margin-top:.6rem}
 
@@ -137,21 +138,22 @@ h1{font-size:1.6rem;font-weight:700;letter-spacing:-.5px;margin:0 0 1.2rem}
     <div id="outcome" class="out"></div>
     <div id="finale" class="out"></div>
     <div id="finalenote" class="finalebox"></div>
+    <div id="vibestate" class="vibestate"></div>
 
     <div class="screen" id="screen">
       <img id="frame" alt="">
       <div class="screen-off" id="frameoff">He is not sharing his screen</div>
     </div>
 
-    <div class="grid">
+    <div class="grid" id="mainstats">
       <div class="cell"><div class="k">Edges</div><div class="v" id="edges">0</div></div>
       <div class="cell"><div class="k">Elapsed</div><div class="v" id="elapsed">00:00</div></div>
       <div class="cell"><div class="k">Intensity</div><div class="v" id="intensity">—</div></div>
       <div class="cell"><div class="k">Device</div><div class="v" id="toy">—</div></div>
     </div>
 
-    <div class="sect">Only you can see this</div>
-    <div class="grid">
+    <div class="sect" id="sec-hidden">Only you can see this</div>
+    <div class="grid" id="hiddenstats">
       <div class="cell hidden-info"><div class="k">Phase ends in</div><div class="v" id="phaseleft">—</div><div class="x">He sees no countdown during red.</div></div>
       <div class="cell hidden-info"><div class="k">Win chance</div><div class="v" id="chance">0%</div><div class="x">His odds when the round is rolled. Every edge raises it.</div></div>
       <div class="cell hidden-info"><div class="k">Speed mode</div><div class="v" id="speed">off</div><div class="x">Rare burst: for one minute both colours last only seconds. An edge cancels it.</div></div>
@@ -202,15 +204,15 @@ h1{font-size:1.6rem;font-weight:700;letter-spacing:-.5px;margin:0 0 1.2rem}
       <div class="pace-desc" id="tdesc"></div>
     </div>
 
-    <div class="sect">Little things</div>
-    <div class="ctl">
+    <div class="sect" id="sec-little">Little things</div>
+    <div class="ctl" id="littlectl">
       <div class="ctlcard">
         <button onclick="send({cmd:'skip'})">Next slide</button>
         <span>Jumps to the next image straight away instead of waiting for the timer.</span>
       </div>
     </div>
-    <div class="note" style="margin:.9rem 0 .4rem">Write something that replaces the usual taunt on his screen. Only lands while red is on, and gets cut at 60 characters.</div>
-    <div class="say">
+    <div class="note" id="saynote" style="margin:.9rem 0 .4rem">Write something that replaces the usual taunt on his screen. Only lands while red is on, and gets cut at 60 characters.</div>
+    <div class="say" id="saybox">
       <input id="msg" maxlength="60" placeholder="Tell him something…">
       <button onclick="say()">Send</button>
     </div>
@@ -413,6 +415,23 @@ function render(s) {
   document.getElementById('strengthnote').style.display = post ? 'none' : 'block';
   document.getElementById('strengthctl').style.display = post ? 'none' : 'grid';
   document.getElementById('sec-pace').style.display = post ? 'none' : 'block';
+  document.getElementById('mainstats').style.display = post ? 'none' : 'grid';
+  document.getElementById('sec-hidden').style.display = post ? 'none' : 'block';
+  document.getElementById('hiddenstats').style.display = post ? 'none' : 'grid';
+  document.getElementById('sec-little').style.display = post ? 'none' : 'block';
+  document.getElementById('littlectl').style.display = post ? 'none' : 'grid';
+  document.getElementById('saynote').style.display = post ? 'none' : 'block';
+  document.getElementById('saybox').style.display = post ? 'none' : 'flex';
+  document.getElementById('bar').parentElement.style.display = post ? 'none' : 'block';
+
+  const vs = document.getElementById('vibestate');
+  vs.style.display = post && s.state !== 'over' ? 'block' : 'none';
+  if (post && s.state !== 'over') {
+    vs.innerText = s.vibeOn ? 'VIBRATION ON' : 'VIBRATION OFF';
+    vs.style.color = s.vibeOn ? '#5fd6a4' : 'var(--text-sec)';
+    vs.style.borderColor = s.vibeOn ? 'rgba(95,214,164,.45)' : 'rgba(255,255,255,.12)';
+    vs.style.background = s.vibeOn ? 'rgba(95,214,164,.14)' : 'rgba(42,22,34,.6)';
+  }
   document.getElementById('pacenote').style.display = post ? 'none' : 'block';
   document.getElementById('pacebox').style.display = post ? 'none' : 'block';
   document.getElementById('cutsect').innerText = post ? 'Pause him' : 'Cut him off';
