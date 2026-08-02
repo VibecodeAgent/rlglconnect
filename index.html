@@ -102,6 +102,9 @@ h1{font-size:1.6rem;font-weight:700;letter-spacing:-.5px;margin:0 0 1.2rem}
   background:rgba(42,22,34,.6);color:var(--text-sec)}
 .shockbtn.firing{background:linear-gradient(135deg,var(--accent),var(--plum));color:#2a0a1a;border-color:transparent}
 
+.finalebox{display:none;background:rgba(255,122,184,.1);border:1px solid rgba(255,122,184,.3);border-radius:18px;padding:1.1rem 1.2rem;margin-bottom:1.2rem;font-size:.86rem;line-height:1.6;color:var(--white)}
+.finalebox b{color:var(--accent)}
+.finalebox em{color:var(--text-sec);font-style:normal;display:block;margin-top:.5rem;font-size:.8rem}
 .note{font-size:.74rem;color:var(--text-sec);line-height:1.55;margin-top:.6rem}
 
 .pace{background:rgba(42,22,34,.62);border:1px solid rgba(255,122,184,.16);border-radius:18px;padding:1.1rem}
@@ -132,6 +135,8 @@ h1{font-size:1.6rem;font-weight:700;letter-spacing:-.5px;margin:0 0 1.2rem}
     <div class="bar"><i id="bar"></i></div>
 
     <div id="outcome" class="out"></div>
+    <div id="finale" class="out"></div>
+    <div id="finalenote" class="finalebox"></div>
 
     <div class="screen" id="screen">
       <img id="frame" alt="">
@@ -154,9 +159,10 @@ h1{font-size:1.6rem;font-weight:700;letter-spacing:-.5px;margin:0 0 1.2rem}
       <div class="cell hidden-info"><div class="k">Needs edges</div><div class="v" id="needed">0</div><div class="x">Until he reaches this, his chance is zero.</div></div>
     </div>
 
-    <div class="sect">Cut him off</div>
-    <div class="note" style="margin:0 0 .7rem">Each of these stops the vibration on the spot and holds red for the length shown. It never counts as an edge, so his win chance stays exactly where it was.</div>
-    <div class="ctl">
+    <div class="sect" id="cutsect">Cut him off</div>
+    <div class="note" id="pausenote" style="margin:0 0 .3rem;color:var(--accent);font-weight:700"></div>
+    <div class="note" id="cutnote" style="margin:0 0 .7rem">Each of these stops the vibration on the spot and holds red for the length shown. It never counts as an edge, so his win chance stays exactly where it was.</div>
+    <div class="ctl" id="cutbtns">
       <div class="ctlcard">
         <button class="warn" onclick="send({cmd:'red',secs:5})">Red · 5s</button>
         <span>A short interruption. Breaks the rhythm without really cooling him down.</span>
@@ -171,13 +177,13 @@ h1{font-size:1.6rem;font-weight:700;letter-spacing:-.5px;margin:0 0 1.2rem}
       </div>
     </div>
 
-    <div class="sect">Shock</div>
+    <div class="sect" id="sec-shock">Shock</div>
     <button class="shockbtn" id="shockbtn" onclick="send({cmd:'shock'})">SHOCK · 2s AT MAX</button>
-    <div class="note">Slams the device to the 80% ceiling for two seconds, then drops back to whatever it was. Works during green only, and locks itself for 20 seconds after each use — the button tells you when it's ready again.</div>
+    <div class="note" id="shocknote">Slams the device to the 80% ceiling for two seconds, then drops back to whatever it was. Works during green only, and locks itself for 20 seconds after each use — the button tells you when it's ready again.</div>
 
-    <div class="sect">How much he gets</div>
-    <div class="note" style="margin:0 0 .7rem">Changes the base level for the rest of the session, not just once. His machine refuses anything above 80%.</div>
-    <div class="ctl">
+    <div class="sect" id="sec-strength">How much he gets</div>
+    <div class="note" id="strengthnote" style="margin:0 0 .7rem">Changes the base level for the rest of the session, not just once. His machine refuses anything above 80%.</div>
+    <div class="ctl" id="strengthctl">
       <div class="ctlcard">
         <button onclick="send({cmd:'intensity',delta:0.05})">Stronger +5%</button>
         <span>Raises the base level. Takes effect on the next green phase.</span>
@@ -188,9 +194,9 @@ h1{font-size:1.6rem;font-weight:700;letter-spacing:-.5px;margin:0 0 1.2rem}
       </div>
     </div>
 
-    <div class="sect">Set the pace</div>
-    <div class="note" style="margin:0 0 .7rem">You control this, not the game. The middle position is neutral: green and red are picked at random across his own settings, with no bias. Moving left stretches green and shortens red; moving right does the reverse. It applies from the next phase onward.</div>
-    <div class="pace">
+    <div class="sect" id="sec-pace">Set the pace</div>
+    <div class="note" id="pacenote" style="margin:0 0 .7rem">You control this, not the game. The middle position is neutral: green and red are picked at random across his own settings, with no bias. Moving left stretches green and shortens red; moving right does the reverse. It applies from the next phase onward.</div>
+    <div class="pace" id="pacebox">
       <input type="range" id="tlevel" min="1" max="5" step="1" value="3" oninput="onTension()">
       <div class="pace-name" id="tname">3 · Balanced</div>
       <div class="pace-desc" id="tdesc"></div>
@@ -262,7 +268,10 @@ function giveUp() {
 function open(relay, room) {
   cfgRelay = relay; cfgRoom = room;
   sock = new WebSocket(`${relay}/?room=${encodeURIComponent(room)}&role=viewer`);
-  sock.onopen = () => setConn('waiting for him', true);
+  sock.onopen = () => {
+    setConn('waiting for him', true);
+    try { sock.send(JSON.stringify({ cmd: 'hello' })); } catch (e) {}
+  };
   sock.onmessage = e => {
     try {
       const m = JSON.parse(e.data);
@@ -324,9 +333,8 @@ function showFrame(m) {
   }
 }
 const OUT_MAP = {
-  win:    ['HE WILL WIN',         'rgba(95,214,164,.22)',  '#5fd6a4'],
-  finale: ['FINALE ROUND COMING',  'rgba(176,109,224,.24)', '#b06de0'],
-  lose:   ['HE WILL LOSE',         'rgba(255,77,126,.22)',  '#ff4d7e']
+  win:    ['HE WILL WIN',  'rgba(95,214,164,.22)', '#5fd6a4'],
+  lose:   ['HE WILL LOSE', 'rgba(255,77,126,.22)', '#ff4d7e']
 };
 const OUT = OUT_MAP;
 
@@ -395,6 +403,69 @@ function render(s) {
   } else cs.style.display = 'none';
 
   document.getElementById('bar').style.width = (s.roundPct === null ? 0 : s.roundPct) + '%';
+
+  // Once he has won, the controls narrow down: pausing, skipping, messages.
+  const post = s.state === 'post' || s.state === 'cumming' || s.state === 'over';
+  document.getElementById('sec-shock').style.display = post ? 'none' : 'block';
+  document.getElementById('shockbtn').style.display = post ? 'none' : 'block';
+  document.getElementById('shocknote').style.display = post ? 'none' : 'block';
+  document.getElementById('sec-strength').style.display = post ? 'none' : 'block';
+  document.getElementById('strengthnote').style.display = post ? 'none' : 'block';
+  document.getElementById('strengthctl').style.display = post ? 'none' : 'grid';
+  document.getElementById('sec-pace').style.display = post ? 'none' : 'block';
+  document.getElementById('pacenote').style.display = post ? 'none' : 'block';
+  document.getElementById('pacebox').style.display = post ? 'none' : 'block';
+  document.getElementById('cutsect').innerText = post ? 'Pause him' : 'Cut him off';
+  document.getElementById('cutnote').innerText = post
+    ? 'Stops the vibration for that long, then it comes back on its own. Use it as often as you like.'
+    : 'Each of these stops the vibration on the spot and holds red for the length shown. It never counts as an edge, so his win chance stays exactly where it was.';
+
+  const fin = document.getElementById('finale');
+  const finNote = document.getElementById('finalenote');
+  const cutBtns = document.getElementById('cutbtns');
+
+  if (s.state === 'post') {
+    fin.style.display = 'block';
+    fin.innerText = s.vibeOn ? 'HIS REWARD IS RUNNING' : 'HE MAY CUM NOW';
+    fin.style.background = 'rgba(255,122,184,.22)';
+    fin.style.color = 'var(--accent)';
+    finNote.style.display = 'block';
+    finNote.innerHTML =
+      "He won. Nothing happens until <b>he switches the vibration on himself</b>. Then it stays on — cut it as often as you like, it always comes back." +
+      "<br><br>When he's going over he hits his <b>CUM</b> button: five more seconds, then it's done. " +
+      "<b>Pause him inside those five seconds and you ruin it.</b>" +
+      "<em>Decide now whether he gets to enjoy it.</em>";
+    cutBtns.style.opacity = '1';
+
+  } else if (s.state === 'cumming') {
+    const left = (s.cumLeft || 0).toFixed(1);
+    fin.style.display = 'block';
+    fin.innerText = s.vibeOn ? `HE PRESSED IT — ${left}s` : 'RUINED';
+    fin.style.background = s.vibeOn ? 'rgba(255,77,126,.28)' : 'rgba(176,109,224,.28)';
+    fin.style.color = s.vibeOn ? '#ff4d7e' : '#b06de0';
+    finNote.style.display = 'block';
+    finNote.innerHTML = s.vibeOn
+      ? "<b>He just pressed it.</b> Pause now — or let him have his proper orgasm."
+      : "<b>Mean — you ruined him.</b>";
+    cutBtns.style.opacity = '1';
+
+  } else if (s.state === 'over') {
+    fin.style.display = 'block';
+    fin.innerText = 'IT IS OVER';
+    fin.style.background = 'rgba(95,214,164,.22)';
+    fin.style.color = '#5fd6a4';
+    finNote.style.display = 'block';
+    finNote.innerHTML = "Your work is done :)<em>Nothing here does anything any more.</em>";
+    cutBtns.style.opacity = '.35';
+
+  } else {
+    fin.style.display = 'none';
+    finNote.style.display = 'none';
+    cutBtns.style.opacity = '1';
+  }
+
+  const pf = s.pausedFor || 0;
+  document.getElementById('pausenote').innerText = pf > 0 ? `Paused — ${Math.ceil(pf)}s left` : '';
 
   const o = document.getElementById('outcome');
   if (s.outcome && OUT[s.outcome]) {
