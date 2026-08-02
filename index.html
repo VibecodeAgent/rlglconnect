@@ -47,6 +47,7 @@ h1{font-size:1.6rem;font-weight:700;letter-spacing:-.5px;margin:0 0 1.2rem}
 .cell .v{font-size:1.5rem;font-weight:700;font-variant-numeric:tabular-nums;margin-top:.2rem}
 .cell.hidden-info{border-color:rgba(232,192,125,.32);background:rgba(58,34,26,.42)}
 .cell.hidden-info .k{color:var(--gold)}
+.cell .x{font-size:.68rem;color:var(--text-sec);line-height:1.45;margin-top:.45rem}
 
 .sect{font-size:.68rem;letter-spacing:2.5px;text-transform:uppercase;
   color:var(--accent);font-weight:700;border-bottom:1px solid rgba(255,122,184,.22);
@@ -146,11 +147,11 @@ h1{font-size:1.6rem;font-weight:700;letter-spacing:-.5px;margin:0 0 1.2rem}
 
     <div class="sect">Only you can see this</div>
     <div class="grid">
-      <div class="cell hidden-info"><div class="k">Phase ends in</div><div class="v" id="phaseleft">—</div></div>
-      <div class="cell hidden-info"><div class="k">Win chance</div><div class="v" id="chance">0%</div></div>
-      <div class="cell hidden-info"><div class="k">Speed mode</div><div class="v" id="speed">off</div></div>
-      <div class="cell hidden-info" id="cell-secs" style="display:none"><div class="k">Ends in</div><div class="v" id="secsleft">—</div></div>
-      <div class="cell hidden-info"><div class="k">Needs edges</div><div class="v" id="needed">0</div></div>
+      <div class="cell hidden-info"><div class="k">Phase ends in</div><div class="v" id="phaseleft">—</div><div class="x">He sees no countdown during red.</div></div>
+      <div class="cell hidden-info"><div class="k">Win chance</div><div class="v" id="chance">0%</div><div class="x">His odds when the round is rolled. Every edge raises it.</div></div>
+      <div class="cell hidden-info"><div class="k">Speed mode</div><div class="v" id="speed">off</div><div class="x">Rare burst: for one minute both colours last only seconds. An edge cancels it.</div></div>
+      <div class="cell hidden-info" id="cell-secs" style="display:none"><div class="k">Ends in</div><div class="v" id="secsleft">—</div><div class="x">Secret end time. He has no idea when it comes.</div></div>
+      <div class="cell hidden-info"><div class="k">Needs edges</div><div class="v" id="needed">0</div><div class="x">Until he reaches this, his chance is zero.</div></div>
     </div>
 
     <div class="sect">Cut him off</div>
@@ -261,7 +262,7 @@ function giveUp() {
 function open(relay, room) {
   cfgRelay = relay; cfgRoom = room;
   sock = new WebSocket(`${relay}/?room=${encodeURIComponent(room)}&role=viewer`);
-  sock.onopen = () => setConn('connected', false);
+  sock.onopen = () => setConn('waiting for him', true);
   sock.onmessage = e => {
     try {
       const m = JSON.parse(e.data);
@@ -329,6 +330,17 @@ const OUT_MAP = {
 };
 const OUT = OUT_MAP;
 
+let greenEnd = 0, phaseLeftLocal = 0;
+setInterval(() => {
+  if (phaseLeftLocal) {
+    const pl = (phaseLeftLocal - Date.now()) / 1000;
+    document.getElementById('phaseleft').innerText = Math.max(0, Math.ceil(pl)) + 's';
+  }
+  if (!greenEnd) return;
+  const left = (greenEnd - Date.now()) / 1000;
+  document.getElementById('label').innerHTML = left > 0 ? Math.ceil(left) : '';
+}, 80);
+
 function mmss(s) {
   s = Math.max(0, Math.floor(s));
   return String(Math.floor(s/60)).padStart(2,'0') + ':' + String(s%60).padStart(2,'0');
@@ -337,17 +349,24 @@ function mmss(s) {
 function render(s) {
   lastSeen = Date.now();
   idleSince = Date.now();
-  setConn(s.killed ? 'he cut the link' : 'connected', !!s.killed);
+  setConn(s.killed ? 'he cut the link' : 'live', !!s.killed);
 
   document.body.className = s.phase === 'green' ? 'green-active'
                           : s.phase === 'red' ? 'red-active' : '';
-  document.getElementById('label').innerHTML = s.label;
+  // The countdown is re-derived locally instead of echoing the text that
+  // arrives 4x per second, otherwise the number visibly stutters.
+  if (s.phase === 'green' && /^\s*\d+\s*$/.test(s.label)) {
+    greenEnd = Date.now() + s.phaseLeft * 1000;
+  } else {
+    greenEnd = 0;
+    document.getElementById('label').innerHTML = s.label;
+  }
 
   document.getElementById('edges').innerText = s.edges;
   document.getElementById('elapsed').innerText = mmss(s.elapsed);
   document.getElementById('toy').innerText = s.toy ? 'on' : 'off';
 
-  document.getElementById('phaseleft').innerText = Math.ceil(s.phaseLeft) + 's';
+  phaseLeftLocal = Date.now() + s.phaseLeft * 1000;
   document.getElementById('intensity').innerText = s.intensity + '%';
 
   if (!s.sharing) {
@@ -390,7 +409,8 @@ function render(s) {
 setInterval(() => {
   if (gaveUp) return;
   if (Date.now() - idleSince > IDLE_LIMIT_MS) { giveUp(); return; }
-  if (lastSeen && Date.now() - lastSeen > 3000) setConn('no signal from him', true);
+  if (!lastSeen) setConn('waiting for him', true);
+  else if (Date.now() - lastSeen > 3000) setConn('no signal from him', true);
 }, 1000);
 
 boot();
