@@ -258,7 +258,7 @@ h1{font-size:1.6rem;font-weight:700;letter-spacing:-.5px;margin:0 0 1.2rem}
 
     <div class="screen" id="screen">
       <img id="frame" alt="">
-      <div class="screen-off" id="frameoff">He is not sharing his screen</div>
+      <div class="screen-off" id="frameoff">Your boy hasn't started the game yet</div>
     </div>
 
     <div class="grid" id="mainstats">
@@ -478,6 +478,13 @@ function confirmEnd(yes) {
 function showFrame(m) {
   const img = document.getElementById('frame');
   const off = document.getElementById('frameoff');
+  if (m.skipped) {
+    img.style.display = 'none';
+    off.style.display = 'block';
+    off.innerText = 'This one was too large to send';
+    off.style.color = 'var(--text-sec)';
+    return;
+  }
   if (m.img) {
     img.src = m.img;
     img.style.display = 'block';
@@ -529,9 +536,26 @@ function render(s) {
   phaseLeftLocal = Date.now() + s.phaseLeft * 1000;
   document.getElementById('intensity').innerText = s.intensity + '%';
 
-  if (!s.sharing) {
-    document.getElementById('frame').style.display = 'none';
-    document.getElementById('frameoff').style.display = 'block';
+  // Three cases: no game yet, a game that shares pictures, and a game that
+  // should be sharing but nothing has arrived.
+  const gameRunning = s.state !== 'idle' && s.state !== 'over';
+  const haveFrame = document.getElementById('frame').src && document.getElementById('frame').style.display === 'block';
+  if (!s.sharing || !haveFrame) {
+    if (!haveFrame) {
+      document.getElementById('frame').style.display = 'none';
+      const off = document.getElementById('frameoff');
+      off.style.display = 'block';
+      if (!gameRunning) {
+        off.innerText = "Your boy hasn't started the game yet";
+        off.style.color = 'var(--text-sec)';
+      } else if (s.sharing) {
+        off.innerText = "Error: pictures aren't loading";
+        off.style.color = 'var(--text-sec)';
+      } else {
+        off.innerText = "No pictures in this game";
+        off.style.color = 'var(--text-sec)';
+      }
+    }
   }
 
   const sb = document.getElementById('shockbtn');
