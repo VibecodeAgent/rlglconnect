@@ -176,6 +176,11 @@ h1{font-size:1.6rem;font-weight:700;letter-spacing:-.5px;margin:0 0 1.2rem}
   .infohead{border-radius:22px 22px 0 0}
   .ctrlrow{grid-template-columns:1fr;gap:.15rem}
 }
+.ctl button.ruin{border-color:var(--red);color:#fff;background:rgba(255,77,126,.35);
+  animation:ruinpulse .7s ease-in-out infinite alternate}
+@keyframes ruinpulse{
+  from{box-shadow:0 0 0 rgba(255,77,126,0);background:rgba(255,77,126,.28)}
+  to{box-shadow:0 0 26px rgba(255,77,126,.65);background:rgba(255,77,126,.5)}}
 .note{font-size:.74rem;color:var(--text-sec);line-height:1.55;margin-top:.6rem}
 
 .pace{background:rgba(42,22,34,.62);border:1px solid rgba(255,122,184,.16);border-radius:18px;padding:1.1rem}
@@ -704,6 +709,20 @@ function render(s) {
     finNote.style.display = 'none';
     cutBtns.style.opacity = '1';
   }
+
+  // During his five seconds the pause buttons become the ruin buttons.
+  const cutButtons = document.querySelectorAll('#cutbtns .ctlcard button');
+  const ruinNow = s.state === 'cumming' && s.vibeOn;
+  const secsLabels = ['Red · 5s', 'Red · 15s', 'Red · 30s'];
+  cutButtons.forEach((b, i) => {
+    b.classList.toggle('ruin', ruinNow);
+    b.innerText = ruinNow
+      ? `Try to Ruin? (${Math.max(0, Math.ceil(s.cumLeft || 0))})`
+      : secsLabels[i];
+  });
+  document.querySelectorAll('#cutbtns .ctlcard span').forEach(x => {
+    x.style.display = ruinNow ? 'none' : 'block';
+  });
 
   const pf = s.pausedFor || 0;
   document.getElementById('pausenote').innerText = pf > 0 ? `Paused — ${Math.ceil(pf)}s left` : '';
