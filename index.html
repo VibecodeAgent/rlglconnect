@@ -106,6 +106,76 @@ h1{font-size:1.6rem;font-weight:700;letter-spacing:-.5px;margin:0 0 1.2rem}
 .finalebox b{color:var(--accent)}
 .vibestate{display:none;text-align:center;font-weight:800;font-size:.95rem;letter-spacing:3px;padding:.9rem;border:1px solid;border-radius:14px;margin-bottom:1.2rem}
 .finalebox em{color:var(--text-sec);font-style:normal;display:block;margin-top:.5rem;font-size:.8rem}
+.speedbtn{width:100%;padding:1.15rem;border-radius:16px;font-weight:800;font-size:1rem;letter-spacing:3px;
+  cursor:pointer;border:1px solid rgba(232,192,125,.5);background:rgba(232,192,125,.16);
+  color:var(--gold);transition:all .15s}
+.speedbtn:hover:not(:disabled){background:rgba(232,192,125,.3)}
+.speedbtn:active:not(:disabled){transform:scale(.98)}
+.speedbtn:disabled{opacity:.4;cursor:not-allowed;border-color:rgba(255,255,255,.1);background:rgba(42,22,34,.6);color:var(--text-sec)}
+.speedbtn.running{background:var(--gold);color:#2a1a05;border-color:transparent}
+.endbtn{display:none;width:100%;padding:1.3rem;border-radius:16px;font-weight:800;font-size:1.05rem;letter-spacing:3px;
+  cursor:pointer;border:none;background:linear-gradient(135deg,var(--accent),var(--plum));color:#2a0a1a;
+  box-shadow:0 8px 30px rgba(255,122,184,.2)}
+.endbtn:active{transform:scale(.985)}
+.confirm{display:none;background:rgba(42,22,34,.9);border:1px solid rgba(255,122,184,.35);
+  border-radius:16px;padding:1.1rem;margin-top:.7rem;text-align:center}
+.confirm-q{font-weight:800;letter-spacing:1px;margin-bottom:.8rem}
+.confirm-row{display:grid;grid-template-columns:1fr 1fr;gap:.6rem}
+.cbtn{padding:.9rem;border-radius:12px;font-weight:800;letter-spacing:1px;cursor:pointer;border:1px solid}
+.cbtn.yes{background:rgba(95,214,164,.18);border-color:rgba(95,214,164,.5);color:var(--green)}
+.cbtn.no{background:rgba(42,22,34,.9);border-color:rgba(255,255,255,.15);color:var(--white)}
+.infowrap{position:relative;display:flex;justify-content:flex-end;margin-bottom:.4rem}
+.infobtn{width:2.4rem;height:2.4rem;border-radius:50%;border:1px solid rgba(255,122,184,.4);
+  background:rgba(255,122,184,.14);color:var(--accent);font-weight:800;font-size:1.05rem;
+  font-style:italic;cursor:pointer;line-height:1}
+.infobtn:hover{background:rgba(255,122,184,.28)}
+
+/* Popover on wide screens, full-screen sheet on phones */
+.infoveil{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:40}
+.infoveil.open{display:block}
+.infopop{display:none;position:absolute;top:3rem;right:0;width:min(92vw,520px);z-index:50;
+  background:#241423;border:1px solid rgba(255,122,184,.35);border-radius:20px;
+  box-shadow:0 18px 50px rgba(0,0,0,.65);max-height:78vh;overflow-y:auto;text-align:left}
+.infopop.open{display:block}
+.infopop::after{content:"";position:absolute;top:-7px;right:16px;width:12px;height:12px;
+  background:#241423;border-left:1px solid rgba(255,122,184,.35);border-top:1px solid rgba(255,122,184,.35);
+  transform:rotate(45deg)}
+
+.infohead{position:sticky;top:0;background:#241423;padding:1.1rem 1.3rem .8rem;
+  border-bottom:1px solid rgba(255,122,184,.18);display:flex;align-items:center;justify-content:space-between;
+  border-radius:20px 20px 0 0}
+.infohead h2{margin:0;font-size:1rem;font-weight:800;letter-spacing:.5px}
+.infoclose{font-size:1.6rem;color:var(--text-sec);cursor:pointer;line-height:1;padding:0 .3rem}
+.infoclose:hover{color:var(--white)}
+.infobody{padding:1.1rem 1.3rem 1.5rem}
+
+.infopop h3{color:var(--accent);font-size:.66rem;letter-spacing:2.5px;text-transform:uppercase;
+  margin:1.6rem 0 .6rem;font-weight:700;border-bottom:1px solid rgba(255,122,184,.16);padding-bottom:.4rem}
+.infopop h3:first-child{margin-top:0}
+.infopop p{font-size:.86rem;line-height:1.65;color:var(--white);margin:0 0 .7rem}
+.infopop b{color:var(--accent)}
+
+.ctrllist{display:flex;flex-direction:column;gap:.55rem;margin:0 0 .5rem}
+.ctrlrow{display:grid;grid-template-columns:8.5rem 1fr;gap:.6rem;align-items:start}
+.ctrlrow b{font-size:.8rem}
+.ctrlrow span{font-size:.8rem;color:var(--text-sec);line-height:1.5}
+
+.modebox{border:1px solid rgba(255,255,255,.1);border-radius:14px;padding:.9rem 1rem;margin-bottom:.7rem;
+  background:rgba(42,22,34,.5)}
+.modebox.on{border-color:var(--accent);background:rgba(255,122,184,.12)}
+.modename{font-weight:800;font-size:.92rem;margin-bottom:.4rem;display:flex;align-items:center;gap:.5rem;flex-wrap:wrap}
+.modebox p{font-size:.8rem;color:var(--text-sec);margin:0;line-height:1.55}
+.badge{display:none;font-size:.56rem;letter-spacing:1.5px;text-transform:uppercase;
+  background:var(--accent);color:#2a0a1a;padding:.22rem .55rem;border-radius:20px}
+.modebox.on .badge{display:inline-block}
+
+@media (max-width:640px){
+  .infopop{position:fixed;top:auto;bottom:0;left:0;right:0;width:100%;max-height:88vh;
+    border-radius:22px 22px 0 0;border-left:none;border-right:none;border-bottom:none}
+  .infopop::after{display:none}
+  .infohead{border-radius:22px 22px 0 0}
+  .ctrlrow{grid-template-columns:1fr;gap:.15rem}
+}
 .note{font-size:.74rem;color:var(--text-sec);line-height:1.55;margin-top:.6rem}
 
 .pace{background:rgba(42,22,34,.62);border:1px solid rgba(255,122,184,.16);border-radius:18px;padding:1.1rem}
@@ -130,6 +200,52 @@ h1{font-size:1.6rem;font-weight:700;letter-spacing:-.5px;margin:0 0 1.2rem}
   </div>
 
   <div id="live" style="display:none">
+    <div class="infowrap">
+      <button class="infobtn" id="infobtn" onclick="toggleInfo()" aria-label="How it works">i</button>
+      <div class="infoveil" id="infoveil" onclick="toggleInfo()"></div>
+      <div class="infopop" id="infopop">
+        <div class="infohead">
+          <h2>How this works</h2>
+          <div class="infoclose" onclick="toggleInfo()">&times;</div>
+        </div>
+        <div class="infobody">
+
+          <h3>The basics</h3>
+          <p>The screen is <b>green</b> when his toy is running, <b>red</b> when it's off and he just has to wait. The big number counts down his green time. During red he sees no countdown — but you do.</p>
+          <p>Every time he gets close he has to hit a key. That's an <b>edge</b>, and it stops him instantly.</p>
+
+          <h3>The three modes</h3>
+          <div class="modebox" id="mode-classic">
+            <div class="modename">Rounds <span class="badge">active now</span></div>
+            <p>The game runs in rounds. When a round's time is up it rolls the dice. Every edge raises his odds — below a certain number they're zero. Win and he finishes, lose and a new round starts. A background time limit lets him win eventually no matter what.</p>
+          </div>
+          <div class="modebox" id="mode-random">
+            <div class="modename">One game <span class="badge">active now</span></div>
+            <p>No rounds, no dice. One hidden end time was rolled at the start — when it runs out he wins, whatever he's done. You can see it, he can't. Edges buy him nothing here.</p>
+          </div>
+          <div class="modebox" id="mode-watcher">
+            <div class="modename">You decide <span class="badge">active now</span></div>
+            <p>No timer at all. It runs until you press the end button at the bottom of this page.</p>
+          </div>
+
+          <h3>Your controls</h3>
+          <div class="ctrllist">
+            <div class="ctrlrow"><b>Red 5 / 15 / 30s</b><span>Turns it off right now for that long.</span></div>
+            <div class="ctrlrow"><b>Shock</b><span>Full power for two seconds, then it locks for 20.</span></div>
+            <div class="ctrlrow"><b>Speed mode</b><span>A minute where the colours flicker past in seconds.</span></div>
+            <div class="ctrlrow"><b>Stronger / Weaker</b><span>Changes how strong it is from now on.</span></div>
+            <div class="ctrlrow"><b>Pacing</b><span>Left is long green and short red, right is the opposite, middle is normal.</span></div>
+            <div class="ctrlrow"><b>Next slide</b><span>Skips to his next picture.</span></div>
+            <div class="ctrlrow"><b>Message</b><span>Replaces the taunt on his screen during red.</span></div>
+          </div>
+
+          <h3>At the end</h3>
+          <p>When he wins he turns the toy on himself and it stays on until he comes. You can stop it as often as you want — it always comes back.</p>
+          <p>When he's about to come he presses his <b>CUM</b> button. From that moment the vibration runs for five more seconds and then stops — that's the end. Pause him inside those five seconds and you ruin him.</p>
+
+        </div>
+      </div>
+    </div>
     <button class="rebtn" id="rebtn" onclick="location.reload()">REFRESH</button>
     <div class="status" id="label"></div>
 
@@ -153,12 +269,14 @@ h1{font-size:1.6rem;font-weight:700;letter-spacing:-.5px;margin:0 0 1.2rem}
     </div>
 
     <div class="sect" id="sec-hidden">Only you can see this</div>
+    <div class="note" id="wmnote" style="display:none;margin:0 0 .7rem">Your call, entirely. No rounds, no dice, no timer — he keeps going until you press the end button below. Odds and edge thresholds don't exist here.</div>
+    <div class="note" id="rndnote" style="display:none;margin:0 0 .7rem">One-game mode: no rounds, no dice. A single hidden end time was rolled at the start — when it runs out he wins, whatever he's done. Edges don't buy him anything here.</div>
     <div class="grid" id="hiddenstats">
       <div class="cell hidden-info"><div class="k">Phase ends in</div><div class="v" id="phaseleft">—</div><div class="x">He sees no countdown during red.</div></div>
-      <div class="cell hidden-info"><div class="k">Win chance</div><div class="v" id="chance">0%</div><div class="x">His odds when the round is rolled. Every edge raises it.</div></div>
+      <div class="cell hidden-info" id="cell-chance"><div class="k">Win chance</div><div class="v" id="chance">0%</div><div class="x">His odds when the round is rolled. Every edge raises it.</div></div>
       <div class="cell hidden-info"><div class="k">Speed mode</div><div class="v" id="speed">off</div><div class="x">Rare burst: for one minute both colours last only seconds. An edge cancels it.</div></div>
       <div class="cell hidden-info" id="cell-secs" style="display:none"><div class="k">Ends in</div><div class="v" id="secsleft">—</div><div class="x">Secret end time. He has no idea when it comes.</div></div>
-      <div class="cell hidden-info"><div class="k">Needs edges</div><div class="v" id="needed">0</div><div class="x">Until he reaches this, his chance is zero.</div></div>
+      <div class="cell hidden-info" id="cell-needed"><div class="k">Needs edges</div><div class="v" id="needed">0</div><div class="x">Until he reaches this, his chance is zero.</div></div>
     </div>
 
     <div class="sect" id="cutsect">Cut him off</div>
@@ -178,6 +296,10 @@ h1{font-size:1.6rem;font-weight:700;letter-spacing:-.5px;margin:0 0 1.2rem}
         <span>A hard stop. Half a minute of nothing — sends him back to the start.</span>
       </div>
     </div>
+
+    <div class="sect" id="sec-speed">Speed mode</div>
+    <button class="speedbtn" id="speedbtn" onclick="send({cmd:'speed'})">START SPEED MODE</button>
+    <div class="note" id="speednote">One minute where green and red both last only a few seconds — they flicker past and he never settles. You can cut it short at any time. Either way there's a 60 second cooldown before you can start it again.</div>
 
     <div class="sect" id="sec-shock">Shock</div>
     <button class="shockbtn" id="shockbtn" onclick="send({cmd:'shock'})">SHOCK · 2s AT MAX</button>
@@ -215,6 +337,17 @@ h1{font-size:1.6rem;font-weight:700;letter-spacing:-.5px;margin:0 0 1.2rem}
     <div class="say" id="saybox">
       <input id="msg" maxlength="60" placeholder="Tell him something…">
       <button onclick="say()">Send</button>
+    </div>
+
+    <div class="sect" id="sec-end" style="display:none">End it</div>
+    <div class="note" id="endnote" style="display:none;margin:0 0 .7rem">It runs until you press this. Then he's allowed to finish — and you still decide whether he comes properly or you ruin him. You'll see how when you get there.</div>
+    <button class="endbtn" id="endbtn" onclick="askEnd()">LET HIM FINISH</button>
+    <div class="confirm" id="endconfirm">
+      <div class="confirm-q">Are you sure? He's done as soon as you say yes.</div>
+      <div class="confirm-row">
+        <button class="cbtn yes" onclick="confirmEnd(true)">Yes</button>
+        <button class="cbtn no" onclick="confirmEnd(false)">No</button>
+      </div>
     </div>
 
     <div class="conn" id="conn">connecting…</div>
@@ -325,6 +458,23 @@ function onTension() {
   send({ cmd: 'tension', level: v });
 }
 
+function toggleInfo() {
+  const open = document.getElementById('infopop').classList.toggle('open');
+  document.getElementById('infoveil').classList.toggle('open', open);
+  document.body.style.overflow = open ? 'hidden' : '';
+}
+
+function askEnd() {
+  document.getElementById('endconfirm').style.display = 'block';
+  document.getElementById('endbtn').style.display = 'none';
+}
+
+function confirmEnd(yes) {
+  document.getElementById('endconfirm').style.display = 'none';
+  document.getElementById('endbtn').style.display = 'block';
+  if (yes) send({ cmd: 'endgame' });
+}
+
 function showFrame(m) {
   const img = document.getElementById('frame');
   const off = document.getElementById('frameoff');
@@ -394,9 +544,54 @@ function render(s) {
                : redNow ? "BLOCKED — RED IS ON"
                : "SHOCK · 2s AT MAX";
 
+  // One-game mode has no rounds and no roll, so the odds and the edge
+  // threshold are meaningless there.
+  // The pacing level lives on his machine, so a reload or a second viewer
+  // picks up whatever was last set — the slider just follows along.
+  const tl = document.getElementById('tlevel');
+  if (s.tensionLevel && document.activeElement !== tl && Number(tl.value) !== s.tensionLevel) {
+    tl.value = s.tensionLevel;
+    document.getElementById('tname').innerText = PACE[s.tensionLevel - 1][0];
+    document.getElementById('tdesc').innerText = PACE[s.tensionLevel - 1][1];
+  }
+
+  const rnd = !!s.randomMode;
+  const wm = !!s.watcherMode;
+
+  // Mark whichever mode is running right now in the info popover
+  const live = s.state === 'live' || s.state === 'spinning';
+  document.getElementById('mode-classic').classList.toggle('on', live && !rnd && !wm);
+  document.getElementById('mode-random').classList.toggle('on', live && rnd);
+  document.getElementById('mode-watcher').classList.toggle('on', live && wm);
+
+  // Speed mode button
+  const spb = document.getElementById('speedbtn');
+  const spRunning = s.speed > 0;
+  const spCd = s.speedCd || 0;
+  spb.classList.toggle('running', spRunning);
+  spb.disabled = s.state !== 'live' || (!spRunning && spCd > 0);
+  spb.innerText = spRunning ? `STOP SPEED MODE — ${Math.ceil(s.speed)}s LEFT`
+                : spCd > 0 ? `READY IN ${Math.ceil(spCd)}s`
+                : 'START SPEED MODE';
+
+  // The end button only exists in the mode where she calls it
+  const showEnd = wm && s.state === 'live';
+  document.getElementById('sec-end').style.display = showEnd ? 'block' : 'none';
+  document.getElementById('endnote').style.display = showEnd ? 'block' : 'none';
+  if (!showEnd) {
+    document.getElementById('endbtn').style.display = 'none';
+    document.getElementById('endconfirm').style.display = 'none';
+  } else if (document.getElementById('endconfirm').style.display !== 'block') {
+    document.getElementById('endbtn').style.display = 'block';
+  }
+  document.getElementById('cell-chance').style.display = (rnd || wm) ? 'none' : 'block';
+  document.getElementById('cell-needed').style.display = (rnd || wm) ? 'none' : 'block';
   document.getElementById('chance').innerText = s.chance + '%';
   document.getElementById('speed').innerText = s.speed > 0 ? Math.ceil(s.speed) + 's' : 'off';
   document.getElementById('needed').innerText = s.needEdges;
+
+  document.getElementById('rndnote').style.display = (rnd && !post) ? 'block' : 'none';
+  document.getElementById('wmnote').style.display = (wm && !post) ? 'block' : 'none';
 
   const cs = document.getElementById('cell-secs');
   if (s.secsLeft !== null && s.secsLeft !== undefined) {
@@ -409,6 +604,9 @@ function render(s) {
   // Once he has won, the controls narrow down: pausing, skipping, messages.
   const post = s.state === 'post' || s.state === 'cumming' || s.state === 'over';
   document.getElementById('sec-shock').style.display = post ? 'none' : 'block';
+  document.getElementById('sec-speed').style.display = post ? 'none' : 'block';
+  document.getElementById('speedbtn').style.display = post ? 'none' : 'block';
+  document.getElementById('speednote').style.display = post ? 'none' : 'block';
   document.getElementById('shockbtn').style.display = post ? 'none' : 'block';
   document.getElementById('shocknote').style.display = post ? 'none' : 'block';
   document.getElementById('sec-strength').style.display = post ? 'none' : 'block';
@@ -422,7 +620,7 @@ function render(s) {
   document.getElementById('littlectl').style.display = post ? 'none' : 'grid';
   document.getElementById('saynote').style.display = post ? 'none' : 'block';
   document.getElementById('saybox').style.display = post ? 'none' : 'flex';
-  document.getElementById('bar').parentElement.style.display = post ? 'none' : 'block';
+  document.getElementById('bar').parentElement.style.display = (post || rnd || wm) ? 'none' : 'block';
 
   const vs = document.getElementById('vibestate');
   vs.style.display = post && s.state !== 'over' ? 'block' : 'none';
@@ -451,7 +649,7 @@ function render(s) {
     finNote.style.display = 'block';
     finNote.innerHTML =
       "He won. Nothing happens until <b>he switches the vibration on himself</b>. Then it stays on — cut it as often as you like, it always comes back." +
-      "<br><br>When he's going over he hits his <b>CUM</b> button: five more seconds, then it's done. " +
+      "<br><br>When he's going over he hits his <b>CUM</b> button. The vibration then runs for five more seconds and stops — that's the end. " +
       "<b>Pause him inside those five seconds and you ruin it.</b>" +
       "<em>Decide now whether he gets to enjoy it.</em>";
     cutBtns.style.opacity = '1';
