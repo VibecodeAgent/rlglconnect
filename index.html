@@ -586,6 +586,8 @@ function render(s) {
 
   const rnd = !!s.randomMode;
   const wm = !!s.watcherMode;
+  // Declared here because several blocks below rely on it.
+  const post = s.state === 'post' || s.state === 'cumming' || s.state === 'over';
 
   // Mark whichever mode is running right now in the info popover
   const live = s.state === 'live' || s.state === 'spinning';
@@ -631,7 +633,6 @@ function render(s) {
   document.getElementById('bar').style.width = (s.roundPct === null ? 0 : s.roundPct) + '%';
 
   // Once he has won, the controls narrow down: pausing, skipping, messages.
-  const post = s.state === 'post' || s.state === 'cumming' || s.state === 'over';
   document.getElementById('sec-shock').style.display = post ? 'none' : 'block';
   document.getElementById('sec-speed').style.display = post ? 'none' : 'block';
   document.getElementById('speedbtn').style.display = post ? 'none' : 'block';
