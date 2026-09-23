@@ -326,11 +326,10 @@ button,input,summary{touch-action:manipulation;-webkit-tap-highlight-color:trans
 
         <div class="sect">7 &middot; When you're done with him</div>
         <button class="bigbtn finish" id="finishbtn" onclick="finish()">LET HIM FINISH</button>
-        <div class="note"><b>No way back.</b> Tap twice. Then:</div>
-        <div class="note"><b>1. You allow it.</b> His screen says "She says you may".</div>
-        <div class="note"><b>2. He has to ask for it.</b> Nothing vibrates until <b>he</b> turns it on himself &mdash; and then it stays on. You can still stop him whenever you like.</div>
-        <div class="note"><b>3. He presses Cum.</b> Five seconds start. You see them here.</div>
-        <div class="note"><b>4. Your call.</b> Do nothing and he gets to finish. Hit any Stop button and you take it away right at the edge: <b>ruined</b>, game over.</div>
+        <div class="note"><b>No way back.</b> Tap twice, and he's yours to release. This is how it goes:</div>
+        <div class="note"><b>1. You give the word.</b> His screen says "She says you may". He's been begging for this.</div>
+        <div class="note"><b>2. He switches it on himself.</b> He turns the vibrator on and it stays on. Until he comes, you can still take it away with the Stop buttons.</div>
+        <div class="note"><b>3. He presses Cum.</b> That's the point of no return. You can't stop him anymore. Five seconds later, it's over.</div>
       </div>
     </div>
 
@@ -598,10 +597,12 @@ function render(s) {
     } else {
       txt = "He's feeling it"; c = ON;
     }
-  } else if (s.state === 'post' || s.state === 'cumming') {
+  } else if (s.state === 'post') {
     txt = paused ? 'Paused — ' + Math.ceil(s.pauseLeft) + 's'
-        : s.vibeOn ? "He's feeling it" : 'Waiting for him to ask';
+        : s.vibeOn ? "He's feeling it" : 'Waiting for him to switch it on';
     c = paused ? OFF : s.vibeOn ? ON : null;
+  } else if (s.state === 'cumming') {
+    txt = "He's coming now"; c = ON;
   }
   if (c) { col = c[0]; bd = c[1]; bg = c[2]; }
   vs.style.display = txt ? 'block' : 'none';
@@ -609,7 +610,7 @@ function render(s) {
   vs.style.color = col; vs.style.borderColor = bd; vs.style.background = bg;
 
   // Buttons
-  ['cut5', 'cut15', 'cut30'].forEach(id => { document.getElementById(id).disabled = !(live || s.state === 'post' || s.state === 'cumming') || (live && paused); });
+  ['cut5', 'cut15', 'cut30'].forEach(id => { document.getElementById(id).disabled = !(live || s.state === 'post') || (live && paused); });
 
   for (let i = 0; i <= 3; i++) {
     const b = document.getElementById('rl' + i);
@@ -641,7 +642,7 @@ function render(s) {
   document.getElementById('chatdock').style.display = started ? 'flex' : 'none';
   document.getElementById('cutsect').innerText = post ? 'Take it away' : '1 · Take it away';
   document.getElementById('cutnote').innerText = post
-    ? 'He may finish, but only when you let him. Stop him as often as you like, it always comes back. Hit one right after he presses Cum and he is ruined.'
+    ? 'You can still stop him as often as you like, and it always comes back. Once he presses Cum, it is too late.'
     : 'The vibration stops right now, for as long as you say. Then it comes back by itself.';
 
   const fin = document.getElementById('finale');
@@ -650,27 +651,25 @@ function render(s) {
 
   if (s.state === 'post') {
     fin.style.display = 'block';
-    fin.innerText = s.vibeOn ? "HE'S GETTING HIS REWARD" : 'WAITING FOR HIM TO ASK';
+    fin.innerText = s.vibeOn ? "HE'S GOING FOR IT" : 'HE CAN START NOW';
     fin.style.background = 'rgba(255,122,184,.22)';
     fin.style.color = 'var(--accent)';
     finNote.style.display = 'block';
     finNote.innerHTML =
-      "You gave permission. Nothing happens until <b>he</b> turns the vibration on &mdash; then it stays on. Stop him as often as you like; it always comes back." +
-      "<br><br>When he hits <b>Cum</b> he gets five seconds. Stop him inside them and he's ruined." +
-      "<em>Be generous. Or don't.</em>";
+      "You said yes. Now <b>he</b> switches the vibrator on himself, and it stays on. You can still stop him until he presses <b>Cum</b>." +
+      "<em>After that it's out of your hands.</em>";
     cutBtns.style.opacity = '1';
 
   } else if (s.state === 'cumming') {
     const left = (s.cumLeft || 0).toFixed(1);
     fin.style.display = 'block';
-    fin.innerText = paused ? 'RUINED' : `HE'S GOING — ${left}s`;
-    fin.style.background = paused ? 'rgba(176,109,224,.28)' : 'rgba(255,77,126,.28)';
-    fin.style.color = paused ? '#b06de0' : '#ff4d7e';
+    fin.innerText = `HE'S COMING NOW — ${left}s`;
+    fin.style.background = 'rgba(255,77,126,.28)';
+    fin.style.color = '#ff4d7e';
     finNote.style.display = 'block';
-    finNote.innerHTML = paused
-      ? "<b>Ruined.</b> Right at the edge. He'll remember this."
-      : "<b>He's going for it.</b> Five seconds. Let him &mdash; or take it away right now.";
-    cutBtns.style.opacity = '1';
+    finNote.innerHTML = "It's happening. You can't stop him anymore.<em>Enjoy the show.</em>";
+    cutBtns.style.opacity = '.35';
+    ['cut5', 'cut15', 'cut30'].forEach(id => { document.getElementById(id).disabled = true; });
 
   } else if (s.state === 'over') {
     fin.style.display = 'block';
