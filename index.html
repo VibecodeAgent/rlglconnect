@@ -34,20 +34,16 @@ body.red-active{background-color:#490d26}
 h1{font-size:1.6rem;font-weight:700;letter-spacing:-.5px;margin:0 0 1.2rem}
 
 .status{font-size:clamp(1.8rem,7vw,3rem);font-weight:800;
-  letter-spacing:-1px;text-align:center;line-height:1.15;margin:.4rem 0 1.3rem;
+  letter-spacing:-1px;text-align:center;line-height:1.15;margin:.4rem 0 1rem;
   text-shadow:0 4px 26px rgba(0,0,0,.7);min-height:1.2em;text-transform:uppercase}
 
-.bar{height:6px;background:rgba(255,255,255,.14);border-radius:8px;overflow:hidden;margin:.4rem 0 1.2rem}
-.bar>i{display:block;height:100%;background:linear-gradient(90deg,var(--accent),var(--plum));
-  border-radius:8px;width:0;transition:width .2s linear}
+.vstate{text-align:center;font-weight:800;font-size:.95rem;letter-spacing:3px;padding:.9rem;
+  border:1px solid;border-radius:14px;margin-bottom:1.2rem;text-transform:uppercase}
 
 .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:.7rem;margin:1.2rem 0}
 .cell{background:rgba(42,22,34,.62);border:1px solid rgba(255,122,184,.14);border-radius:16px;padding:.85rem}
 .cell .k{font-size:.6rem;letter-spacing:2.5px;text-transform:uppercase;color:var(--text-sec);font-weight:700}
 .cell .v{font-size:1.5rem;font-weight:700;font-variant-numeric:tabular-nums;margin-top:.2rem}
-.cell.hidden-info{border-color:rgba(232,192,125,.32);background:rgba(58,34,26,.42)}
-.cell.hidden-info .k{color:var(--gold)}
-.cell .x{font-size:.68rem;color:var(--text-sec);line-height:1.45;margin-top:.45rem}
 
 .sect{font-size:.68rem;letter-spacing:2.5px;text-transform:uppercase;
   color:var(--accent);font-weight:700;border-bottom:1px solid rgba(255,122,184,.22);
@@ -60,10 +56,22 @@ h1{font-size:1.6rem;font-weight:700;letter-spacing:-.5px;margin:0 0 1.2rem}
 .ctl button{background:rgba(42,22,34,.85);border:1px solid rgba(255,122,184,.22);color:var(--white);
   padding:.95rem .6rem;border-radius:14px;font-weight:700;font-size:.85rem;cursor:pointer;
   letter-spacing:.5px;transition:transform .1s,background .2s,border-color .2s}
-.ctl button:hover{background:var(--accent-soft);border-color:rgba(255,122,184,.5)}
-.ctl button:active{transform:scale(.96)}
+.ctl button:hover:not(:disabled){background:var(--accent-soft);border-color:rgba(255,122,184,.5)}
+.ctl button:active:not(:disabled){transform:scale(.96)}
+.ctl button:disabled{opacity:.4;cursor:not-allowed}
 .ctl button.warn{border-color:rgba(255,77,126,.42);color:var(--red)}
-.ctl button.warn:hover{background:rgba(255,77,126,.2)}
+.ctl button.warn:hover:not(:disabled){background:rgba(255,77,126,.2)}
+
+.bigbtn{width:100%;padding:1.15rem;border-radius:16px;font-weight:800;font-size:1rem;letter-spacing:3px;
+  cursor:pointer;border:1px solid rgba(176,109,224,.5);background:rgba(176,109,224,.2);
+  color:var(--plum);transition:all .15s}
+.bigbtn:hover:not(:disabled){background:rgba(176,109,224,.34)}
+.bigbtn:active:not(:disabled){transform:scale(.98)}
+.bigbtn:disabled{opacity:.4;cursor:not-allowed;border-color:rgba(255,255,255,.1);
+  background:rgba(42,22,34,.6);color:var(--text-sec)}
+.bigbtn.firing{background:linear-gradient(135deg,var(--accent),var(--plum));color:#2a0a1a;border-color:transparent}
+.bigbtn.finish{border-color:rgba(255,122,184,.5);background:rgba(255,122,184,.16);color:var(--accent)}
+.bigbtn.finish.armed{background:linear-gradient(135deg,var(--accent),var(--plum));color:#2a0a1a;border-color:transparent}
 
 .say{display:flex;gap:.5rem;margin-top:.6rem}
 .say input{margin:0;flex:1;background:var(--input-bg);border:1px solid rgba(255,122,184,.18);
@@ -79,6 +87,10 @@ h1{font-size:1.6rem;font-weight:700;letter-spacing:-.5px;margin:0 0 1.2rem}
 
 .out{text-align:center;font-weight:800;font-size:1.15rem;letter-spacing:1px;
   padding:.8rem;border-radius:14px;margin-bottom:1rem;display:none}
+.finalebox{display:none;background:rgba(255,122,184,.1);border:1px solid rgba(255,122,184,.3);border-radius:18px;padding:1.1rem 1.2rem;margin-bottom:1.2rem;font-size:.86rem;line-height:1.6;color:var(--white)}
+.finalebox b{color:var(--accent)}
+.finalebox em{color:var(--text-sec);font-style:normal;display:block;margin-top:.5rem;font-size:.8rem}
+.note{font-size:.74rem;color:var(--text-sec);line-height:1.55;margin-top:.6rem}
 
 .screen{position:relative;width:100%;aspect-ratio:16/10;background:rgba(42,22,34,.62);
   border:1px solid rgba(255,122,184,.16);border-radius:18px;overflow:hidden;margin-bottom:1rem;
@@ -89,108 +101,103 @@ h1{font-size:1.6rem;font-weight:700;letter-spacing:-.5px;margin:0 0 1.2rem}
 .rebtn{display:none;width:100%;margin:0 0 1.4rem;padding:1.5rem 1rem;border-radius:18px;
   border:none;background:linear-gradient(135deg,var(--accent),var(--plum));color:#2a0a1a;
   cursor:pointer;font-size:1.3rem;font-weight:800;letter-spacing:3px;
-  box-shadow:0 8px 30px rgba(255,122,184,.25);transition:transform .1s,box-shadow .2s}
-.rebtn:hover{box-shadow:0 10px 38px rgba(255,122,184,.4)}
-.rebtn:active{transform:scale(.985)}
+  box-shadow:0 8px 30px rgba(255,122,184,.25)}
+h1.title{font-size:1.9rem;font-weight:800;letter-spacing:-.5px;margin:0 0 .5rem}
+.lead{font-size:.95rem;line-height:1.55;color:var(--text-sec);margin:0 0 1.2rem}
+.guide{background:rgba(42,22,34,.62);border:1px solid rgba(255,122,184,.22);border-radius:18px;padding:.2rem 1.1rem;margin-bottom:.4rem}
+.guide summary{cursor:pointer;font-weight:800;letter-spacing:.5px;padding:.9rem 0;color:var(--accent);font-size:.95rem}
+.guide-body{font-size:.88rem;line-height:1.6;padding-bottom:.8rem}
+.guide-body p{margin:.5rem 0}
+.guide-body ul{margin:.3rem 0 .6rem;padding-left:1.2rem}
+.guide-body li{margin:.3rem 0}
+.guide-body b{color:var(--white)}
+.legend{display:flex;flex-wrap:wrap;align-items:center;gap:.4rem 1rem;margin:.8rem 0;font-weight:700;font-size:.82rem}
+.dot{display:inline-block;width:12px;height:12px;border-radius:50%;margin-right:.35rem;vertical-align:-1px}
+.dot.g{background:#2f8f63}.dot.r{background:#b8244f}
+.tip{background:rgba(255,122,184,.1);border-radius:12px;padding:.7rem .85rem;color:var(--text-sec)}
+.cell .x{font-size:.66rem;color:var(--text-sec);line-height:1.4;margin-top:.35rem}
+.waitnote{text-align:center;font-size:.85rem;padding:0 .5rem}
 
-.shockbtn{width:100%;padding:1.15rem;border-radius:16px;font-weight:800;font-size:1rem;letter-spacing:3px;
-  cursor:pointer;border:1px solid rgba(176,109,224,.5);background:rgba(176,109,224,.2);
-  color:var(--plum);transition:all .15s}
-.shockbtn:hover:not(:disabled){background:rgba(176,109,224,.34)}
-.shockbtn:active:not(:disabled){transform:scale(.98)}
-.shockbtn:disabled{opacity:.4;cursor:not-allowed;border-color:rgba(255,255,255,.1);
-  background:rgba(42,22,34,.6);color:var(--text-sec)}
-.shockbtn.firing{background:linear-gradient(135deg,var(--accent),var(--plum));color:#2a0a1a;border-color:transparent}
+/* ---------- Chat dock: always there, translucent, never blocks the controls ---------- */
+.chatdock{position:fixed;z-index:60;display:none;flex-direction:column;gap:6px;
+  right:max(12px,env(safe-area-inset-right));bottom:max(12px,env(safe-area-inset-bottom));
+  width:min(400px,calc(100vw - 24px));pointer-events:none}
+.chatdock>*{pointer-events:auto}
+.dlog{display:flex;flex-direction:column;gap:4px;max-height:10rem;overflow:hidden;justify-content:flex-end;
+  pointer-events:none;padding:0 2px}
+.chatdock.expanded .dlog{max-height:45vh;overflow-y:auto;justify-content:flex-start;pointer-events:auto;
+  background:rgba(18,8,16,.5);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);
+  border:1px solid rgba(255,122,184,.18);border-radius:16px;padding:.6rem}
+.bubble{max-width:85%;padding:.42rem .75rem;border-radius:14px;font-size:.88rem;line-height:1.4;
+  overflow-wrap:anywhere;color:#fff;text-shadow:0 1px 6px rgba(0,0,0,.6);
+  -webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);transition:opacity 1.6s ease}
+.bubble.him{align-self:flex-start;background:rgba(30,16,25,.55);border:1px solid rgba(255,255,255,.14);border-bottom-left-radius:4px}
+.bubble.me{align-self:flex-end;background:linear-gradient(135deg,rgba(255,122,184,.6),rgba(176,109,224,.6));
+  border:1px solid rgba(255,255,255,.18);border-bottom-right-radius:4px}
+.bubble.failed{opacity:.5}
+.bubble small{display:block;font-size:.62rem;opacity:.7;margin-top:.1rem}
+.bubble.fading{opacity:0}
+.bubble.old{display:none}
+.chatdock.expanded .bubble.fading,.chatdock:focus-within .bubble.fading{opacity:1}
+.chatdock.expanded .bubble.old,.chatdock:focus-within .bubble.old{display:block}
+.dhint{align-self:flex-end;font-size:.78rem;font-weight:700;letter-spacing:.5px;color:#fff;text-shadow:0 1px 6px rgba(0,0,0,.6);
+  padding:.35rem .8rem;border-radius:12px;background:rgba(30,16,25,.5);border:1px solid rgba(255,122,184,.28);
+  -webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
+.dform{display:flex;align-items:center;gap:.4rem;padding:.35rem;border-radius:18px;
+  background:rgba(30,16,25,.5);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);
+  border:1px solid rgba(255,122,184,.28);box-shadow:0 6px 24px rgba(0,0,0,.35)}
+.dform input{flex:1;min-width:0;background:transparent;border:none;outline:none;color:#fff;
+  font-size:16px;font-family:inherit;padding:.5rem .6rem}   /* 16px stops iOS zooming in on focus */
+.dform input::placeholder{color:rgba(255,245,250,.5)}
+.dform button{border:none;cursor:pointer;font-weight:800}
+.dsend{background:linear-gradient(135deg,rgba(255,122,184,.9),rgba(176,109,224,.9));color:#2a0a1a;
+  padding:.6rem 1rem;border-radius:13px;letter-spacing:.5px}
+.dexp{background:rgba(255,255,255,.1);color:#fff;width:2.4rem;height:2.4rem;border-radius:12px;font-size:1.05rem;line-height:1}
+.chatdock.expanded .dexp{background:rgba(255,122,184,.3)}
 
-.finalebox{display:none;background:rgba(255,122,184,.1);border:1px solid rgba(255,122,184,.3);border-radius:18px;padding:1.1rem 1.2rem;margin-bottom:1.2rem;font-size:.86rem;line-height:1.6;color:var(--white)}
-.finalebox b{color:var(--accent)}
-.vibestate{display:none;text-align:center;font-weight:800;font-size:.95rem;letter-spacing:3px;padding:.9rem;border:1px solid;border-radius:14px;margin-bottom:1.2rem}
-.finalebox em{color:var(--text-sec);font-style:normal;display:block;margin-top:.5rem;font-size:.8rem}
-.speedbtn{width:100%;padding:1.15rem;border-radius:16px;font-weight:800;font-size:1rem;letter-spacing:3px;
-  cursor:pointer;border:1px solid rgba(232,192,125,.5);background:rgba(232,192,125,.16);
-  color:var(--gold);transition:all .15s}
-.speedbtn:hover:not(:disabled){background:rgba(232,192,125,.3)}
-.speedbtn:active:not(:disabled){transform:scale(.98)}
-.speedbtn:disabled{opacity:.4;cursor:not-allowed;border-color:rgba(255,255,255,.1);background:rgba(42,22,34,.6);color:var(--text-sec)}
-.speedbtn.running{background:var(--gold);color:#2a1a05;border-color:transparent}
-.endbtn{display:none;width:100%;padding:1.3rem;border-radius:16px;font-weight:800;font-size:1.05rem;letter-spacing:3px;
-  cursor:pointer;border:none;background:linear-gradient(135deg,var(--accent),var(--plum));color:#2a0a1a;
-  box-shadow:0 8px 30px rgba(255,122,184,.2)}
-.endbtn:active{transform:scale(.985)}
-.confirm{display:none;background:rgba(42,22,34,.9);border:1px solid rgba(255,122,184,.35);
-  border-radius:16px;padding:1.1rem;margin-top:.7rem;text-align:center}
-.confirm-q{font-weight:800;letter-spacing:1px;margin-bottom:.8rem}
-.confirm-row{display:grid;grid-template-columns:1fr 1fr;gap:.6rem}
-.cbtn{padding:.9rem;border-radius:12px;font-weight:800;letter-spacing:1px;cursor:pointer;border:1px solid}
-.cbtn.yes{background:rgba(95,214,164,.18);border-color:rgba(95,214,164,.5);color:var(--green)}
-.cbtn.no{background:rgba(42,22,34,.9);border-color:rgba(255,255,255,.15);color:var(--white)}
-.infowrap{position:relative;display:flex;justify-content:flex-end;margin-bottom:.4rem}
-.infobtn{width:2.4rem;height:2.4rem;border-radius:50%;border:1px solid rgba(255,122,184,.4);
-  background:rgba(255,122,184,.14);color:var(--accent);font-weight:800;font-size:1.05rem;
-  font-style:italic;cursor:pointer;line-height:1}
-.infobtn:hover{background:rgba(255,122,184,.28)}
+/* ---------- Touch / responsive ---------- */
+html{-webkit-text-size-adjust:100%}
+button,input,summary{touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+.wrap{padding-top:max(1.8rem,calc(env(safe-area-inset-top) + .8rem));
+  padding-left:max(1.2rem,env(safe-area-inset-left));padding-right:max(1.2rem,env(safe-area-inset-right))}
+.sticky{position:sticky;top:0;z-index:30;margin:0 -1.2rem 1.1rem;padding:.55rem 1.2rem;
+  background:rgba(18,8,16,.84);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);
+  border-bottom:1px solid rgba(255,122,184,.14)}
+.sticky .vstate{margin:0;padding:.65rem .8rem;font-size:.85rem;letter-spacing:2px}
 
-/* Popover on wide screens, full-screen sheet on phones */
-.infoveil{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:40}
-.infoveil.open{display:block}
-.infopop{display:none;position:absolute;top:3rem;right:0;width:min(92vw,520px);z-index:50;
-  background:#241423;border:1px solid rgba(255,122,184,.35);border-radius:20px;
-  box-shadow:0 18px 50px rgba(0,0,0,.65);max-height:78vh;overflow-y:auto;text-align:left}
-.infopop.open{display:block}
-.infopop::after{content:"";position:absolute;top:-7px;right:16px;width:12px;height:12px;
-  background:#241423;border-left:1px solid rgba(255,122,184,.35);border-top:1px solid rgba(255,122,184,.35);
-  transform:rotate(45deg)}
-
-.infohead{position:sticky;top:0;background:#241423;padding:1.1rem 1.3rem .8rem;
-  border-bottom:1px solid rgba(255,122,184,.18);display:flex;align-items:center;justify-content:space-between;
-  border-radius:20px 20px 0 0}
-.infohead h2{margin:0;font-size:1rem;font-weight:800;letter-spacing:.5px}
-.infoclose{font-size:1.6rem;color:var(--text-sec);cursor:pointer;line-height:1;padding:0 .3rem}
-.infoclose:hover{color:var(--white)}
-.infobody{padding:1.1rem 1.3rem 1.5rem}
-
-.infopop h3{color:var(--accent);font-size:.66rem;letter-spacing:2.5px;text-transform:uppercase;
-  margin:1.6rem 0 .6rem;font-weight:700;border-bottom:1px solid rgba(255,122,184,.16);padding-bottom:.4rem}
-.infopop h3:first-child{margin-top:0}
-.infopop p{font-size:.86rem;line-height:1.65;color:var(--white);margin:0 0 .7rem}
-.infopop b{color:var(--accent)}
-
-.ctrllist{display:flex;flex-direction:column;gap:.55rem;margin:0 0 .5rem}
-.ctrlrow{display:grid;grid-template-columns:8.5rem 1fr;gap:.6rem;align-items:start}
-.ctrlrow b{font-size:.8rem}
-.ctrlrow span{font-size:.8rem;color:var(--text-sec);line-height:1.5}
-
-.modebox{border:1px solid rgba(255,255,255,.1);border-radius:14px;padding:.9rem 1rem;margin-bottom:.7rem;
-  background:rgba(42,22,34,.5)}
-.modebox.on{border-color:var(--accent);background:rgba(255,122,184,.12)}
-.modename{font-weight:800;font-size:.92rem;margin-bottom:.4rem;display:flex;align-items:center;gap:.5rem;flex-wrap:wrap}
-.modebox p{font-size:.8rem;color:var(--text-sec);margin:0;line-height:1.55}
-.badge{display:none;font-size:.56rem;letter-spacing:1.5px;text-transform:uppercase;
-  background:var(--accent);color:#2a0a1a;padding:.22rem .55rem;border-radius:20px}
-.modebox.on .badge{display:inline-block}
-
-@media (max-width:640px){
-  .infopop{position:fixed;top:auto;bottom:0;left:0;right:0;width:100%;max-height:88vh;
-    border-radius:22px 22px 0 0;border-left:none;border-right:none;border-bottom:none}
-  .infopop::after{display:none}
-  .infohead{border-radius:22px 22px 0 0}
-  .ctrlrow{grid-template-columns:1fr;gap:.15rem}
+/* Tablet */
+@media(min-width:601px) and (max-width:1024px){
+  .wrap{max-width:720px}
+  .grid{grid-template-columns:repeat(4,1fr)}
+  .ctl button,.bigbtn{min-height:52px}
 }
-.ctl button.ruin{border-color:var(--red);color:#fff;background:rgba(255,77,126,.35);
-  animation:ruinpulse .7s ease-in-out infinite alternate}
-@keyframes ruinpulse{
-  from{box-shadow:0 0 0 rgba(255,77,126,0);background:rgba(255,77,126,.28)}
-  to{box-shadow:0 0 26px rgba(255,77,126,.65);background:rgba(255,77,126,.5)}}
-.note{font-size:.74rem;color:var(--text-sec);line-height:1.55;margin-top:.6rem}
 
-.pace{background:rgba(42,22,34,.62);border:1px solid rgba(255,122,184,.16);border-radius:18px;padding:1.1rem}
-.pace input[type=range]{-webkit-appearance:none;appearance:none;width:100%;background:transparent;height:26px;outline:none;margin:0}
-.pace input[type=range]::-webkit-slider-runnable-track{height:6px;background:rgba(255,255,255,.16);border-radius:3px}
-.pace input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;height:24px;width:24px;
-  border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--plum));margin-top:-9px;
-  box-shadow:0 3px 12px rgba(255,122,184,.5);cursor:pointer}
-.pace-name{font-weight:800;font-size:1.1rem;margin-top:.5rem;color:var(--accent)}
-.pace-desc{font-size:.83rem;color:var(--text-sec);line-height:1.55;margin-top:.35rem}
+/* Phone */
+@media(max-width:600px){
+  .wrap{padding-bottom:9rem;padding-left:max(1rem,env(safe-area-inset-left));padding-right:max(1rem,env(safe-area-inset-right))}
+  .sticky{margin:0 -1rem 1rem;padding:.5rem 1rem}
+  h1.title{font-size:1.55rem}
+  .lead{font-size:.9rem}
+  .status{font-size:clamp(1.6rem,9vw,2.4rem)}
+  .grid{grid-template-columns:repeat(2,1fr);gap:.55rem}
+  .cell{padding:.7rem}
+  .cell .v{font-size:1.3rem}
+  .ctl{grid-template-columns:1fr 1fr;gap:.55rem}
+  #cutbtns{grid-template-columns:repeat(3,1fr)}
+  #cutbtns button{padding:.9rem .2rem;font-size:.8rem}
+  .ctlcard span,.cell .x{font-size:.72rem}
+  .note{font-size:.8rem}
+  .guide-body{font-size:.86rem}
+  .ctl button,.bigbtn{min-height:52px}
+  .bigbtn{font-size:.9rem;letter-spacing:2px}
+  .screen{aspect-ratio:4/3;border-radius:14px}
+  .screen.noimg{aspect-ratio:auto}
+
+}
+.screen.noimg{aspect-ratio:auto;min-height:5.5rem}
+.ctl button.on{background:linear-gradient(135deg,var(--accent),var(--plum));color:#2a0a1a;border-color:transparent}
+.wrap{padding-bottom:9rem}
+@media(max-width:600px){.chatdock{left:max(8px,env(safe-area-inset-left));right:max(8px,env(safe-area-inset-right));width:auto;bottom:max(8px,env(safe-area-inset-bottom))}}
 @media(prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
 </head>
@@ -200,162 +207,144 @@ h1{font-size:1.6rem;font-weight:700;letter-spacing:-.5px;margin:0 0 1.2rem}
   <div class="join" id="join" style="display:none">
     <h1>Not available</h1>
     <p style="color:var(--text-sec);font-size:.9rem;line-height:1.5;margin:0">
-      This link isn't configured yet. Open watch.html in a text editor and set RELAY and ROOM in the CONFIG block near the top of the script.
+      This link isn't configured yet. Open watch-remote.html in a text editor and set RELAY and ROOM in the CONFIG block near the top of the script.
     </p>
   </div>
 
   <div id="live" style="display:none">
-    <div class="infowrap">
-      <button class="infobtn" id="infobtn" onclick="toggleInfo()" aria-label="How it works">i</button>
-      <div class="infoveil" id="infoveil" onclick="toggleInfo()"></div>
-      <div class="infopop" id="infopop">
-        <div class="infohead">
-          <h2>How this works</h2>
-          <div class="infoclose" onclick="toggleInfo()">&times;</div>
-        </div>
-        <div class="infobody">
+    <button class="rebtn" id="rebtn" onclick="location.reload()">REFRESH</button>
 
-          <h3>The basics</h3>
-          <p>The screen is <b>green</b> when his toy is running, <b>red</b> when it's off and he just has to wait. The big number counts down his green time. During red he sees no countdown — but you do.</p>
-          <p>Every time he gets close he has to hit a key. That's an <b>edge</b>, and it stops him instantly.</p>
+    <div class="sticky">
+      <div class="vstate" id="vstate" style="color:var(--text-sec);border-color:rgba(255,255,255,.12);background:rgba(42,22,34,.6)">Waiting for your boy</div>
+    </div>
 
-          <h3>The three modes</h3>
-          <div class="modebox" id="mode-classic">
-            <div class="modename">Rounds <span class="badge">active now</span></div>
-            <p>The game runs in rounds. When a round's time is up it rolls the dice. Every edge raises his odds — below a certain number they're zero. Win and he finishes, lose and a new round starts. A background time limit lets him win eventually no matter what.</p>
-          </div>
-          <div class="modebox" id="mode-random">
-            <div class="modename">One game <span class="badge">active now</span></div>
-            <p>No rounds, no dice. One hidden end time was rolled at the start — when it runs out he wins, whatever he's done. You can see it, he can't. Edges buy him nothing here.</p>
-          </div>
-          <div class="modebox" id="mode-watcher">
-            <div class="modename">You decide <span class="badge">active now</span></div>
-            <p>No timer at all. It runs until you press the end button at the bottom of this page.</p>
-          </div>
+    <h1 class="title">Your boy. Your rules.</h1>
+    <p class="lead">He's waiting for you to decide what he gets. Every button reaches him within a second. Nothing is permanent&hellip; except the last one.</p>
 
-          <h3>Your controls</h3>
-          <div class="ctrllist">
-            <div class="ctrlrow"><b>Red 5 / 15 / 30s</b><span>Turns it off right now for that long.</span></div>
-            <div class="ctrlrow"><b>Shock</b><span>Full power for two seconds, then it locks for 20.</span></div>
-            <div class="ctrlrow"><b>Speed mode</b><span>A minute where the colours flicker past in seconds.</span></div>
-            <div class="ctrlrow"><b>Stronger / Weaker</b><span>Changes how strong it is from now on.</span></div>
-            <div class="ctrlrow"><b>Pacing</b><span>Left is long green and short red, right is the opposite, middle is normal.</span></div>
-            <div class="ctrlrow"><b>Next slide</b><span>Skips to his next picture.</span></div>
-            <div class="ctrlrow"><b>Message</b><span>Replaces the taunt on his screen during red.</span></div>
-          </div>
-
-          <h3>At the end</h3>
-          <p>When he wins he turns the toy on himself and it stays on until he comes. You can stop it as often as you want — it always comes back.</p>
-          <p>When he's about to come he presses his <b>CUM</b> button. From that moment the vibration runs for five more seconds and then stops — that's the end. Pause him inside those five seconds and you ruin him.</p>
-
+    <details class="guide" id="guide" open>
+      <summary>How it works &mdash; 20 seconds</summary>
+      <div class="guide-body">
+        <p>His toy <b>vibrates non-stop</b>. It only stops when <b>you</b> take it away, or when he begs for a break with <b>Edge</b>.</p>
+        <p><b>Your job:</b> keep him right on the edge. You decide for how long &mdash; and when he's allowed to finish.</p>
+        <div class="legend">
+          <span class="dot g"></span> Green = he's feeling it
+          <span class="dot r"></span> Red = you took it away
         </div>
       </div>
-    </div>
-    <button class="rebtn" id="rebtn" onclick="location.reload()">REFRESH</button>
+    </details>
+
+    <div class="sect">Right now</div>
     <div class="status" id="label"></div>
 
-    <div class="bar"><i id="bar"></i></div>
-
-    <div id="outcome" class="out"></div>
     <div id="finale" class="out"></div>
     <div id="finalenote" class="finalebox"></div>
-    <div id="vibestate" class="vibestate"></div>
 
-    <div class="screen" id="screen">
+    <div class="screen noimg" id="screen">
       <img id="frame" alt="">
-      <div class="screen-off" id="frameoff">Your boy hasn't started the game yet</div>
+      <div class="screen-off" id="frameoff">Your boy didn't start the game yet</div>
     </div>
 
     <div class="grid" id="mainstats">
-      <div class="cell"><div class="k">Edges</div><div class="v" id="edges">0</div></div>
-      <div class="cell"><div class="k">Elapsed</div><div class="v" id="elapsed">00:00</div></div>
-      <div class="cell"><div class="k">Intensity</div><div class="v" id="intensity">—</div></div>
-      <div class="cell"><div class="k">Device</div><div class="v" id="toy">—</div></div>
+      <div class="cell"><div class="k">Edges</div><div class="v" id="edges">0</div><div class="x">Times he begged for a break</div></div>
+      <div class="cell"><div class="k">Time</div><div class="v" id="elapsed">00:00</div><div class="x">In your hands</div></div>
+      <div class="cell"><div class="k">Strength</div><div class="v" id="intensity">&mdash;</div><div class="x">What you give him</div></div>
+      <div class="cell"><div class="k">Toy</div><div class="v" id="toy">&mdash;</div><div class="x">Connected?</div></div>
     </div>
 
-    <div class="sect" id="sec-hidden">Only you can see this</div>
-    <div class="note" id="wmnote" style="display:none;margin:0 0 .7rem">Your call, entirely. No rounds, no dice, no timer — he keeps going until you press the end button below. Odds and edge thresholds don't exist here.</div>
-    <div class="note" id="rndnote" style="display:none;margin:0 0 .7rem">One-game mode: no rounds, no dice. A single hidden end time was rolled at the start — when it runs out he wins, whatever he's done. Edges don't buy him anything here.</div>
-    <div class="grid" id="hiddenstats">
-      <div class="cell hidden-info"><div class="k">Phase ends in</div><div class="v" id="phaseleft">—</div><div class="x">He sees no countdown during red.</div></div>
-      <div class="cell hidden-info" id="cell-chance"><div class="k">Win chance</div><div class="v" id="chance">0%</div><div class="x">His odds when the round is rolled. Every edge raises it.</div></div>
-      <div class="cell hidden-info"><div class="k">Speed mode</div><div class="v" id="speed">off</div><div class="x">Rare burst: for one minute both colours last only seconds. An edge cancels it.</div></div>
-      <div class="cell hidden-info" id="cell-secs" style="display:none"><div class="k">Ends in</div><div class="v" id="secsleft">—</div><div class="x">Secret end time. He has no idea when it comes.</div></div>
-      <div class="cell hidden-info" id="cell-needed"><div class="k">Needs edges</div><div class="v" id="needed">0</div><div class="x">Until he reaches this, his chance is zero.</div></div>
-    </div>
+    <div id="waitnote" class="note waitnote">He hasn't started yet. Get comfortable &mdash; the controls appear the moment he does.</div>
 
-    <div class="sect" id="cutsect">Cut him off</div>
-    <div class="note" id="pausenote" style="margin:0 0 .3rem;color:var(--accent);font-weight:700"></div>
-    <div class="note" id="cutnote" style="margin:0 0 .7rem">Each of these stops the vibration on the spot and holds red for the length shown. It never counts as an edge, so his win chance stays exactly where it was.</div>
-    <div class="ctl" id="cutbtns">
-      <div class="ctlcard">
-        <button class="warn" onclick="send({cmd:'red',secs:5})">Red · 5s</button>
-        <span>A short interruption. Breaks the rhythm without really cooling him down.</span>
+    <div id="controls" style="display:none">
+      <div class="sect" id="cutsect">1 &middot; Take it away</div>
+      <div class="note" id="cutnote" style="margin:0 0 .7rem">The vibration stops right now, for as long as you say. Then it comes back by itself.</div>
+      <div class="ctl" id="cutbtns">
+        <div class="ctlcard">
+          <button class="warn" id="cut5" onclick="send({cmd:'red',secs:5})">Stop &middot; 5s</button>
+          <span>Vibrator off for 5 seconds. Just enough to make him whimper.</span>
+        </div>
+        <div class="ctlcard">
+          <button class="warn" id="cut15" onclick="send({cmd:'red',secs:15})">Stop &middot; 15s</button>
+          <span>Vibrator off for 15 seconds. He cools down, but only just.</span>
+        </div>
+        <div class="ctlcard">
+          <button class="warn" id="cut30" onclick="send({cmd:'red',secs:30})">Stop &middot; 30s</button>
+          <span>Vibrator off for 30 seconds. All build-up gone, he starts over.</span>
+        </div>
       </div>
-      <div class="ctlcard">
-        <button class="warn" onclick="send({cmd:'red',secs:15})">Red · 15s</button>
-        <span>Long enough to properly lose the build-up. The usual choice.</span>
-      </div>
-      <div class="ctlcard">
-        <button class="warn" onclick="send({cmd:'red',secs:30})">Red · 30s</button>
-        <span>A hard stop. Half a minute of nothing — sends him back to the start.</span>
-      </div>
-    </div>
 
-    <div class="sect" id="sec-speed">Speed mode</div>
-    <button class="speedbtn" id="speedbtn" onclick="send({cmd:'speed'})">START SPEED MODE</button>
-    <div class="note" id="speednote">One minute where green and red both last only a few seconds — they flicker past and he never settles. You can cut it short at any time. Either way there's a 60 second cooldown before you can start it again.</div>
+      <div id="livectl">
+        <div class="sect">2 &middot; Red light, green light</div>
+        <div class="note" style="margin:0 0 .7rem">The game plays with him for you: it flips between <b>green</b> (he feels it) and <b>red</b> (he doesn't), at random. He never knows when. In green he sees a countdown, in red only your taunts. <b>How mean are you feeling?</b></div>
+        <div class="ctl" id="rlglbtns">
+          <div class="ctlcard">
+            <button id="rl0" onclick="send({cmd:'rlgl',level:0})">Off</button>
+            <span>Back to steady vibration, no lights.</span>
+          </div>
+          <div class="ctlcard">
+            <button id="rl1" onclick="send({cmd:'rlgl',level:1})">More green</button>
+            <span>Vibrator mostly on, short breaks. He's at the edge in no time.</span>
+          </div>
+          <div class="ctlcard">
+            <button id="rl2" onclick="send({cmd:'rlgl',level:2})">Balanced</button>
+            <span>Half on, half off. Pleasure and denial in equal measure.</span>
+          </div>
+          <div class="ctlcard">
+            <button id="rl3" onclick="send({cmd:'rlgl',level:3})">More red</button>
+            <span>Vibrator mostly off. Short teases, long waits, pure frustration.</span>
+          </div>
+        </div>
+        <div class="note">Change it any time. Edge or Stop pauses it, then a fresh green begins.</div>
 
-    <div class="sect" id="sec-shock">Shock</div>
-    <button class="shockbtn" id="shockbtn" onclick="send({cmd:'shock'})">SHOCK · 2s AT MAX</button>
-    <div class="note" id="shocknote">Slams the device to the 80% ceiling for two seconds, then drops back to whatever it was. Works during green only, and locks itself for 20 seconds after each use — the button tells you when it's ready again.</div>
+        <div class="sect">3 &middot; Speed mode</div>
+        <button class="bigbtn" id="speedbtn" onclick="send({cmd:'speed'})">START SPEED MODE &middot; 60s</button>
+        <div class="note">Makes the vibrator flicker on and off for one minute: a few seconds of pleasure, then nothing, in a rhythm he can't predict. He can't settle. He can't hold on. He'll want to beg.</div>
+        <div class="note">Tap again to show mercy. Ends at once if he presses Edge. Locked for a minute afterwards.</div>
 
-    <div class="sect" id="sec-strength">How much he gets</div>
-    <div class="note" id="strengthnote" style="margin:0 0 .7rem">Changes the base level for the rest of the session, not just once. His machine refuses anything above 80%.</div>
-    <div class="ctl" id="strengthctl">
-      <div class="ctlcard">
-        <button onclick="send({cmd:'intensity',delta:0.05})">Stronger +5%</button>
-        <span>Raises the base level. Takes effect on the next green phase.</span>
-      </div>
-      <div class="ctlcard">
-        <button onclick="send({cmd:'intensity',delta:-0.05})">Weaker −5%</button>
-        <span>Lowers it again. At 0% he gets nothing at all during green.</span>
-      </div>
-    </div>
+        <div class="sect">4 &middot; Shock</div>
+        <button class="bigbtn" id="shockbtn" onclick="send({cmd:'shock'})">SHOCK &middot; FULL POWER</button>
+        <div class="note">Jolts the vibrator to full power for a moment, out of nowhere. He'll never see it coming. Only while it's on, and locked for a while afterwards.</div>
 
-    <div class="sect" id="sec-pace">Set the pace</div>
-    <div class="note" id="pacenote" style="margin:0 0 .7rem">You control this, not the game. The middle position is neutral: green and red are picked at random across his own settings, with no bias. Moving left stretches green and shortens red; moving right does the reverse. It applies from the next phase onward.</div>
-    <div class="pace" id="pacebox">
-      <input type="range" id="tlevel" min="1" max="5" step="1" value="3" oninput="onTension()">
-      <div class="pace-name" id="tname">3 · Balanced</div>
-      <div class="pace-desc" id="tdesc"></div>
-    </div>
+        <div class="sect">5 &middot; How much you give him</div>
+        <div class="ctl">
+          <div class="ctlcard">
+            <button onclick="send({cmd:'intensity',delta:0.05})">Give him more +5%</button>
+            <span>Turns the vibrator up by 5%. He'll feel every bit of it.</span>
+          </div>
+          <div class="ctlcard">
+            <button onclick="send({cmd:'intensity',delta:-0.05})">Give him less &minus;5%</button>
+            <span>Turns the vibrator down by 5%. A little mercy, or a slower burn.</span>
+          </div>
+        </div>
 
-    <div class="sect" id="sec-little">Little things</div>
-    <div class="ctl" id="littlectl">
-      <div class="ctlcard">
-        <button onclick="send({cmd:'skip'})">Next slide</button>
-        <span>Jumps to the next image straight away instead of waiting for the timer.</span>
-      </div>
-    </div>
-    <div class="note" id="saynote" style="margin:.9rem 0 .4rem">Write something that replaces the usual taunt on his screen. Only lands while red is on, and gets cut at 60 characters.</div>
-    <div class="say" id="saybox">
-      <input id="msg" maxlength="60" placeholder="Tell him something…">
-      <button onclick="say()">Send</button>
-    </div>
+        <div class="sect">6 &middot; Extras</div>
+        <div class="ctl">
+          <div class="ctlcard">
+            <button onclick="send({cmd:'skip'})">Next picture</button>
+            <span>Skips to the next picture on his screen. You choose what he stares at.</span>
+          </div>
+        </div>
+        <div class="note" style="margin:.9rem 0 0"><b>Chat:</b> use the chat at the bottom. Whatever you write shows up on his screen. Tell him what to do.</div>
 
-    <div class="sect" id="sec-end" style="display:none">End it</div>
-    <div class="note" id="endnote" style="display:none;margin:0 0 .7rem">It runs until you press this. Then he's allowed to finish — and you still decide whether he comes properly or you ruin him. You'll see how when you get there.</div>
-    <button class="endbtn" id="endbtn" onclick="askEnd()">LET HIM FINISH</button>
-    <div class="confirm" id="endconfirm">
-      <div class="confirm-q">Are you sure? He's done as soon as you say yes.</div>
-      <div class="confirm-row">
-        <button class="cbtn yes" onclick="confirmEnd(true)">Yes</button>
-        <button class="cbtn no" onclick="confirmEnd(false)">No</button>
+        <div class="sect">7 &middot; When you're done with him</div>
+        <button class="bigbtn finish" id="finishbtn" onclick="finish()">LET HIM FINISH</button>
+        <div class="note"><b>No way back.</b> Tap twice. Then:</div>
+        <div class="note"><b>1. You allow it.</b> His screen says "She says you may".</div>
+        <div class="note"><b>2. He has to ask for it.</b> Nothing vibrates until <b>he</b> turns it on himself &mdash; and then it stays on. You can still stop him whenever you like.</div>
+        <div class="note"><b>3. He presses Cum.</b> Five seconds start. You see them here.</div>
+        <div class="note"><b>4. Your call.</b> Do nothing and he gets to finish. Hit any Stop button and you take it away right at the edge: <b>ruined</b>, game over.</div>
       </div>
     </div>
 
     <div class="conn" id="conn">connecting…</div>
+
+    <div class="chatdock" id="chatdock">
+      <div class="dlog" id="chatlog"></div>
+      <div class="dhint" id="chathint">Here you can chat with your boy</div>
+      <form class="dform" onsubmit="sendChat(event)">
+        <button type="button" class="dexp" id="chatexp" onclick="toggleChat()" aria-label="Show the whole chat" title="Show the whole chat">&#10530;</button>
+        <input id="chatinput" maxlength="200" autocomplete="off" placeholder="Write to him&hellip;" aria-label="Chat with your boy">
+        <button type="submit" class="dsend">Send</button>
+      </form>
+    </div>
   </div>
 
 </div>
@@ -365,8 +354,7 @@ h1{font-size:1.6rem;font-weight:700;letter-spacing:-.5px;margin:0 0 1.2rem}
 
 // ============================================================
 //  CONFIG — the only two lines you ever need to touch.
-//  Set both, commit, done. The link then opens straight into
-//  the session with nothing to type.
+//  Must match REMOTE_RELAY / REMOTE_ROOM in rlgl-remote.html.
 // ============================================================
 const RELAY = "wss://rlgl-relay.vcaios.workers.dev";
 const ROOM  = "cwre5c3c2FR";
@@ -375,8 +363,7 @@ const ROOM  = "cwre5c3c2FR";
 let sock = null, lastSeen = 0;
 
 function boot() {
-  // ?relay=…&room=… overrides the constants above. Handy while testing;
-  // for the real link you never need it.
+  // ?relay=…&room=… overrides the constants above (handy while testing).
   const q = new URLSearchParams(location.search);
   const relay = (q.get('relay') || RELAY || "").trim().replace(/\/$/, '');
   const room = (q.get('room') || ROOM || "").trim();
@@ -385,18 +372,14 @@ function boot() {
     document.getElementById('join').style.display = 'block';
     return;
   }
-
   document.getElementById('live').style.display = 'block';
   open(relay, room);
 }
 
-// After 5 minutes with no data the page gives up instead of retrying
-// forever — an abandoned tab would otherwise keep the relay awake.
+// After 5 minutes with no data the page gives up instead of retrying forever.
 const IDLE_LIMIT_MS = 5 * 60 * 1000;
-let idleSince = Date.now(), gaveUp = false, cfgRelay = '', cfgRoom = '';
+let idleSince = Date.now(), gaveUp = false;
 
-// The button is shown whenever the socket is not actually open, so a dead
-// connection can always be retried by hand — not just after a timeout.
 function giveUp() {
   gaveUp = true;
   try { if (sock) sock.close(); } catch (e) {}
@@ -406,7 +389,6 @@ function giveUp() {
 }
 
 function open(relay, room) {
-  cfgRelay = relay; cfgRoom = room;
   sock = new WebSocket(`${relay}/?room=${encodeURIComponent(room)}&role=viewer`);
   sock.onopen = () => {
     setConn('waiting for him', true);
@@ -416,7 +398,8 @@ function open(relay, room) {
     try {
       const m = JSON.parse(e.data);
       if (m.type === 'frame') showFrame(m);
-      else render(m);
+      else if (m.type === 'chat') { const t = String(m.text || '').slice(0, 200); if (t) { idleSince = Date.now(); addChat('him', t); } }
+      else if (m.type === 'state') render(m);
     } catch (err) {}
   };
   sock.onclose = () => {
@@ -437,235 +420,229 @@ function send(o) {
   if (sock && sock.readyState === 1) sock.send(JSON.stringify(o));
 }
 
-function say() {
-  const i = document.getElementById('msg');
-  if (i.value.trim()) { send({cmd:'say', text:i.value.trim()}); i.value = ''; }
-}
-document.getElementById('msg').addEventListener('keydown', e => { if (e.key === 'Enter') say(); });
+// ---- Chat ----
+// A translucent dock at the bottom: the latest messages float above the input and
+// fade after a while, so you can write and use the controls at the same time.
+// The expand button (or focusing the input) shows the whole history.
+let unread = 0;
+const FADE_AFTER_MS = 10000, HIDE_AFTER_MS = 13000;
 
-const PACE = [
-  ["1 · Edge Baby",
-   "Green runs longest, red is brief. Steady stimulation with barely any interruption. Use it to build up, or to make him reach the edge fast."],
-  ["2 · Getting Close?",
-   "Green gets longer, red stays fairly short. If you wanna give him more stimulation"],
-  ["3 · Balanced",
-   "Green and red are drawn evenly at random across the whole range. No bias in either direction — this is the neutral setting."],
-  ["4 · Tense",
-   "Green gets cut short, red stretches out. Long waits broken by brief bursts. Frustrating on purpose."],
-  ["5 · Brutal",
-   "Green is over almost as soon as it starts, red drags on. Barely any stimulation, mostly waiting. The harshest setting."]
-];
-
-function onTension() {
-  const v = Number(document.getElementById('tlevel').value);
-  document.getElementById('tname').innerText = PACE[v - 1][0];
-  document.getElementById('tdesc').innerText = PACE[v - 1][1];
-  send({ cmd: 'tension', level: v });
+function fmtTime() {
+  const d = new Date();
+  return String(d.getHours()).padStart(2,'0') + ':' + String(d.getMinutes()).padStart(2,'0');
 }
 
-function toggleInfo() {
-  const open = document.getElementById('infopop').classList.toggle('open');
-  document.getElementById('infoveil').classList.toggle('open', open);
-  document.body.style.overflow = open ? 'hidden' : '';
+function addChat(who, text, failed) {
+  const log = document.getElementById('chatlog');
+  const hint = document.getElementById('chathint');
+  if (hint) hint.style.display = 'none';   // the intro line only shows until the first message
+  const b = document.createElement('div');
+  b.className = 'bubble ' + who + (failed ? ' failed' : '');
+  b.dataset.t = Date.now();
+  b.textContent = text;   // textContent, never innerHTML
+  const t = document.createElement('small');
+  t.textContent = failed ? 'not sent \u2014 no connection' : fmtTime();
+  b.appendChild(t);
+  log.appendChild(b);
+  while (log.children.length > 100) log.removeChild(log.firstChild);
+  log.scrollTop = log.scrollHeight;
+  if (who === 'him' && document.hidden) { unread++; updateTitle(); }
 }
 
-function askEnd() {
-  document.getElementById('endconfirm').style.display = 'block';
-  document.getElementById('endbtn').style.display = 'none';
+function updateTitle() { document.title = unread ? '(' + unread + ') Watch' : 'Watch'; }
+document.addEventListener('visibilitychange', () => { if (!document.hidden) { unread = 0; updateTitle(); } });
+
+// Ages the previews: fade first, then drop out of the compact view.
+setInterval(() => {
+  const now = Date.now();
+  document.querySelectorAll('#chatlog .bubble').forEach(el => {
+    const age = now - Number(el.dataset.t);
+    el.classList.toggle('fading', age > FADE_AFTER_MS);
+    el.classList.toggle('old', age > HIDE_AFTER_MS);
+  });
+}, 1000);
+
+function toggleChat() {
+  document.getElementById('chatdock').classList.toggle('expanded');
+  const log = document.getElementById('chatlog');
+  log.scrollTop = log.scrollHeight;
 }
 
-function confirmEnd(yes) {
-  document.getElementById('endconfirm').style.display = 'none';
-  document.getElementById('endbtn').style.display = 'block';
-  if (yes) send({ cmd: 'endgame' });
+// On phones the on-screen keyboard covers the dock. Follow the visual viewport
+// so it stays sitting on top of the keyboard.
+function fitChat() {
+  const d = document.getElementById('chatdock');
+  const vv = window.visualViewport;
+  if (!vv || window.innerWidth > 600) { d.style.bottom = ''; return; }
+  const kb = Math.max(0, window.innerHeight - vv.height - vv.offsetTop);
+  d.style.bottom = kb ? (kb + 8) + 'px' : '';
+}
+if (window.visualViewport) {
+  window.visualViewport.addEventListener('resize', fitChat);
+  window.visualViewport.addEventListener('scroll', fitChat);
+}
+window.addEventListener('resize', fitChat);
+
+function sendChat(e) {
+  if (e) e.preventDefault();
+  const i = document.getElementById('chatinput');
+  const text = i.value.replace(/[\u0000-\u001f]/g, ' ').trim().slice(0, 200);
+  i.value = '';
+  if (!text) return;
+  const ok = sock && sock.readyState === 1;
+  if (ok) send({ cmd: 'chat', text });
+  addChat('me', text, !ok);
+  i.focus();
+}
+
+// Ending the session cannot be undone, so it takes two taps.
+let finishArmed = 0, finishTimer = null;
+function finish() {
+  const b = document.getElementById('finishbtn');
+  if (finishArmed) {
+    finishArmed = 0;
+    clearTimeout(finishTimer);
+    b.classList.remove('armed');
+    b.innerText = 'LET HIM FINISH';
+    send({ cmd: 'endgame' });
+    return;
+  }
+  finishArmed = 1;
+  b.classList.add('armed');
+  b.innerText = 'TAP AGAIN TO CONFIRM';
+  finishTimer = setTimeout(() => {
+    finishArmed = 0;
+    b.classList.remove('armed');
+    b.innerText = 'LET HIM FINISH';
+  }, 4000);
 }
 
 function showFrame(m) {
   const img = document.getElementById('frame');
   const off = document.getElementById('frameoff');
-  if (m.skipped) {
-    img.style.display = 'none';
-    off.style.display = 'block';
-    off.innerText = 'This one was too large to send';
-    off.style.color = 'var(--text-sec)';
-    return;
-  }
-  if (m.img) {
+  if (typeof m.img === 'string' && m.img.startsWith('data:image/')) {
     img.src = m.img;
     img.style.display = 'block';
     off.style.display = 'none';
+    document.getElementById('screen').classList.remove('noimg');
   }
 }
-const OUT_MAP = {
-  win:    ['HE WILL WIN',  'rgba(95,214,164,.22)', '#5fd6a4'],
-  lose:   ['HE WILL LOSE', 'rgba(255,77,126,.22)', '#ff4d7e']
-};
-const OUT = OUT_MAP;
 
-let greenEnd = 0, phaseLeftLocal = 0;
-setInterval(() => {
-  if (phaseLeftLocal) {
-    const pl = (phaseLeftLocal - Date.now()) / 1000;
-    document.getElementById('phaseleft').innerText = Math.max(0, Math.ceil(pl)) + 's';
-  }
-  if (!greenEnd) return;
-  const left = (greenEnd - Date.now()) / 1000;
-  document.getElementById('label').innerHTML = left > 0 ? Math.ceil(left) : '';
-}, 80);
+// The host sends the label as HTML. Only line breaks are kept; everything else becomes plain text.
+function setLabelSafe(html) {
+  const el = document.getElementById('label');
+  if (el.dataset.raw === html) return;
+  el.dataset.raw = html;
+  el.textContent = '';
+  html.split(/<br\s*\/?>/i).forEach((part, i) => {
+    if (i) el.appendChild(document.createElement('br'));
+    el.appendChild(document.createTextNode(part.replace(/<[^>]*>/g, '')));
+  });
+}
 
 function mmss(s) {
   s = Math.max(0, Math.floor(s));
   return String(Math.floor(s/60)).padStart(2,'0') + ':' + String(s%60).padStart(2,'0');
 }
 
+function show(id, on, disp) { document.getElementById(id).style.display = on ? (disp || 'block') : 'none'; }
+
 function render(s) {
   lastSeen = Date.now();
   idleSince = Date.now();
   setConn(s.killed ? 'he cut the link' : 'live', !!s.killed);
 
-  document.body.className = s.phase === 'green' ? 'green-active'
-                          : s.phase === 'red' ? 'red-active' : '';
-  // The countdown is re-derived locally instead of echoing the text that
-  // arrives 4x per second, otherwise the number visibly stutters.
-  if (s.phase === 'green' && /^\s*\d+\s*$/.test(s.label)) {
-    greenEnd = Date.now() + s.phaseLeft * 1000;
-  } else {
-    greenEnd = 0;
-    document.getElementById('label').innerHTML = s.label;
-  }
+  document.body.classList.toggle('green-active', s.phase === 'green');
+  document.body.classList.toggle('red-active', s.phase === 'red');
+  setLabelSafe(String(s.label == null ? '' : s.label));
 
   document.getElementById('edges').innerText = s.edges;
   document.getElementById('elapsed').innerText = mmss(s.elapsed);
   document.getElementById('toy').innerText = s.toy ? 'on' : 'off';
-
-  phaseLeftLocal = Date.now() + s.phaseLeft * 1000;
   document.getElementById('intensity').innerText = s.intensity + '%';
 
-  // Three cases: no game yet, a game that shares pictures, and a game that
-  // should be sharing but nothing has arrived.
-  const gameRunning = s.state !== 'idle' && s.state !== 'over';
-  const haveFrame = document.getElementById('frame').src && document.getElementById('frame').style.display === 'block';
-  if (!s.sharing || !haveFrame) {
-    if (!haveFrame) {
-      document.getElementById('frame').style.display = 'none';
-      const off = document.getElementById('frameoff');
-      off.style.display = 'block';
-      if (!gameRunning) {
-        off.innerText = "Your boy hasn't started the game yet";
-        off.style.color = 'var(--text-sec)';
-      } else if (s.sharing) {
-        off.innerText = "Error: pictures aren't loading";
-        off.style.color = 'var(--text-sec)';
-      } else {
-        off.innerText = "No pictures in this game";
-        off.style.color = 'var(--text-sec)';
-      }
-    }
+  const started = s.state !== 'idle';
+  if (!s.sharing) {
+    document.getElementById('frame').style.display = 'none';
+    const off = document.getElementById('frameoff');
+    off.style.display = 'block';
+    document.getElementById('screen').classList.add('noimg');
+    off.innerText = started
+      ? "No picture — he is playing without sharing his images. Everything else still works."
+      : "Your boy didn't start the game yet";
   }
+
+  const live = s.state === 'live';
+  const post = s.state === 'post' || s.state === 'cumming' || s.state === 'over';
+  const paused = s.pauseLeft > 0;
+
+  // Big status line
+  const vs = document.getElementById('vstate');
+  let txt = started ? '' : "Waiting for your boy", col = 'var(--text-sec)', bd = 'rgba(255,255,255,.12)', bg = 'rgba(42,22,34,.6)';
+  const ON  = ['#5fd6a4', 'rgba(95,214,164,.45)', 'rgba(95,214,164,.14)'];
+  const OFF = ['#ff4d7e', 'rgba(255,77,126,.45)', 'rgba(255,77,126,.14)'];
+  const SPD = ['#b06de0', 'rgba(176,109,224,.5)', 'rgba(176,109,224,.16)'];
+  let c = null;
+  if (live) {
+    if (paused) {
+      txt = (s.pauseKind === 'edge' ? 'He begged for a break' : s.pauseKind === 'kill' ? 'Remote cut' : 'You took it away')
+          + ' — off for ' + Math.ceil(s.pauseLeft) + 's';
+      c = OFF;
+    } else if (s.speed > 0) {
+      txt = 'Speed mode — ' + Math.ceil(s.speed) + 's left'; c = SPD;
+    } else if (s.rlgl > 0 && !s.shockOn) {
+      const g = s.rlglPhase === 'green';
+      txt = (g ? 'Green light' : 'Red light') + ' — ' + Math.max(1, Math.ceil(s.rlglLeft)) + 's'; c = g ? ON : OFF;
+    } else if (s.shockOn) {
+      txt = 'Shock'; c = SPD;
+    } else {
+      txt = "He's feeling it"; c = ON;
+    }
+  } else if (s.state === 'post' || s.state === 'cumming') {
+    txt = paused ? 'Paused — ' + Math.ceil(s.pauseLeft) + 's'
+        : s.vibeOn ? "He's feeling it" : 'Waiting for him to ask';
+    c = paused ? OFF : s.vibeOn ? ON : null;
+  }
+  if (c) { col = c[0]; bd = c[1]; bg = c[2]; }
+  vs.style.display = txt ? 'block' : 'none';
+  vs.innerText = txt;
+  vs.style.color = col; vs.style.borderColor = bd; vs.style.background = bg;
+
+  // Buttons
+  ['cut5', 'cut15', 'cut30'].forEach(id => { document.getElementById(id).disabled = !(live || s.state === 'post' || s.state === 'cumming') || (live && paused); });
+
+  for (let i = 0; i <= 3; i++) {
+    const b = document.getElementById('rl' + i);
+    b.classList.toggle('on', (s.rlgl || 0) === i);
+    b.disabled = !live;
+  }
+
+  const spb = document.getElementById('speedbtn');
+  spb.classList.toggle('firing', s.speed > 0);
+  spb.disabled = !live || (s.speed <= 0 && s.speedCd > 0);
+  spb.innerText = s.speed > 0 ? `STOP SPEED · ${Math.ceil(s.speed)}s`
+                : s.speedCd > 0 ? `READY IN ${Math.ceil(s.speedCd)}s`
+                : 'START SPEED MODE · 60s';
 
   const sb = document.getElementById('shockbtn');
-  const cd = s.shockCd || 0;
-  const redNow = s.phase === 'red';
   sb.classList.toggle('firing', !!s.shockOn);
-  sb.disabled = s.state !== 'live' || redNow || cd > 0;
-  sb.innerText = s.shockOn ? "FIRING…"
-               : cd > 0 ? `READY IN ${Math.ceil(cd)}s`
-               : redNow ? "BLOCKED — RED IS ON"
-               : "SHOCK · 2s AT MAX";
+  const redLight = s.rlgl > 0 && s.rlglPhase === 'red' && s.speed <= 0;
+  sb.disabled = !live || paused || redLight || s.shockCd > 0;
+  sb.innerText = s.shockOn ? 'FIRING…'
+               : s.shockCd > 0 ? `READY IN ${Math.ceil(s.shockCd)}s`
+               : (paused || redLight) ? 'BLOCKED — VIBRATION IS OFF'
+               : 'SHOCK · FULL POWER';
 
-  // One-game mode has no rounds and no roll, so the odds and the edge
-  // threshold are meaningless there.
-  // The pacing level lives on his machine, so a reload or a second viewer
-  // picks up whatever was last set — the slider just follows along.
-  const tl = document.getElementById('tlevel');
-  if (s.tensionLevel && document.activeElement !== tl && Number(tl.value) !== s.tensionLevel) {
-    tl.value = s.tensionLevel;
-    document.getElementById('tname').innerText = PACE[s.tensionLevel - 1][0];
-    document.getElementById('tdesc').innerText = PACE[s.tensionLevel - 1][1];
-  }
-
-  const rnd = !!s.randomMode;
-  const wm = !!s.watcherMode;
-  // Declared here because several blocks below rely on it.
-  const post = s.state === 'post' || s.state === 'cumming' || s.state === 'over';
-
-  // Mark whichever mode is running right now in the info popover
-  const live = s.state === 'live' || s.state === 'spinning';
-  document.getElementById('mode-classic').classList.toggle('on', live && !rnd && !wm);
-  document.getElementById('mode-random').classList.toggle('on', live && rnd);
-  document.getElementById('mode-watcher').classList.toggle('on', live && wm);
-
-  // Speed mode button
-  const spb = document.getElementById('speedbtn');
-  const spRunning = s.speed > 0;
-  const spCd = s.speedCd || 0;
-  spb.classList.toggle('running', spRunning);
-  spb.disabled = s.state !== 'live' || (!spRunning && spCd > 0);
-  spb.innerText = spRunning ? `STOP SPEED MODE — ${Math.ceil(s.speed)}s LEFT`
-                : spCd > 0 ? `READY IN ${Math.ceil(spCd)}s`
-                : 'START SPEED MODE';
-
-  // The end button only exists in the mode where she calls it
-  const showEnd = wm && s.state === 'live';
-  document.getElementById('sec-end').style.display = showEnd ? 'block' : 'none';
-  document.getElementById('endnote').style.display = showEnd ? 'block' : 'none';
-  if (!showEnd) {
-    document.getElementById('endbtn').style.display = 'none';
-    document.getElementById('endconfirm').style.display = 'none';
-  } else if (document.getElementById('endconfirm').style.display !== 'block') {
-    document.getElementById('endbtn').style.display = 'block';
-  }
-  document.getElementById('cell-chance').style.display = (rnd || wm) ? 'none' : 'block';
-  document.getElementById('cell-needed').style.display = (rnd || wm) ? 'none' : 'block';
-  document.getElementById('chance').innerText = s.chance + '%';
-  document.getElementById('speed').innerText = s.speed > 0 ? Math.ceil(s.speed) + 's' : 'off';
-  document.getElementById('needed').innerText = s.needEdges;
-
-  document.getElementById('rndnote').style.display = (rnd && !post) ? 'block' : 'none';
-  document.getElementById('wmnote').style.display = (wm && !post) ? 'block' : 'none';
-
-  const cs = document.getElementById('cell-secs');
-  if (s.secsLeft !== null && s.secsLeft !== undefined) {
-    cs.style.display = 'block';
-    document.getElementById('secsleft').innerText = mmss(s.secsLeft);
-  } else cs.style.display = 'none';
-
-  document.getElementById('bar').style.width = (s.roundPct === null ? 0 : s.roundPct) + '%';
-
-  // Once he has won, the controls narrow down: pausing, skipping, messages.
-  document.getElementById('sec-shock').style.display = post ? 'none' : 'block';
-  document.getElementById('sec-speed').style.display = post ? 'none' : 'block';
-  document.getElementById('speedbtn').style.display = post ? 'none' : 'block';
-  document.getElementById('speednote').style.display = post ? 'none' : 'block';
-  document.getElementById('shockbtn').style.display = post ? 'none' : 'block';
-  document.getElementById('shocknote').style.display = post ? 'none' : 'block';
-  document.getElementById('sec-strength').style.display = post ? 'none' : 'block';
-  document.getElementById('strengthnote').style.display = post ? 'none' : 'block';
-  document.getElementById('strengthctl').style.display = post ? 'none' : 'grid';
-  document.getElementById('sec-pace').style.display = post ? 'none' : 'block';
-  document.getElementById('mainstats').style.display = post ? 'none' : 'grid';
-  document.getElementById('sec-hidden').style.display = post ? 'none' : 'block';
-  document.getElementById('hiddenstats').style.display = post ? 'none' : 'grid';
-  document.getElementById('sec-little').style.display = post ? 'none' : 'block';
-  document.getElementById('littlectl').style.display = post ? 'none' : 'grid';
-  document.getElementById('saynote').style.display = post ? 'none' : 'block';
-  document.getElementById('saybox').style.display = post ? 'none' : 'flex';
-  document.getElementById('bar').parentElement.style.display = (post || rnd || wm) ? 'none' : 'block';
-
-  const vs = document.getElementById('vibestate');
-  vs.style.display = post && s.state !== 'over' ? 'block' : 'none';
-  if (post && s.state !== 'over') {
-    vs.innerText = s.vibeOn ? 'VIBRATION ON' : 'VIBRATION OFF';
-    vs.style.color = s.vibeOn ? '#5fd6a4' : 'var(--text-sec)';
-    vs.style.borderColor = s.vibeOn ? 'rgba(95,214,164,.45)' : 'rgba(255,255,255,.12)';
-    vs.style.background = s.vibeOn ? 'rgba(95,214,164,.14)' : 'rgba(42,22,34,.6)';
-  }
-  document.getElementById('pacenote').style.display = post ? 'none' : 'block';
-  document.getElementById('pacebox').style.display = post ? 'none' : 'block';
-  document.getElementById('cutsect').innerText = post ? 'Pause him' : 'Cut him off';
+  // Once he is in the endgame the controls narrow down to pausing.
+  show('livectl', live);
+  show('mainstats', started && !post, 'grid');
+  show('controls', started);
+  show('waitnote', !started);
+  document.getElementById('chatdock').style.display = started ? 'flex' : 'none';
+  document.getElementById('cutsect').innerText = post ? 'Take it away' : '1 · Take it away';
   document.getElementById('cutnote').innerText = post
-    ? 'Stops the vibration for that long, then it comes back on its own. Use it as often as you like.'
-    : 'Each of these stops the vibration on the spot and holds red for the length shown. It never counts as an edge, so his win chance stays exactly where it was.';
+    ? 'He may finish, but only when you let him. Stop him as often as you like, it always comes back. Hit one right after he presses Cum and he is ruined.'
+    : 'The vibration stops right now, for as long as you say. Then it comes back by itself.';
 
   const fin = document.getElementById('finale');
   const finNote = document.getElementById('finalenote');
@@ -673,69 +650,43 @@ function render(s) {
 
   if (s.state === 'post') {
     fin.style.display = 'block';
-    fin.innerText = s.vibeOn ? 'HIS REWARD IS RUNNING' : 'HE MAY CUM NOW';
+    fin.innerText = s.vibeOn ? "HE'S GETTING HIS REWARD" : 'WAITING FOR HIM TO ASK';
     fin.style.background = 'rgba(255,122,184,.22)';
     fin.style.color = 'var(--accent)';
     finNote.style.display = 'block';
     finNote.innerHTML =
-      "He won. Nothing happens until <b>he switches the vibration on himself</b>. Then it stays on — cut it as often as you like, it always comes back." +
-      "<br><br>When he's going over he hits his <b>CUM</b> button. The vibration then runs for five more seconds and stops — that's the end. " +
-      "<b>Pause him inside those five seconds and you ruin it.</b>" +
-      "<em>Decide now whether he gets to enjoy it.</em>";
+      "You gave permission. Nothing happens until <b>he</b> turns the vibration on &mdash; then it stays on. Stop him as often as you like; it always comes back." +
+      "<br><br>When he hits <b>Cum</b> he gets five seconds. Stop him inside them and he's ruined." +
+      "<em>Be generous. Or don't.</em>";
     cutBtns.style.opacity = '1';
 
   } else if (s.state === 'cumming') {
     const left = (s.cumLeft || 0).toFixed(1);
     fin.style.display = 'block';
-    fin.innerText = s.vibeOn ? `HE PRESSED IT — ${left}s` : 'RUINED';
-    fin.style.background = s.vibeOn ? 'rgba(255,77,126,.28)' : 'rgba(176,109,224,.28)';
-    fin.style.color = s.vibeOn ? '#ff4d7e' : '#b06de0';
+    fin.innerText = paused ? 'RUINED' : `HE'S GOING — ${left}s`;
+    fin.style.background = paused ? 'rgba(176,109,224,.28)' : 'rgba(255,77,126,.28)';
+    fin.style.color = paused ? '#b06de0' : '#ff4d7e';
     finNote.style.display = 'block';
-    finNote.innerHTML = s.vibeOn
-      ? "<b>He just pressed it.</b> Pause now — or let him have his proper orgasm."
-      : "<b>Mean — you ruined him.</b>";
+    finNote.innerHTML = paused
+      ? "<b>Ruined.</b> Right at the edge. He'll remember this."
+      : "<b>He's going for it.</b> Five seconds. Let him &mdash; or take it away right now.";
     cutBtns.style.opacity = '1';
 
   } else if (s.state === 'over') {
     fin.style.display = 'block';
-    fin.innerText = 'IT IS OVER';
+    fin.innerText = 'GAME OVER';
     fin.style.background = 'rgba(95,214,164,.22)';
     fin.style.color = '#5fd6a4';
     finNote.style.display = 'block';
-    finNote.innerHTML = "Your work is done :)<em>Nothing here does anything any more.</em>";
+    finNote.innerHTML = "Well played.<em>Nothing here does anything any more.</em>";
     cutBtns.style.opacity = '.35';
+    ['cut5', 'cut15', 'cut30'].forEach(id => { document.getElementById(id).disabled = true; });
 
   } else {
     fin.style.display = 'none';
     finNote.style.display = 'none';
     cutBtns.style.opacity = '1';
   }
-
-  // During his five seconds the pause buttons become the ruin buttons.
-  const cutButtons = document.querySelectorAll('#cutbtns .ctlcard button');
-  const ruinNow = s.state === 'cumming' && s.vibeOn;
-  const secsLabels = ['Red · 5s', 'Red · 15s', 'Red · 30s'];
-  cutButtons.forEach((b, i) => {
-    b.classList.toggle('ruin', ruinNow);
-    b.innerText = ruinNow
-      ? `Try to Ruin? (${Math.max(0, Math.ceil(s.cumLeft || 0))})`
-      : secsLabels[i];
-  });
-  document.querySelectorAll('#cutbtns .ctlcard span').forEach(x => {
-    x.style.display = ruinNow ? 'none' : 'block';
-  });
-
-  const pf = s.pausedFor || 0;
-  document.getElementById('pausenote').innerText = pf > 0 ? `Paused — ${Math.ceil(pf)}s left` : '';
-
-  const o = document.getElementById('outcome');
-  if (s.outcome && OUT[s.outcome]) {
-    const [txt, bg, col] = OUT[s.outcome];
-    o.style.display = 'block';
-    o.innerText = txt;
-    o.style.background = bg;
-    o.style.color = col;
-  } else o.style.display = 'none';
 }
 
 setInterval(() => {
@@ -746,7 +697,6 @@ setInterval(() => {
 }, 1000);
 
 boot();
-document.getElementById('tdesc').innerText = PACE[2][1];
 </script>
 </body>
 </html>
