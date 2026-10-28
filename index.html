@@ -299,23 +299,53 @@ button,input,summary{touch-action:manipulation;-webkit-tap-highlight-color:trans
         <div class="note">Makes the vibrator flicker on and off for one minute: a few seconds of pleasure, then nothing, in a rhythm he can't predict. He can't settle. He can't hold on. He'll want to beg.</div>
         <div class="note">Tap again to show mercy. Ends at once if he presses Edge. Locked for a minute afterwards.</div>
 
-        <div class="sect">4 &middot; Shock</div>
+        <div class="sect">4 &middot; Vibration mode</div>
+        <div class="note" style="margin:0 0 .7rem">How the vibrator feels. Pick one, change it any time.</div>
+        <div class="ctl" id="pulsebtns">
+          <div class="ctlcard">
+            <button id="pu0" onclick="send({cmd:'pulse',level:0})">Normal</button>
+            <span>A flat, steady hum.</span>
+          </div>
+          <div class="ctlcard">
+            <button id="pu1" onclick="send({cmd:'pulse',level:1})">Pulsating</button>
+            <span>Quick, throbbing beats.</span>
+          </div>
+          <div class="ctlcard">
+            <button id="pu2" onclick="send({cmd:'pulse',level:2})">Wave</button>
+            <span>Swells softly and fades again.</span>
+          </div>
+          <div class="ctlcard">
+            <button id="pu3" onclick="send({cmd:'pulse',level:3})">Rising</button>
+            <span>Builds slowly, then cuts out without warning. Then it starts over.</span>
+          </div>
+        </div>
+
+        <div class="sect">5 &middot; His Edge break</div>
+        <div class="note" style="margin:0 0 .7rem">Whenever he presses Edge, the vibrator stops. Choose how long he has to wait. <b id="epnow"></b></div>
+        <div class="ctl" id="epbtns">
+          <div class="ctlcard"><button id="ep7" onclick="pickEdgePause(7)">7 s</button><span>Barely a breather.</span></div>
+          <div class="ctlcard"><button id="ep10" onclick="pickEdgePause(10)">10 s</button><span>A short break.</span></div>
+          <div class="ctlcard"><button id="ep15" onclick="pickEdgePause(15)">15 s</button><span>He cools down.</span></div>
+          <div class="ctlcard"><button id="ep20" onclick="pickEdgePause(20)">20 s</button><span>A long wait.</span></div>
+        </div>
+
+        <div class="sect">6 &middot; Shock</div>
         <button class="bigbtn" id="shockbtn" onclick="send({cmd:'shock'})">SHOCK &middot; FULL POWER</button>
         <div class="note">Jolts the vibrator to full power for a moment, out of nowhere. He'll never see it coming. Only while it's on, and locked for a while afterwards.</div>
 
-        <div class="sect">5 &middot; How much you give him</div>
+        <div class="sect">7 &middot; How much you give him</div>
         <div class="ctl">
           <div class="ctlcard">
             <button onclick="send({cmd:'intensity',delta:0.05})">Give him more +5%</button>
             <span>Turns the vibrator up by 5%. He'll feel every bit of it.</span>
           </div>
           <div class="ctlcard">
-            <button onclick="send({cmd:'intensity',delta:-0.05})">Give him less &minus;5%</button>
+            <button id="lessbtn" onclick="send({cmd:'intensity',delta:-0.05})">Give him less &minus;5%</button>
             <span>Turns the vibrator down by 5%. A little mercy, or a slower burn.</span>
           </div>
         </div>
 
-        <div class="sect">6 &middot; Extras</div>
+        <div class="sect">8 &middot; Extras</div>
         <div class="ctl">
           <div class="ctlcard">
             <button onclick="send({cmd:'skip'})">Next picture</button>
@@ -324,7 +354,7 @@ button,input,summary{touch-action:manipulation;-webkit-tap-highlight-color:trans
         </div>
         <div class="note" style="margin:.9rem 0 0"><b>Chat:</b> use the chat at the bottom. Whatever you write shows up on his screen. Tell him what to do.</div>
 
-        <div class="sect">7 &middot; When you're done with him</div>
+        <div class="sect">9 &middot; When you're done with him</div>
         <button class="bigbtn finish" id="finishbtn" onclick="finish()">LET HIM FINISH</button>
         <div class="note"><b>No way back.</b> Tap twice.</div>
         <div class="note"><b>1. You give him permission.</b> Now he can switch the vibrator on himself.</div>
@@ -544,6 +574,17 @@ function mmss(s) {
   return String(Math.floor(s/60)).padStart(2,'0') + ':' + String(s%60).padStart(2,'0');
 }
 
+// Highlights the chosen button right away; the next status message confirms it.
+function setEdgePauseUI(n) {
+  [7, 10, 15, 20].forEach(k => {
+    const b = document.getElementById('ep' + k);
+    if (b) b.classList.toggle('on', n === k);
+  });
+  const l = document.getElementById('epnow');
+  if (l) l.innerText = n ? 'Now: ' + n + ' seconds.' : '';
+}
+function pickEdgePause(n) { setEdgePauseUI(n); send({ cmd: 'edgepause', secs: n }); }
+
 function show(id, on, disp) { document.getElementById(id).style.display = on ? (disp || 'block') : 'none'; }
 
 function render(s) {
@@ -612,6 +653,18 @@ function render(s) {
   // Buttons
   ['cut5', 'cut15', 'cut30'].forEach(id => { document.getElementById(id).disabled = !(live || s.state === 'post') || (live && paused); });
 
+  const lb = document.getElementById('lessbtn');
+  lb.disabled = !live || s.intensity <= 20;
+  lb.innerHTML = s.intensity <= 20 ? 'At the minimum (20%)' : 'Give him less &minus;5%';
+
+  setEdgePauseUI(s.edgePause);
+  [7, 10, 15, 20].forEach(n => { document.getElementById('ep' + n).disabled = !live; });
+
+  for (let i = 0; i <= 3; i++) {
+    const pb = document.getElementById('pu' + i);
+    pb.classList.toggle('on', (s.pulse || 0) === i);
+    pb.disabled = !live;
+  }
   for (let i = 0; i <= 3; i++) {
     const b = document.getElementById('rl' + i);
     b.classList.toggle('on', (s.rlgl || 0) === i);
