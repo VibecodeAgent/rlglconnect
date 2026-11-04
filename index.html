@@ -246,6 +246,9 @@ button,input,summary{touch-action:manipulation;-webkit-tap-highlight-color:trans
 .edgesum .num{font-size:3.2rem;font-weight:800;line-height:1.1;font-variant-numeric:tabular-nums;margin:.2rem 0}
 .edgesum .rank{font-size:.78rem;font-weight:800;letter-spacing:2px;text-transform:uppercase}
 
+.endboard{display:none;background:rgba(42,22,34,.62);border:1px solid rgba(255,122,184,.22);border-radius:18px;padding:1rem 1.1rem;margin:0 0 1.2rem}
+.endboard-h{font-weight:800;font-size:.75rem;letter-spacing:2px;text-transform:uppercase;color:var(--accent);margin-bottom:.5rem}
+.endboard .scorelist{max-height:min(55vh,340px)}
 /* Endings: one compact card, three rows */
 .endbox{background:rgba(42,22,34,.62);border:1px solid rgba(255,122,184,.16);border-radius:16px;padding:.2rem 1rem}
 .endrow{padding:.8rem 0;border-top:1px solid rgba(255,122,184,.14)}
@@ -303,7 +306,7 @@ button,input,summary{touch-action:manipulation;-webkit-tap-highlight-color:trans
 
     <div class="headrow">
       <h1 class="title">Your boy. Your rules.</h1>
-      <button class="scorebtn" id="scorebtn" onclick="toggleScores()" aria-label="His high scores" title="His high scores">&#127942; Scores</button>
+      <button class="scorebtn" id="scorebtn" style="display:none" onclick="toggleScores()" aria-label="His high scores" title="His high scores">&#127942; Scores</button>
       <div class="scorepanel" id="scorepanel">
         <div class="scorehead"><span>His high scores</span><button onclick="toggleScores(false)" aria-label="Close">&times;</button></div>
         <div class="scorebest" id="scorebest"></div>
@@ -354,6 +357,12 @@ button,input,summary{touch-action:manipulation;-webkit-tap-highlight-color:trans
     </div>
 
     <div id="waitnote" class="note waitnote">He hasn't started yet. Get comfortable &mdash; the controls appear the moment he does.</div>
+
+    <div class="endboard" id="endboard">
+      <div class="endboard-h">High scores</div>
+      <div class="scorebest" id="endscorebest"></div>
+      <div class="scorelist" id="endscorelist"><div class="scoreempty">Nothing yet. Scores appear here once he has played.</div></div>
+    </div>
 
     <div id="controls" style="display:none">
       <div class="sect" id="cutsect">1 &middot; Take it away</div>
@@ -793,10 +802,16 @@ document.addEventListener('click', e => {
 });
 
 function renderScoreList(list) {
-  const box = document.getElementById('scorelist'), best = document.getElementById('scorebest');
-  box.textContent = ''; best.textContent = '';
   const a = (Array.isArray(list) ? list : []).slice(-30).filter(x => x && Number.isFinite(Number(x.edges)) && x.end !== 'Quit')
     .map(x => ({ d: String(x.d || '').slice(0, 10), edges: Math.floor(Number(x.edges)), secs: Math.max(0, Math.floor(Number(x.secs) || 0)), end: String(x.end || '').slice(0, 12) }));
+  paintScores(a, 'scorelist', 'scorebest');       // the pop-up
+  paintScores(a, 'endscorelist', 'endscorebest'); // the board shown when the game is over
+}
+
+function paintScores(a, listId, bestId) {
+  const box = document.getElementById(listId), best = document.getElementById(bestId);
+  if (!box || !best) return;
+  box.textContent = ''; best.textContent = '';
   if (!a.length) {
     const e = document.createElement('div'); e.className = 'scoreempty';
     e.textContent = 'Nothing yet. Scores appear here once he has played.';
@@ -1043,7 +1058,12 @@ function render(s, fromTimer) {
   const rk = document.getElementById('edgesumrank');
   rk.innerText = et[2];
   setTierClass(rk, et[1]);
-  show('controls', started);
+  const ended = s.state === 'over' || s.state === 'denied';
+  show('controls', started && !ended);                         // nothing left to press once it is over
+  document.getElementById('endboard').style.display = ended ? 'block' : 'none';   // the scores take their place
+  // His scores only exist once he has connected, so the button appears when the game starts and stays afterwards.
+  document.getElementById('scorebtn').style.display = (started && !ended) ? '' : 'none';
+  if (!started || ended) toggleScores(false);
   show('waitnote', !started);
   document.getElementById('chatdock').style.display = started ? 'flex' : 'none';
   document.getElementById('cutsect').innerText = post ? 'Take it away' : '1 · Take it away';
