@@ -160,15 +160,24 @@ html{-webkit-text-size-adjust:100%}
 button,input,summary{touch-action:manipulation;-webkit-tap-highlight-color:transparent}
 .wrap{padding-top:max(1.8rem,calc(env(safe-area-inset-top) + .8rem));
   padding-left:max(1.2rem,env(safe-area-inset-left));padding-right:max(1.2rem,env(safe-area-inset-right))}
-.sticky{position:sticky;top:0;z-index:30;margin:0 -1.2rem 1.1rem;padding:.55rem 1.2rem;
-  background:rgba(18,8,16,.84);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);
-  border-bottom:1px solid rgba(255,122,184,.14)}
-.sticky{display:flex;align-items:center;gap:.5rem}
-.sticky .vstate{margin:0;padding:.65rem .8rem;font-size:.85rem;letter-spacing:2px;flex:1;min-width:0}
-.scorebtn{flex-shrink:0;width:2.8rem;height:2.8rem;border-radius:14px;border:1px solid rgba(255,122,184,.3);
-  background:rgba(42,22,34,.85);color:var(--white);font-size:1.15rem;cursor:pointer}
+/* Pinned status bar: a slim strip with a coloured dot and one line of text, no box */
+.sticky{position:sticky;top:0;z-index:30;margin:0 -1.2rem 1.1rem;padding:.7rem 1.2rem;
+  display:flex;align-items:center;gap:.7rem;
+  background:linear-gradient(180deg,rgba(18,8,16,.94),rgba(18,8,16,.78));
+  -webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);
+  border-bottom:2px solid var(--sc,rgba(255,255,255,.12));transition:border-color .4s ease}
+.sdot{flex-shrink:0;width:.7rem;height:.7rem;border-radius:50%;background:var(--sc,#6b5a66);
+  box-shadow:0 0 12px var(--sc,transparent);transition:background .4s ease,box-shadow .4s ease}
+.sbtxt{font-size:1.02rem;font-weight:700;letter-spacing:.2px;color:var(--white);min-width:0;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+/* High scores: a small button next to the title, not in the status bar */
+.headrow{position:relative;display:flex;align-items:flex-start;justify-content:space-between;gap:.8rem}
+.headrow h1.title{margin:0 0 .5rem}
+.scorebtn{flex-shrink:0;display:flex;align-items:center;gap:.4rem;border-radius:12px;border:1px solid rgba(255,122,184,.3);
+  background:rgba(42,22,34,.85);color:var(--white);font-size:.78rem;font-weight:700;letter-spacing:.5px;
+  padding:.5rem .8rem;cursor:pointer;white-space:nowrap}
 .scorebtn:hover{background:var(--accent-soft)}
-.scorepanel{display:none;position:absolute;top:calc(100% + 6px);right:1.2rem;width:min(320px,calc(100vw - 2rem));
+.scorepanel{display:none;position:absolute;top:calc(100% + 4px);right:0;width:min(320px,calc(100vw - 2rem));
   background:rgba(30,16,25,.97);border:1px solid rgba(255,122,184,.3);border-radius:16px;
   box-shadow:0 16px 48px rgba(0,0,0,.55);padding:.7rem .9rem .9rem;z-index:40}
 .scorepanel.open{display:block}
@@ -193,8 +202,8 @@ button,input,summary{touch-action:manipulation;-webkit-tap-highlight-color:trans
 /* Phone */
 @media(max-width:600px){
   .wrap{padding-bottom:9rem;padding-left:max(1rem,env(safe-area-inset-left));padding-right:max(1rem,env(safe-area-inset-right))}
-  .sticky{margin:0 -1rem 1rem;padding:.5rem 1rem}
-  .scorepanel{right:1rem}
+  .sticky{margin:0 -1rem 1rem;padding:.65rem 1rem}
+  .scorebtn{padding:.45rem .65rem}
   h1.title{font-size:1.55rem}
   .lead{font-size:.9rem}
   .status{font-size:clamp(1.6rem,9vw,2.4rem)}
@@ -287,20 +296,23 @@ button,input,summary{touch-action:manipulation;-webkit-tap-highlight-color:trans
   <div id="live" style="display:none">
     <button class="rebtn" id="rebtn" onclick="location.reload()">REFRESH</button>
 
-    <div class="sticky">
-      <div class="vstate" id="vstate" style="color:var(--text-sec);border-color:rgba(255,255,255,.12);background:rgba(42,22,34,.6)">Waiting for your boy</div>
-      <button class="scorebtn" id="scorebtn" onclick="toggleScores()" aria-label="His high scores" title="His high scores">&#127942;</button>
+    <div class="sticky" id="topbar">
+      <span class="sdot" id="sdot"></span>
+      <div class="sbtxt" id="vstate">Waiting for your boy</div>
+    </div>
+
+    <div class="headrow">
+      <h1 class="title">Your boy. Your rules.</h1>
+      <button class="scorebtn" id="scorebtn" onclick="toggleScores()" aria-label="His high scores" title="His high scores">&#127942; Scores</button>
       <div class="scorepanel" id="scorepanel">
         <div class="scorehead"><span>His high scores</span><button onclick="toggleScores(false)" aria-label="Close">&times;</button></div>
         <div class="scorebest" id="scorebest"></div>
         <div class="scorelist" id="scorelist"><div class="scoreempty">Nothing yet. Scores appear here once he has played.</div></div>
       </div>
     </div>
-
-    <h1 class="title">Your boy. Your rules.</h1>
     <p class="lead">He's waiting for you to decide what he gets. Every button reaches him within a second. Nothing is permanent&hellip; except the last one.</p>
 
-    <details class="guide" id="guide" open>
+    <details class="guide" id="guide">
       <summary>How it works &mdash; 20 seconds</summary>
       <div class="guide-body">
         <p>His toy <b>vibrates non-stop</b>. It only stops when <b>you</b> take it away, or when he begs for a break with <b>Edge</b>.</p>
@@ -891,8 +903,7 @@ function render(s, fromTimer) {
 
   document.getElementById('edges').innerText = s.targetGoal ? s.edges + ' / ' + s.targetGoal : s.edges;
   liveBase = Number(s.intensity) || 0;
-  const varying = (s.pulse || 0) > 0 || (s.rlgl || 0) > 0 || s.speed > 0;
-  liveShown = s.state === 'live' && varying;
+  liveShown = s.state === 'live' || s.state === 'post' || s.state === 'cumming';   // always, also in normal mode
   if (!liveShown) document.getElementById('livecard').style.display = 'none';
   const et = edgeTier(Number(s.edges) || 0);
   setTierClass(document.getElementById('edges'), et[1]);
@@ -924,32 +935,35 @@ function render(s, fromTimer) {
   let c = null;
   if (live) {
     if (paused) {
-      txt = (s.pauseKind === 'edge' ? 'He begged for a break' : s.pauseKind === 'kill' ? 'Remote cut' : 'You took it away')
-          + ' — off for ' + Math.ceil(s.pauseLeft) + 's';
+      txt = (s.pauseKind === 'edge' ? 'He begged for a break' : s.pauseKind === 'kill' ? 'He cut the link' : 'You took it away')
+          + ' \u00b7 ' + Math.ceil(s.pauseLeft) + 's';
       c = OFF;
     } else if (s.speed > 0) {
-      txt = 'Speed mode — ' + Math.ceil(s.speed) + 's left'; c = SPD;
+      txt = 'Speed mode \u00b7 ' + Math.ceil(s.speed) + 's'; c = SPD;
     } else if (s.rlgl > 0 && !s.shockOn) {
       const g = s.rlglPhase === 'green';
-      txt = (g ? 'Green light' : 'Red light') + ' — ' + Math.max(1, Math.ceil(s.rlglLeft)) + 's'; c = g ? ON : OFF;
+      txt = (g ? 'Green light' : 'Red light') + ' \u00b7 ' + Math.max(1, Math.ceil(s.rlglLeft)) + 's'; c = g ? ON : OFF;
     } else if (s.shockOn) {
       txt = 'Shock'; c = SPD;
     } else {
       txt = "He's feeling it"; c = ON;
     }
   } else if (s.state === 'post') {
-    txt = paused ? 'Paused — ' + Math.ceil(s.pauseLeft) + 's'
+    txt = paused ? 'Paused \u00b7 ' + Math.ceil(s.pauseLeft) + 's'
         : s.vibeOn ? "He's feeling it" : 'Waiting for him to switch it on';
     c = paused ? OFF : s.vibeOn ? ON : null;
   } else if (s.state === 'cumming') {
     txt = "He's coming now"; c = ON;
   } else if (s.state === 'denied') {
     txt = "He's been denied"; c = SPD;
+  } else if (s.state === 'over') {
+    txt = 'Game over';
   }
   if (c) { col = c[0]; bd = c[1]; bg = c[2]; }
-  vs.style.display = txt ? 'block' : 'none';
   vs.innerText = txt;
-  vs.style.color = col; vs.style.borderColor = bd; vs.style.background = bg;
+  // the state colour goes on the dot and the bar's bottom line; the text itself stays white
+  const bar = document.getElementById('topbar');
+  if (c) bar.style.setProperty('--sc', col); else bar.style.removeProperty('--sc');
 
   // Buttons
   ['cut5', 'cut15', 'cut30'].forEach(id => { document.getElementById(id).disabled = !(live || s.state === 'post') || (live && paused); });
