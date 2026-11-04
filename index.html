@@ -350,7 +350,7 @@ button,input,summary{touch-action:manipulation;-webkit-tap-highlight-color:trans
     <div class="livecard" id="livecard">
       <div class="livehead"><span>Live output</span><b id="livenow">0%</b></div>
       <canvas id="livecanvas" height="76"></canvas>
-      <div class="livenote">The dashed line is your setting. The curve is what he feels right now.</div>
+      <div class="livenote">The dashed line is your setting, the most he gets. The curve is what he feels right now.</div>
     </div>
 
     <div id="waitnote" class="note waitnote">He hasn't started yet. Get comfortable &mdash; the controls appear the moment he does.</div>
@@ -402,7 +402,7 @@ button,input,summary{touch-action:manipulation;-webkit-tap-highlight-color:trans
         <div class="note">Tap again to show mercy. Ends at once if he presses Edge. Locked for a minute afterwards.</div>
 
         <div class="sect">4 &middot; Vibration mode</div>
-        <div class="note" style="margin:0 0 .7rem">How the vibrator feels. Pick one, change it any time.</div>
+        <div class="note" style="margin:0 0 .7rem">How the vibrator feels. Pick one, change it any time. In every mode your strength is the highest point he gets.</div>
         <div class="ctl" id="pulsebtns">
           <div class="ctlcard">
             <button id="pu0" onclick="send({cmd:'pulse',level:0})">Normal</button>
@@ -438,7 +438,7 @@ button,input,summary{touch-action:manipulation;-webkit-tap-highlight-color:trans
         <div class="sect">7 &middot; How much you give him</div>
         <div class="ctl">
           <div class="ctlcard">
-            <button onclick="send({cmd:'intensity',delta:0.05})">Give him more +5%</button>
+            <button id="morebtn" onclick="send({cmd:'intensity',delta:0.05})">Give him more +5%</button>
             <span>Turns the vibrator up by 5%. He'll feel every bit of it.</span>
           </div>
           <div class="ctlcard">
@@ -968,6 +968,9 @@ function render(s, fromTimer) {
   // Buttons
   ['cut5', 'cut15', 'cut30'].forEach(id => { document.getElementById(id).disabled = !(live || s.state === 'post') || (live && paused); });
 
+  const mb = document.getElementById('morebtn');
+  mb.disabled = !live || s.intensity >= 80;
+  mb.innerHTML = s.intensity >= 80 ? 'At the maximum (80%)' : 'Give him more +5%';
   const lb = document.getElementById('lessbtn');
   lb.disabled = !live || s.intensity <= 20;
   lb.innerHTML = s.intensity <= 20 ? 'At the minimum (20%)' : 'Give him less &minus;5%';
@@ -1003,7 +1006,8 @@ function render(s, fromTimer) {
   for (let i = 0; i <= 3; i++) {
     const pb = document.getElementById('pu' + i);
     pb.classList.toggle('on', (s.pulse || 0) === i);
-    pb.disabled = !live;
+    // Rising is not available together with Speed mode or red/green light: it is greyed out then
+    pb.disabled = !live || (i === 3 && (s.speed > 0 || (s.rlgl || 0) > 0));
   }
   for (let i = 0; i <= 3; i++) {
     const b = document.getElementById('rl' + i);
